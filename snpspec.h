@@ -97,13 +97,13 @@ public:
             std::map<std::string, IntervalTree<size_t> > & tree
     );
 
-    void report_user_snp_genes(const std::string & filename);
+    void report_user_snp_genes(const std::string & filename, int slop);
 
     void drop_snp_intervals();
 
     void report_missing_conditions();
 
-    void bin_genesets();
+    void bin_genesets(int slop);
 
     std::vector<std::vector<size_t> > generate_snpset();
 
