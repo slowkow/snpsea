@@ -19,11 +19,10 @@ snpspec::snpspec(
     int slop,
     int processes,
     int min_observations,
-    int permutations
+    int max_iterations 
 )
 {
     std::cout
-            << timestamp() << " # Started with arguments:\n"
             << "snpspec --snps " + user_snps_file + " \n"
             << "        --expression " + expression_file + "\n"
             << "        --gene-intervals " + gene_intervals_file + "\n"
@@ -34,7 +33,7 @@ snpspec::snpspec(
             << "        --slop " << slop << "\n"
             << "        --processes " << processes << "\n"
             << "        --min-observations " << min_observations << "\n"
-            << "        --permutations " << permutations << "\n"
+            << "        --max-iterations " << max_iterations << "\n"
             << std::endl;
 
     // Read names.
@@ -104,51 +103,60 @@ snpspec::snpspec(
 
     ofstream stream(out_folder + "/pvalues.txt");
     stream << "name\tpvalue\tnulls_observed\tnulls_tested\n";
+    stream << std::flush;
 
-    for (int i = 0; i < _expression.cols(); i++) {
+    for (int col = 0; col < _expression.cols(); col++) {
         // Shared across all threads.
-        double user_score = score_binary(i, _user_genesets);
+        double user_score = score_binary(col, _user_genesets);
 
         // The user's SNPs scored 0, so don't bother testing.
         if (user_score <= 0) {
-            stream << _col_names.at(i) << "\t1.0\t0\t0\n";
+            stream << _col_names.at(col) << "\t1.0\t0\t0\n";
             continue;
         }
 
         int nulls_tested = 0;
         int nulls_observed = 0;
 
-        const int LOOPS = 1000;
-        #pragma omp parallel
-        {
-            // Private to each thread.
-            int thread_observed = 0;
+        for (auto count : iterations(100, max_iterations)) {
+            #pragma omp parallel
+            {
+                // Private to each thread.
+                int thread_observed = 0;
 
-            // Each thread counts its own results and we sum them afterwards.
-            #pragma omp for
-            for (int j = 0; j < LOOPS; j++) {
-                if (score_binary(i, generate_snpset()) >= user_score) {
-                    thread_observed += 1;
+                // Each thread will complete some fraction of this loop.
+                #pragma omp for
+                for (int i = 0; i < count; i++) {
+                    if (score_binary(col, generate_snpset()) >= user_score) {
+                        thread_observed += 1;
+                    }
+                }
+
+                // Each thread counts its own results and we sum afterwards.
+                #pragma omp critical
+                {
+                    nulls_observed += thread_observed;
                 }
             }
+            // Count how many total iterations we performed.
+            nulls_tested += count;
 
-            #pragma omp critical
-            {
-                nulls_observed += thread_observed;
+            // A null SNP set scored higher than the user's SNP set enough
+            // times that we are confident in the column's p-value.
+            if (nulls_observed >= min_observations) {
+                break;
             }
         }
 
-        nulls_tested += LOOPS;
         double pvalue = (double) nulls_observed / (double) nulls_tested;
 
-        stream << _col_names.at(i) << '\t' << pvalue << '\t'
+        stream << _col_names.at(col) << '\t' << pvalue << '\t'
                << nulls_observed << '\t' << nulls_tested << '\n';
     }
 
     stream.close();
 
     std::cout << timestamp() << " # done." << std::endl;
-    //MatrixXd geneset_pvalues = geneset_pvalues_binary(generate_snpset().at(0));
 }
 
 // Read an optionally gzipped text file and store the first column in a set of
@@ -318,6 +326,8 @@ void snpspec::report_user_snp_genes(const std::string & filename, int slop)
 {
     ofstream stream(filename);
 
+    std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";
+
     // Print the column names.
     stream << "chrom\tstart\tend\tname\tn_genes\tgenes\n";
 
@@ -375,6 +385,8 @@ void snpspec::report_user_snp_genes(const std::string & filename, int slop)
         }
     }
     stream.close();
+
+    std::cout << timestamp() << " # done.\n";
 }
 
 void snpspec::drop_snp_intervals()
@@ -467,7 +479,7 @@ void snpspec::bin_genesets(int slop)
     // Report how many genesets exist of each size.
     for (auto item : _geneset_bins) {
         std::cout << timestamp()
-                  << " # Gene sets with size " << item.first << ": "
+                  << " # Null gene sets with size " << item.first << ": "
                   << item.second.size() << std::endl;
     }
 }
