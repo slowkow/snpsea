@@ -16,7 +16,7 @@ int main(int argc, const char * argv[]) {
 	opt.syntax = "snpspec [OPTIONS]";
 	opt.example = 
 	    "snpspec --snps file.txt \n"
-	    "        --expression file.gct\n"
+	    "        --expression file.gct.gz\n"
 	    "        --null-snps file.txt\n"
 	    "        --snp-intervals file.bed.gz\n"
 	    "        --gene-intervals file.bed.gz\n"
