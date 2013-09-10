@@ -11,4 +11,4 @@ time ./snpspec \
     --condition ~/dwork/snpspec/data/GO/first_1000.txt \
     --processes 2 \
     --permutations 1e6 \
-    | tee output.txt
+    | tee out/log.txt
