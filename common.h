@@ -123,43 +123,6 @@ static std::istream & operator>>(std::istream & stream, BEDRow & a)
     return stream;
 }
 
-
-// A pair of integers.
-typedef std::pair<int, int> ints;
-/*
-// Read a BED file and make an IntervalTree for each chromosome.
-static std::map<std::string, IntervalTree<ints> > bed_tree(char* f_recomb)
-{
-    typedef Interval<ints> interval;
-    typedef vector<interval> intervalVector;
-
-    std::map<std::string, IntervalTree<ints> > tree;
-
-    std::map<std::string, intervalVector> intervals;
-    std::map<std::string, intervalVector>::iterator it;
-
-    std::ifstream file(f_recomb);
-    BEDRow row;
-
-    while (file >> row) {
-        // Add an interval to the vector for the corresponding chromosome.
-        // (The value stored in the tree is a pair of integers, and it is
-        // later retrieved with the findOverlapping() method.)
-        intervals[row.chrom].push_back(
-            interval(row.start, row.stop, std::make_pair(row.start, row.stop))
-        );
-    }
-
-    // Loop through the chromosomes.
-    for (it = intervals.begin(); it != intervals.end(); it++) {
-        // it->first is the name of a chromosome.
-        tree[it->first] = IntervalTree<ints>(intervals[it->first]);
-    }
-
-    return tree;
-}
-*/
-
 static bool mkpath(const std::string & path)
 {
     bool bSuccess = false;
