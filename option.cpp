@@ -25,7 +25,7 @@ int main(int argc, const char * argv[]) {
 	    "        --slop 250e3\n"
 	    "        --processes 4\n"
 	    "        --min-observations 25\n"
-	    "        --permutations 1e6\n\n";
+	    "        --max-iterations 1e6\n\n";
 	opt.footer = 
 	    "SNPspec 0.1  Copyright (C) 2013 Kamil Slowikowski\n"
 	    "This program is free and without warranty.\n";
@@ -156,7 +156,7 @@ int main(int argc, const char * argv[]) {
 		1, // Number of args expected.
 		0, // Delimiter if expecting multiple args.
 		"Maximum number of null SNP sets generated. [default: 1000]",
-		"--permutations" // Flag token.
+		"--max-iterations" // Flag token.
 	);
 
     // Read the options.
@@ -223,12 +223,12 @@ int main(int argc, const char * argv[]) {
 
     double
         slop,
-        permutations;
+        max_iterations;
 
     opt.get("--slop")->getDouble(slop);
     opt.get("--processes")->getInt(processes);
     opt.get("--min-observations")->getInt(min_observations);
-    opt.get("--permutations")->getDouble(permutations);
+    opt.get("--max-iterations")->getDouble(max_iterations);
 
     // Export all of the options used.
     opt.exportFile("args.txt", true);
@@ -245,7 +245,7 @@ int main(int argc, const char * argv[]) {
         (long) slop,
         processes,
         min_observations,
-        (long) permutations
+        (long) max_iterations
     );
 
 	return 0;
