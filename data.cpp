@@ -21,35 +21,6 @@ snpspec::snpspec(
     int min_observations,
     int permutations
 ) {
-    /*
-    std::cout << "Testing Eigen...\n";
-    
-    MatrixXd m(3,3);
-    m << 1, 2, 3,
-         4, 5, 3,
-         7, 8, 9;
-    std::cout << "Here is the matrix m:\n" << m << std::endl;
-
-    m.colwise().normalize();
-    std::cout << "Here is the normalized matrix m:\n" << m << std::endl;
-
-    MatrixXd n(3,3);
-    for (int i = 0; i < m.cols(); i++) {
-        m.col(i) = rankdata(m.col(i));
-    }
-    std::cout << "Here is the ranked matrix m:\n" << m << std::endl;
-
-    std::vector<size_t> ids;
-    ids.push_back(0);
-    ids.push_back(1);
-    removeColumns(ids, m);
-    std::cout << "Here is the matrix without the first two columns:\n" << m
-        << std::endl;
-
-    std::cerr << "Finished testing Eigen...\n";
-    exit(EXIT_SUCCESS);
-    */
-
     std::cout
         << timestamp() << " # Started with arguments:\n"
         << "snpspec --snps " + user_snps_file + " \n"
