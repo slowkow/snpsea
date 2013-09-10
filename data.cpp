@@ -115,7 +115,6 @@ snpspec::snpspec(
             continue;
         }
 
-        //std::vector<int> nulls_observed(processes);
         int nulls_tested = 0;
         int nulls_observed = 0;
 
@@ -123,14 +122,12 @@ snpspec::snpspec(
         #pragma omp parallel
         {
             // Private to each thread.
-            //int thread_id = omp_get_thread_num();
             int thread_observed = 0;
 
             // Each thread counts its own results and we sum them afterwards.
             #pragma omp for
             for (int j = 0; j < LOOPS; j++) {
                 if (score_binary(i, generate_snpset()) >= user_score) {
-                    //nulls_observed.at(thread_id) += 1;
                     thread_observed += 1;
                 }
             }
@@ -142,10 +139,6 @@ snpspec::snpspec(
         }
 
         nulls_tested += LOOPS;
-        //int observed = 0;
-        //for (int j = 0; j < processes; j++) {
-        //    observed += nulls_observed.at(j);
-        //}
         double pvalue = (double) nulls_observed / (double) nulls_tested;
 
         stream << _col_names.at(i) << '\t' << pvalue << '\t'
