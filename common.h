@@ -24,6 +24,23 @@
 
 using namespace Eigen;
 
+// Create a vector with the number of iterations to perform at each step,
+// where we double the number of interations at each step.
+static std::vector<int> iterations(int start, int max) 
+{
+    std::vector<int> result;
+    result.push_back(start);
+    int sum = start;
+    max = std::max(start, max);
+    while (sum + start * 2 < max) {
+        start *= 2;
+        result.push_back(start);
+        sum += start;
+    }
+    result.push_back(max - sum);
+    return result;
+}
+
 template<typename T>
 inline T clamp(T x, T a, T b)
 {
