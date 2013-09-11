@@ -18,8 +18,8 @@ snpspec::snpspec(
     std::string out_folder,
     int slop,
     int processes,
-    int min_observations,
-    int max_iterations 
+    long min_observations,
+    long max_iterations 
 )
 {
     std::cout
@@ -27,8 +27,13 @@ snpspec::snpspec(
             << "        --expression " + expression_file + "\n"
             << "        --gene-intervals " + gene_intervals_file + "\n"
             << "        --snp-intervals " + snp_intervals_file + "\n"
-            << "        --null-snps " + null_snps_file + "\n"
-            << "        --condition " + condition_file + "\n"
+            << "        --null-snps " + null_snps_file + "\n";
+
+    if (condition_file.length() > 0) {
+        std::cout << "        --condition " + condition_file + "\n";
+    }
+
+    std::cout
             << "        --out " + out_folder + "\n"
             << "        --slop " << slop << "\n"
             << "        --processes " << processes << "\n"
@@ -40,7 +45,11 @@ snpspec::snpspec(
     std::cout << timestamp() << " # Reading files..." << std::endl;
     read_names(user_snps_file, _user_snp_names);
     read_names(null_snps_file, _null_snp_names);
-    read_names(condition_file, _condition_names);
+
+    // Optional.
+    if (condition_file.length() > 0) {
+        read_names(condition_file, _condition_names);
+    }
 
     // Read SNP names and intervals.
     read_bed_intervals(snp_intervals_file, _snp_intervals);
@@ -66,20 +75,30 @@ snpspec::snpspec(
     // expression file.
     report_missing_conditions();
 
+    // The score function is used later with the generated null gene sets.
+    auto score_function = &snpspec::score_quantitative;
+
     // Check if the matrix is binary by reading the first column.
     if (is_binary(_expression.col(0))) {
+        // Let the user know we detected it.
         std::cout << timestamp() << " # Expression is binary." << std::endl;
+        // Cache these values ahead of time.
         _binary_sums = _expression.colwise().sum();
         _binary_probs = _binary_sums / _expression.rows();
+        // We score binary matrices differently than quantitative matrices.
+        score_function = &snpspec::score_binary;
     } else {
         // TODO Condition the matrix on the specified columns.
 
         // Normalize the matrix.
         _expression.colwise().normalize();
 
-        // Percentile rank each column of the matrix.
+        // Reverse percentile rank each column of the matrix.
+        // So, a small value like 0.02 means the given gene is highly specific
+        // to the column. A large value means the gene is non-specific.
         for (int i = 0; i < _expression.cols(); i++) {
-            _expression.col(i) = rankdata(_expression.col(i));
+            _expression.col(i) =
+                rankdata(_expression.col(i)) / _expression.rows();
         }
     }
 
@@ -97,8 +116,9 @@ snpspec::snpspec(
     omp_set_num_threads(processes);
 
     std::cout << timestamp()
-              << " # Computing scores for null SNP sets with "
-              << processes << " threads...\n";
+              << " # Computing up to " << scientific << max_iterations
+              << " scores for each column in the expression with "
+              << fixed << processes << " threads...\n";
     std::cout << std::flush;
 
     ofstream stream(out_folder + "/pvalues.txt");
@@ -107,7 +127,7 @@ snpspec::snpspec(
 
     for (int col = 0; col < _expression.cols(); col++) {
         // Shared across all threads.
-        double user_score = score_binary(col, _user_genesets);
+        double user_score = (*this.*score_function)(col, _user_genesets);
 
         // The user's SNPs scored 0, so don't bother testing.
         if (user_score <= 0) {
@@ -115,19 +135,21 @@ snpspec::snpspec(
             continue;
         }
 
-        int nulls_tested = 0;
-        int nulls_observed = 0;
+        long nulls_tested = 0;
+        long nulls_observed = 0;
 
         for (auto count : iterations(100, max_iterations)) {
             #pragma omp parallel
             {
                 // Private to each thread.
-                int thread_observed = 0;
+                long thread_observed = 0;
 
                 // Each thread will complete some fraction of this loop.
                 #pragma omp for
-                for (int i = 0; i < count; i++) {
-                    if (score_binary(col, generate_snpset()) >= user_score) {
+                for (long i = 0; i < count; i++) {
+                    // Call the appropriate scoring function.
+                    if ((*this.*score_function)(col, generate_snpset())
+                            >= user_score) {
                         thread_observed += 1;
                     }
                 }
@@ -374,11 +396,13 @@ void snpspec::report_user_snp_genes(const std::string & filename, int slop)
 
                 // Print the first gene, then prepend a comma to the next.
                 stream << _row_names.at(gene_intervals.at(0).value);
+                gene_ids.push_back(gene_intervals.at(0).value);
 
-                for (auto gene_interval : gene_intervals) {
-                    stream << ',' << _row_names.at(gene_interval.value);
-                    gene_ids.push_back(gene_interval.value);
+                for (int i = 1; i < gene_intervals.size(); i++) {
+                    stream << ',' << _row_names.at(gene_intervals.at(i).value);
+                    gene_ids.push_back(gene_intervals.at(i).value);
                 }
+
                 _user_genesets.push_back(gene_ids);
             }
             stream << std::endl;
@@ -410,6 +434,9 @@ void snpspec::drop_snp_intervals()
 
 void snpspec::report_missing_conditions()
 {
+    if (_condition_names.size() == 0) {
+        return;
+    }
     std::set<std::string> _col_names_set(_col_names.begin(), _col_names.end());
     std::set<std::string> _condition_difference;
 
@@ -476,11 +503,19 @@ void snpspec::bin_genesets(int slop)
             _geneset_bins[n_genes].push_back(indices);
         }
     }
+    std::cout << timestamp()
+              << " # On each iteration, we'll test "
+              << _user_snp_geneset_sizes.size()
+              << " gene sets from these bins:" << std::endl;
     // Report how many genesets exist of each size.
     for (auto item : _geneset_bins) {
         std::cout << timestamp()
-                  << " # Null gene sets with size " << item.first << ": "
-                  << item.second.size() << std::endl;
+                  << " # " << setw(3)
+                  << std::count(_user_snp_geneset_sizes.begin(),
+                                _user_snp_geneset_sizes.end(), item.first)
+                  << " gene sets with size " << setw(2) << item.first
+                  << " from a pool of size " << item.second.size()
+                  << std::endl;
     }
 }
 
@@ -508,11 +543,8 @@ MatrixXd snpspec::geneset_pvalues_binary(std::vector<size_t> & geneset)
     return m;
 }
 
-// One function. This way we progress one column at a time.
-//      Generate a snpset.
-//      Calculate a score for a single column.
-//      Compare the score to the reference.
-//      Return 1 or 0.
+// Returns a score for a column in the binary _expression matrix using the
+// genes in the given set of gene sets.
 double snpspec::score_binary(
     const size_t & col,
     const std::vector<std::vector<size_t> > & snpset
@@ -529,6 +561,27 @@ double snpspec::score_binary(
             }
         }
         score += -log10(gsl_ran_binomial_pdf(k, p, n));
+    }
+    return std::isfinite(score) ? score : 0.0;
+}
+
+// Returns a score for a column in the quantitative _expression matrix using
+// the genes in the given set of gene sets.
+double snpspec::score_quantitative(
+    const size_t & col,
+    const std::vector<std::vector<size_t> > & snpset
+)
+{
+    double score = 0.0;
+    for (auto geneset : snpset) {
+        double percentile = 1.0;
+        for (auto gene_id : geneset) {
+            percentile = std::min(percentile, _expression(gene_id, col));
+        }
+        if (percentile < 1.0) {
+            // Each gene set contributes to the score.
+            score += -log10(1 - pow(1 - percentile, geneset.size()));
+        }
     }
     return std::isfinite(score) ? score : 0.0;
 }

@@ -16,6 +16,7 @@
 #include <vector>
 #include <sys/stat.h>
 #include <thread>
+#include <iomanip>
 
 #include <gsl/gsl_randist.h>
 #include <Eigen/Dense>
@@ -26,11 +27,11 @@ using namespace Eigen;
 
 // Create a vector with the number of iterations to perform at each step,
 // where we double the number of interations at each step.
-static std::vector<int> iterations(int start, int max)
+static std::vector<long> iterations(long start, long max)
 {
-    std::vector<int> result;
+    std::vector<long> result;
     result.push_back(start);
-    int sum = start;
+    long sum = start;
     max = std::max(start, max);
     while (sum + start * 2 < max) {
         start *= 2;

@@ -20,8 +20,8 @@ class snpspec
             std::string out_folder,
             int slop,
             int processes,
-            int min_observations,
-            int permutations
+            long min_observations,
+            long max_iterations 
         );
 
         void read_names(
@@ -60,6 +60,11 @@ class snpspec
         MatrixXd geneset_pvalues_binary(std::vector<size_t> & geneset);
 
         double score_binary(
+            const size_t & col,
+            const std::vector<std::vector<size_t> > & snpset
+        );
+
+        double score_quantitative(
             const size_t & col,
             const std::vector<std::vector<size_t> > & snpset
         );

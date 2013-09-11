@@ -214,23 +214,48 @@ int main(int argc, const char * argv[])
     file_exists(gene_intervals_file);
     file_exists(snp_intervals_file);
     file_exists(null_snps_file);
-    file_exists(condition_file);
+    // Optional.
+    if (condition_file.length() > 0) {
+        file_exists(condition_file);
+    }
 
     // Create the output directory.
     mkpath(out_folder);
 
     int
     processes,
-    min_observations;
-
-    double
-    slop,
+    slop;
+    
+    long
+    min_observations,
     max_iterations;
 
-    opt.get("--slop")->getDouble(slop);
     opt.get("--processes")->getInt(processes);
-    opt.get("--min-observations")->getInt(min_observations);
-    opt.get("--max-iterations")->getDouble(max_iterations);
+    opt.get("--min-observations")->getLong(min_observations);
+
+    double
+    slop_d,
+    max_iterations_d;
+
+    // Read double so we can pass things like "1e6" and "250e3".
+    opt.get("--slop")->getDouble(slop_d);
+    opt.get("--max-iterations")->getDouble(max_iterations_d);
+
+    slop = slop_d;
+    max_iterations = max_iterations_d;
+
+    if (max_iterations <= 0) {
+        std::cerr << "ERROR: Invalid option: --max-iterations " 
+                  << max_iterations << std::endl
+                  << "This option cannot exceed 1e18.\n";
+        exit(EXIT_FAILURE);
+    }
+
+    if (min_observations >= max_iterations || min_observations <= 0) {
+        std::cerr << "ERROR: Invalid option: --min-observations " 
+                  << min_observations << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     // Export all of the options used.
     //opt.exportFile(out_folder + "/args.txt", true);
@@ -244,10 +269,10 @@ int main(int argc, const char * argv[])
         null_snps_file,
         condition_file,
         out_folder,
-        (long) slop,
+        slop,
         processes,
         min_observations,
-        (long) max_iterations
+        max_iterations
     );
 
     return 0;
