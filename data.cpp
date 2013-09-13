@@ -9,7 +9,7 @@
 #endif
 
 snpspec::snpspec(
-    std::string user_snps_file,
+    std::vector<std::string> user_snpset_files,
     std::string expression_file,
     std::string gene_intervals_file,
     std::string snp_intervals_file,
@@ -17,13 +17,21 @@ snpspec::snpspec(
     std::string condition_file,
     std::string out_folder,
     int slop,
-    int processes,
+    int threads,
+    long null_snpset_replicates,
     long min_observations,
     long max_iterations 
 )
 {
     std::cout
-            << "snpspec --snps " + user_snps_file + " \n"
+            << "snpspec --snps\n";
+
+    for (int i = 0; i < user_snpset_files.size() - 1; i++) {
+        std::cout << "              " << user_snpset_files.at(i) << ",\n";
+    }
+    std::cout << "              " << user_snpset_files.back() << "\n";
+
+    std::cout
             << "        --expression " + expression_file + "\n"
             << "        --gene-intervals " + gene_intervals_file + "\n"
             << "        --snp-intervals " + snp_intervals_file + "\n"
@@ -36,14 +44,14 @@ snpspec::snpspec(
     std::cout
             << "        --out " + out_folder + "\n"
             << "        --slop " << slop << "\n"
-            << "        --processes " << processes << "\n"
+            << "        --threads " << threads << "\n"
+            << "        --null-snpsets " << null_snpset_replicates << "\n"
             << "        --min-observations " << min_observations << "\n"
             << "        --max-iterations " << max_iterations << "\n"
             << std::endl;
 
     // Read names.
     std::cout << timestamp() << " # Reading files..." << std::endl;
-    read_names(user_snps_file, _user_snp_names);
     read_names(null_snps_file, _null_snp_names);
 
     // Optional.
@@ -56,7 +64,6 @@ snpspec::snpspec(
 
     // Read the gene expression GCT file.
     read_gct(expression_file, _row_names, _col_names, _expression);
-    std::cout << timestamp() << " # done." << std::endl;
 
     // Read the gene intervals but only keep the ones listed in the GCT.
     read_bed_interval_tree(
@@ -65,18 +72,14 @@ snpspec::snpspec(
         _gene_interval_tree
     );
 
-    // Report the genes overlapping the user's SNPs.
-    report_user_snp_genes(out_folder + "/snp_genes.txt", slop);
-
-    // Drop all SNP intervals except those in the null set.
-    drop_snp_intervals();
+    std::cout << timestamp() << " # done." << std::endl;
 
     // Report names from the conditions file that are absent from the
     // expression file.
     report_missing_conditions();
 
-    // The score function is used later with the generated null gene sets.
-    auto score_function = &snpspec::score_quantitative;
+    // Drop all SNP intervals except those in the null set.
+    //drop_snp_intervals();
 
     // Check if the matrix is binary by reading the first column.
     if (is_binary(_expression.col(0))) {
@@ -85,8 +88,6 @@ snpspec::snpspec(
         // Cache these values ahead of time.
         _binary_sums = _expression.colwise().sum();
         _binary_probs = _binary_sums / _expression.rows();
-        // We score binary matrices differently than quantitative matrices.
-        score_function = &snpspec::score_binary;
     } else {
         // TODO Condition the matrix on the specified columns.
 
@@ -102,83 +103,92 @@ snpspec::snpspec(
         }
     }
 
-    // Find a geneset for each SNP by querying the gene interval tree.
-    // Bin genesets by size. This will be used to generate SNP sets later.
-    bin_genesets(slop);
-
-    // Delete large variables that are no longer needed.
-    //delete[] & _snp_intervals;
-    //delete[] & _gene_interval_tree;
+    // 1. Find a geneset for each SNP by querying the gene interval tree.
+    // 2. Bin genesets by size. (This will be used to generate SNP sets.)
+    const int MAX_GENES = 10;
+    bin_genesets(slop, MAX_GENES);
 
     // Check for enrichment of each column in parallel.
-    // Ensure that a valid number of processes is used.
-    processes = clamp(processes, 1, cpu_count());
-    omp_set_num_threads(processes);
+    // Ensure that a valid number of threads is used.
+    threads = clamp(threads, 1, cpu_count());
+    omp_set_num_threads(threads);
 
-    std::cout << timestamp()
-              << " # Computing up to " << scientific << max_iterations
-              << " scores for each column in the expression with "
-              << fixed << processes << " threads...\n";
-    std::cout << std::flush;
+    for (auto f : user_snpset_files) {
+        read_names(f, _user_snp_names);
 
-    ofstream stream(out_folder + "/pvalues.txt");
-    stream << "name\tpvalue\tnulls_observed\tnulls_tested\n";
-    stream << std::flush;
+        std::string path = out_folder + "/" + timestamp("%F_%H-%M-%S");
+        mkpath(path);
 
-    for (int col = 0; col < _expression.cols(); col++) {
-        // Shared across all threads.
-        double user_score = (*this.*score_function)(col, _user_genesets);
+        // TODO Merge SNPs that share genes or have overlapping genes.
+//        for (int i = 0; i < _user_snp_names.size(); i++) {
+//            for (int j = i + 1; j < _user_snp_names.size(); j++) {
+//                
+//            }
+//        }
 
-        // The user's SNPs scored 0, so don't bother testing.
-        if (user_score <= 0) {
-            stream << _col_names.at(col) << "\t1.0\t0\t0\n";
-            continue;
-        }
+        // 1. Report the genes overlapping the user's SNPs.
+        // 2. Clear and fill _user_genesets and _user_geneset_sizes.
+        report_user_snp_genes(path + "/snp_genes.txt", slop);
 
-        long nulls_tested = 0;
-        long nulls_observed = 0;
-
-        for (auto count : iterations(100, max_iterations)) {
-            #pragma omp parallel
-            {
-                // Private to each thread.
-                long thread_observed = 0;
-
-                // Each thread will complete some fraction of this loop.
-                #pragma omp for
-                for (long i = 0; i < count; i++) {
-                    // Call the appropriate scoring function.
-                    if ((*this.*score_function)(col, generate_snpset())
-                            >= user_score) {
-                        thread_observed += 1;
-                    }
-                }
-
-                // Each thread counts its own results and we sum afterwards.
-                #pragma omp critical
-                {
-                    nulls_observed += thread_observed;
-                }
-            }
-            // Count how many total iterations we performed.
-            nulls_tested += count;
-
-            // A null SNP set scored higher than the user's SNP set enough
-            // times that we are confident in the column's p-value.
-            if (nulls_observed >= min_observations) {
-                break;
+        for (auto & size : _user_geneset_sizes) {
+            if (size > MAX_GENES) {
+                size = MAX_GENES;
             }
         }
 
-        double pvalue = (double) nulls_observed / (double) nulls_tested;
+        std::cout << timestamp()
+                  << " # On each iteration, we'll test "
+                  << _user_geneset_sizes.size()
+                  << " gene sets from these bins:" << std::endl;
+        // Report how many genesets exist of each size.
+        for (auto item : _geneset_bins) {
+            int n_items = std::count(
+                _user_geneset_sizes.begin(),
+                _user_geneset_sizes.end(),
+                item.first
+            );
+            if (n_items > 0) {
+                std::cout << timestamp()
+                          << " # " << setw(3) << n_items
+                          << " gene sets with size ";
+                if (item.first == MAX_GENES) {
+                    std::cout << ">= "<< setw(2) << item.first;
+                } else {
+                    std::cout << setw(2) << item.first;
+                }
+                std::cout
+                          << " from a pool of size " << item.second.size()
+                          << std::endl;
+            }
+        }
 
-        stream << _col_names.at(col) << '\t' << pvalue << '\t'
-               << nulls_observed << '\t' << nulls_tested << '\n';
+        std::cout << timestamp()
+                  << " # Computing up to " << scientific << max_iterations
+                  << " iterations for each column in the expression with "
+                  << fixed << threads << " threads...\n";
+        std::cout << std::flush;
+
+        // TODO This is an easter egg. Make an actual option.
+        if (min_observations == 27) {
+            calculate_pvalues(
+                path + "/pvalues_null.txt",
+                generate_snpset(),
+                min_observations,
+                max_iterations,
+                null_snpset_replicates
+            );
+        } else {
+            calculate_pvalues(
+                path + "/pvalues.txt",
+                _user_genesets,
+                min_observations,
+                max_iterations,
+                1
+            );
+        }
+
+        std::cout << timestamp() << " # done.\n\n";
     }
-
-    stream.close();
-
-    std::cout << timestamp() << " # done." << std::endl;
 }
 
 // Read an optionally gzipped text file and store the first column in a set of
@@ -190,6 +200,7 @@ void snpspec::read_names(std::string filename, std::set<std::string> & names)
         std::cerr << "ERROR: Cannot open " + filename << std::endl;
         exit(EXIT_FAILURE);
     }
+    names.clear();
     Row row;
     while (str >> row) {
         names.insert(row[0]);
@@ -264,7 +275,8 @@ void snpspec::read_bed_interval_tree(
     std::cout
             << timestamp()
             << " # Skipped loading " << skipped_genes
-            << " gene intervals because they are absent from the expression file."
+            << " gene intervals because they are absent from the"
+            << " expression file."
             << std::endl;
 
     // Loop through the chromosomes.
@@ -353,6 +365,12 @@ void snpspec::report_user_snp_genes(const std::string & filename, int slop)
     // Print the column names.
     stream << "chrom\tstart\tend\tname\tn_genes\tgenes\n";
 
+    // Clear out the old gene sets from previous runs.
+    _user_geneset_sizes.clear();
+    _user_genesets.clear();
+    // TODO This would be nice to report to the user...
+    //_user_genesets_absent.clear();
+
     // Print a row for each of the user's SNPs.
     for (auto snp : _user_snp_names) {
         // If snp's not found in the reference SNP intervals, print a blank.
@@ -392,7 +410,7 @@ void snpspec::report_user_snp_genes(const std::string & filename, int slop)
 
                 // Save the sizes of the user's SNP's gene set. These values
                 // are later used to generate random matched SNP sets.
-                _user_snp_geneset_sizes.push_back(gene_intervals.size());
+                _user_geneset_sizes.push_back(gene_intervals.size());
 
                 // Print the first gene, then prepend a comma to the next.
                 stream << _row_names.at(gene_intervals.at(0).value);
@@ -456,15 +474,9 @@ void snpspec::report_missing_conditions()
     }
 }
 
-void snpspec::bin_genesets(int slop)
+void snpspec::bin_genesets(int slop, int max_genes)
 {
-    const int MAX_GENES = 10;
-    for (auto & size : _user_snp_geneset_sizes) {
-        if (size > MAX_GENES) {
-            size = MAX_GENES;
-        }
-    }
-    auto geneset_sizes = make_set(_user_snp_geneset_sizes);
+    //auto geneset_sizes = make_set(_user_geneset_sizes);
     for (auto item : _snp_intervals) {
         // Find overlapping genes.
         std::vector<Interval<size_t> > genes;
@@ -487,14 +499,14 @@ void snpspec::bin_genesets(int slop)
         if (n_genes > 0) {
             // Put an upper limit on the number of genes in a set. So, if
             // a geneset actually has more genes, that's ok.
-            if (n_genes > MAX_GENES) {
-                n_genes = MAX_GENES;
+            if (n_genes > max_genes) {
+                n_genes = max_genes;
             }
             // We only care to maintain genesets that have the same number of
             // genes as the genesets that correspond to the user's SNPs.
-            if (geneset_sizes.count(n_genes) == 0) {
-                continue;
-            }
+            //if (geneset_sizes.count(n_genes) == 0) {
+            //    continue;
+            //}
             // Indices used for lookup in the expression.
             std::vector<size_t> indices;
             for (auto interval : genes) {
@@ -503,20 +515,6 @@ void snpspec::bin_genesets(int slop)
             _geneset_bins[n_genes].push_back(indices);
         }
     }
-    std::cout << timestamp()
-              << " # On each iteration, we'll test "
-              << _user_snp_geneset_sizes.size()
-              << " gene sets from these bins:" << std::endl;
-    // Report how many genesets exist of each size.
-    for (auto item : _geneset_bins) {
-        std::cout << timestamp()
-                  << " # " << setw(3)
-                  << std::count(_user_snp_geneset_sizes.begin(),
-                                _user_snp_geneset_sizes.end(), item.first)
-                  << " gene sets with size " << setw(2) << item.first
-                  << " from a pool of size " << item.second.size()
-                  << std::endl;
-    }
 }
 
 // Generate a vector of vectors. Each inner vector contains gene indices for
@@ -524,8 +522,7 @@ void snpspec::bin_genesets(int slop)
 std::vector<std::vector<size_t> > snpspec::generate_snpset()
 {
     std::vector<std::vector<size_t> > snpset;
-    for (int i = 0; i < _user_snp_geneset_sizes.size(); i++) {
-        int s = _user_snp_geneset_sizes.at(i);
+    for (auto s : _user_geneset_sizes) {
         int r = std::rand() % _geneset_bins[s].size();
         snpset.push_back(_geneset_bins[s].at(r));
     }
@@ -534,7 +531,7 @@ std::vector<std::vector<size_t> > snpspec::generate_snpset()
 
 MatrixXd snpspec::geneset_pvalues_binary(std::vector<size_t> & geneset)
 {
-    //MatrixXd m(_user_snp_geneset_sizes.size(), _expression.cols());
+    //MatrixXd m(_user_geneset_sizes.size(), _expression.cols());
     MatrixXd m(1, _expression.cols());
 
     // TODO Write the body of this function. Everything compiles and works!
@@ -584,4 +581,78 @@ double snpspec::score_quantitative(
         }
     }
     return std::isfinite(score) ? score : 0.0;
+}
+
+
+void snpspec::calculate_pvalues(
+    std::string filename,
+    std::vector<std::vector<size_t> > genesets,
+    long min_observations,
+    long max_iterations,
+    long replicates
+)
+{
+    // Set the appropriate scoring function.
+    auto score_function = &snpspec::score_quantitative;
+    if (_binary_expression) {
+        score_function = &snpspec::score_binary;
+    }
+
+    ofstream stream(filename);
+    stream << "name\tpvalue\tnulls_observed\tnulls_tested\n";
+    stream << std::flush;
+
+    for (int col = 0; col < _expression.cols(); col++) {
+        // Shared across all threads.
+        double user_score = (*this.*score_function)(col, genesets);
+
+        // The user's SNPs scored 0, so don't bother testing.
+        if (user_score <= 0) {
+            stream << _col_names.at(col) << "\t1.0\t0\t0\n";
+            continue;
+        }
+
+        long nulls_tested = 0;
+        long nulls_observed = 0;
+
+        for (auto count : iterations(100, max_iterations)) {
+            #pragma omp parallel
+            {
+                // Private to each thread.
+                long thread_observed = 0;
+
+                // Each thread will complete some fraction of this loop.
+                #pragma omp for
+                for (long i = 0; i < count; i++) {
+                    // Call the appropriate scoring function.
+                    if ((*this.*score_function)(col, generate_snpset())
+                            >= user_score) {
+                        thread_observed += 1;
+                    }
+                }
+
+                // Each thread counts its own results and we sum afterwards.
+                #pragma omp critical
+                {
+                    nulls_observed += thread_observed;
+                }
+            }
+            // Count how many total iterations we performed.
+            nulls_tested += count;
+
+            // A null SNP set scored higher than the user's SNP set enough
+            // times that we are confident in the column's p-value.
+            if (nulls_observed >= min_observations) {
+                break;
+            }
+        }
+
+        double pvalue = (double) nulls_observed / (double) nulls_tested;
+
+        stream << _col_names.at(col) << '\t' << pvalue << '\t'
+               << nulls_observed << '\t' << nulls_tested << '\n';
+        stream << std::flush;
+    }
+
+    stream.close();
 }
