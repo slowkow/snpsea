@@ -11,7 +11,7 @@ class snpspec
 {
     public:
         snpspec(
-            std::string user_snps_file,
+            std::vector<std::string> user_snpset_files,
             std::string expression_file,
             std::string gene_intervals_file,
             std::string snp_intervals_file,
@@ -19,7 +19,8 @@ class snpspec
             std::string condition_file,
             std::string out_folder,
             int slop,
-            int processes,
+            int threads,
+            long null_snpset_replicates,
             long min_observations,
             long max_iterations 
         );
@@ -53,7 +54,7 @@ class snpspec
 
         void report_missing_conditions();
 
-        void bin_genesets(int slop);
+        void bin_genesets(int slop, int max_genes);
 
         std::vector<std::vector<size_t> > generate_snpset();
 
@@ -67,6 +68,14 @@ class snpspec
         double score_quantitative(
             const size_t & col,
             const std::vector<std::vector<size_t> > & snpset
+        );
+
+        void calculate_pvalues(
+            std::string filename,
+            std::vector<std::vector<size_t> > genesets,
+            long min_observations,
+            long max_iterations,
+            long replicates
         );
 
     private:
@@ -104,7 +113,7 @@ class snpspec
         // Each of the user's SNPs corresponds to a geneset. These are the
         // sizes of the genesets.
         std::vector<size_t>
-        _user_snp_geneset_sizes;
+        _user_geneset_sizes;
 
         // Put genesets into bins, where the key to a bin is the size of the
         // contained genesets in that bin.
