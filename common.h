@@ -48,19 +48,23 @@ inline T clamp(T x, T a, T b)
     return x < a ? a : (x > b ? b : x);
 }
 
+// Return the number of processors. We won't use more threads than this.
 static int cpu_count()
 {
     return sysconf(_SC_NPROCESSORS_ONLN);
 }
 
 // Return a string with the current time like "Mon Jun 24 12:50:48 2013".
-static std::string timestamp()
-{
-    static time_t rawtime;
-    time(&rawtime);
-    std::string thetime = ctime(&rawtime);
-    thetime.erase(thetime.length() - 1, 1);
-    return thetime;
+static std::string timestamp(std::string fmt="%c") {
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer [80];
+
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  strftime(buffer, 80, fmt.c_str(), timeinfo);
+  return std::string(buffer);
 }
 
 struct genomic_interval {
@@ -210,6 +214,10 @@ static bool argsort_comp(const argsort_pair & left, const argsort_pair & right)
     // Descending.
     return left.second > right.second;
 }
+
+// TODO Create a function std::vector<size_t> order(std::vector<double> & x)
+// The function accepts a vector of doubles, creates a copy, sorts the copy,
+// and returns the indices of the original elements in sorted order.
 
 // Rank the items in a vector so the largest item is ranked number 1.
 // Duplicate values get their ranks averaged.
