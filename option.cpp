@@ -26,6 +26,7 @@ int main(int argc, const char * argv[])
         "        --out folder/\n"
         "        --slop 250e3\n"
         "        --processes 4\n"
+        "        --null-snpsets 100\n"
         "        --min-observations 25\n"
         "        --max-iterations 1e6\n\n";
     opt.footer =
@@ -55,8 +56,8 @@ int main(int argc, const char * argv[])
     opt.add(
         "", // Default.
         1, // Required?
-        1, // Number of args expected.
-        0, // Delimiter if expecting multiple args.
+        -1, // Number of args expected.
+        ',', // Delimiter if expecting multiple args.
         "List of SNPs to test.", // Help description.
         "--snps" // Flag token.
     );
@@ -143,6 +144,17 @@ int main(int argc, const char * argv[])
     );
 
     opt.add(
+        "100", // Default.
+        0, // Required?
+        1, // Number of args expected.
+        0, // Delimiter if expecting multiple args.
+        "Test this many null matched SNP sets, so you can see how the "
+        "distributions of null results for each expression column. "
+        "[default: 100]",
+        "--null-snpsets" // Flag token.
+    );
+
+    opt.add(
         "25", // Default.
         0, // Required?
         1, // Number of args expected.
@@ -191,8 +203,10 @@ int main(int argc, const char * argv[])
         return 1;
     }
 
+    std::vector<std::string>
+    user_snpset_files;
+
     std::string
-    user_snps_file,
     expression_file,
     gene_intervals_file,
     snp_intervals_file,
@@ -200,7 +214,7 @@ int main(int argc, const char * argv[])
     condition_file,
     out_folder;
 
-    opt.get("--snps")->getString(user_snps_file);
+    opt.get("--snps")->getStrings(user_snpset_files);
     opt.get("--expression")->getString(expression_file);
     opt.get("--gene-intervals")->getString(gene_intervals_file);
     opt.get("--snp-intervals")->getString(snp_intervals_file);
@@ -209,7 +223,9 @@ int main(int argc, const char * argv[])
     opt.get("--out")->getString(out_folder);
 
     // Ensure the files exist.
-    file_exists(user_snps_file);
+    for (auto f : user_snpset_files) {
+        file_exists(f);
+    }
     file_exists(expression_file);
     file_exists(gene_intervals_file);
     file_exists(snp_intervals_file);
@@ -227,10 +243,12 @@ int main(int argc, const char * argv[])
     slop;
     
     long
+    null_snpset_replicates,
     min_observations,
     max_iterations;
 
     opt.get("--processes")->getInt(processes);
+    opt.get("--null-snpsets")->getLong(null_snpset_replicates);
     opt.get("--min-observations")->getLong(min_observations);
 
     double
@@ -262,7 +280,7 @@ int main(int argc, const char * argv[])
 
     // Run the analysis.
     snpspec(
-        user_snps_file,
+        user_snpset_files,
         expression_file,
         gene_intervals_file,
         snp_intervals_file,
@@ -271,6 +289,7 @@ int main(int argc, const char * argv[])
         out_folder,
         slop,
         processes,
+        null_snpset_replicates,
         min_observations,
         max_iterations
     );
