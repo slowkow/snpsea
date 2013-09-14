@@ -23,6 +23,21 @@ snpspec::snpspec(
     long max_iterations 
 )
 {
+    std::vector<double> xs(20);
+    for (int i = 0; i < xs.size(); i++) {
+        xs[i] = double(std::rand() % xs.size());
+        std::cout << xs[i] << ' ';
+    }
+    std::cout << std::endl;
+    auto ys = rankdata(xs);
+    for (int i = 0; i < ys.size(); i++) {
+        std::cout << ys[i] << ' ';
+    }
+    std::cout << std::endl;
+    exit(EXIT_FAILURE);
+
+    //
+
     std::cout
             << "snpspec --snps\n";
 

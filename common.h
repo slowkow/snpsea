@@ -207,22 +207,54 @@ static void removeColumns(
     unsafeRemoveColumns(idxs, m);
 }
 
-typedef std::pair<int, double> argsort_pair;
+typedef std::pair<size_t, double> argsort_pair;
 
-static bool argsort_comp(const argsort_pair & left, const argsort_pair & right)
+static bool argsort_asc(const argsort_pair & left, const argsort_pair & right)
+{
+    // Ascending.
+    return left.second < right.second;
+}
+
+static bool argsort_desc(const argsort_pair & left, const argsort_pair & right)
 {
     // Descending.
     return left.second > right.second;
 }
 
-// TODO Create a function std::vector<size_t> order(std::vector<double> & x)
-// The function accepts a vector of doubles, creates a copy, sorts the copy,
-// and returns the indices of the original elements in sorted order.
+// Rank data in ascorting order with tie.method="mean" as in R.
+static std::vector<double> rankdata(std::vector<double> & x)
+{
+    std::vector<double> indices(x.size());
+    // Return an empty vector if we received one.
+    if (x.size() == 0) {
+        return indices;
+    }
+    // Create a vector of pairs (index, value).
+    std::vector<argsort_pair> data(x.size());
+    for (int i = 0; i < x.size(); i++) {
+        data[i].first = i;
+        data[i].second = x[i];
+    }
+    std::sort(data.begin(), data.end(), argsort_asc);
+   
+    auto val = [&] (int i) { return data[i].second; };
+    auto ord = [&] (int i) { return data[i].first; };
 
-// Rank the items in a vector so the largest item is ranked number 1.
-// Duplicate values get their ranks averaged.
+    for (int i = 0, reps; i < data.size(); i += reps) {
+        reps = 1;
+        while (i + reps < data.size() && val(i) == val(i + reps)) {
+            ++reps;
+        }
+        for (int j = 0; j < reps; j++) {
+            indices[ord(i + j)] = (2.0 * i + reps - 1.0) / 2.0 + 1.0;
+        }
+    }
+    return indices;
+}
+
+// This function is the same, but works on some Eigen objects.
 template<typename Derived>
-VectorXd rankdata(const MatrixBase<Derived> &x)
+VectorXd rankdata(const MatrixBase<Derived> & x)
 {
     VectorXd indices(x.size());
     // Return an empty vector if we received one.
@@ -233,36 +265,20 @@ VectorXd rankdata(const MatrixBase<Derived> &x)
     std::vector<argsort_pair> data(x.size());
     for (int i = 0; i < x.size(); i++) {
         data[i].first = i;
-        data[i].second = x(i);
+        data[i].second = x[i];
     }
-    std::sort(data.begin(), data.end(), argsort_comp);
-    // The biggest value gets ranked as number 1.
-    double rank = 1;
-    indices(data[0].first) = rank;
-    // Average tied values.
-    int run_start = 0;
-    int run_end = 0;
-    for (int i = 1; i < data.size(); i++) {
-        if (data[i].second < data[i - 1].second) {
-            // We just ended a run of equal values, so go back and average
-            // them.
-            if (run_end > run_start) {
-                for (int j = run_start; j <= run_end; j++) {
-                    indices(data[j].first) = (rank + rank + 1.0) / 2.0;
-                }
-            }
-            rank++;
-            run_start++;
-            run_end = run_start;
-        } else {
-            run_end++;
+    std::sort(data.begin(), data.end(), argsort_desc);
+
+    auto val = [&] (int i) { return data[i].second; };
+    auto ord = [&] (int i) { return data[i].first; };
+
+    for (int i = 0, reps; i < data.size(); i += reps) {
+        reps = 1;
+        while (i + reps < data.size() && val(i) == val(i + reps)) {
+            ++reps;
         }
-        indices(data[i].first) = rank;
-    }
-    // Catch the case when run_end is the last value.
-    if (run_end > run_start) {
-        for (int j = run_start; j <= run_end; j++) {
-            indices(data[j].first) = (rank + rank + 1.0) / 2.0;
+        for (int j = 0; j < reps; j++) {
+            indices[ord(i + j)] = (2.0 * i + reps - 1.0) / 2.0 + 1.0;
         }
     }
     return indices;
