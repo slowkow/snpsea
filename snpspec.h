@@ -18,11 +18,11 @@ class snpspec
             std::string null_snps_file,
             std::string condition_file,
             std::string out_folder,
-            int slop,
+            ulong slop,
             int threads,
-            long null_snpset_replicates,
-            long min_observations,
-            long max_iterations 
+            ulong null_snpset_replicates,
+            ulong min_observations,
+            ulong max_iterations 
         );
 
         void read_names(
@@ -45,34 +45,34 @@ class snpspec
         void read_bed_interval_tree(
             std::string filename,
             const std::vector<std::string> & whitelist,
-            std::map<std::string, IntervalTree<size_t> > & tree
+            std::map<std::string, IntervalTree<ulong> > & tree
         );
 
-        void report_user_snp_genes(const std::string & filename, int slop);
+        void report_user_snp_genes(const std::string & filename, ulong slop);
 
         void drop_snp_intervals();
 
         void report_missing_conditions();
 
-        void bin_genesets(int slop, int max_genes);
+        void bin_genesets(ulong slop, ulong max_genes);
 
-        std::vector<std::vector<size_t> > generate_snpset();
+        std::vector<std::vector<ulong> > generate_snpset();
 
-        MatrixXd geneset_pvalues_binary(std::vector<size_t> & geneset);
+        MatrixXd geneset_pvalues_binary(std::vector<ulong> & geneset);
 
         double score_binary(
-            const size_t & col,
-            const std::vector<std::vector<size_t> > & snpset
+            const ulong & col,
+            const std::vector<std::vector<ulong> > & snpset
         );
 
         double score_quantitative(
-            const size_t & col,
-            const std::vector<std::vector<size_t> > & snpset
+            const ulong & col,
+            const std::vector<std::vector<ulong> > & snpset
         );
 
         void calculate_pvalues(
             std::string filename,
-            std::vector<std::vector<size_t> > genesets,
+            std::vector<std::vector<ulong> > genesets,
             long min_observations,
             long max_iterations,
             long replicates
@@ -88,7 +88,7 @@ class snpspec
         std::map<std::string, genomic_interval>
         _snp_intervals;
 
-        std::map<std::string, IntervalTree<size_t> >
+        std::map<std::string, IntervalTree<ulong> >
         _gene_interval_tree;
 
         MatrixXd
@@ -107,17 +107,17 @@ class snpspec
         _col_names;
 
         // The genesets for the user's SNPs.
-        std::vector<std::vector<size_t> >
+        std::vector<std::vector<ulong> >
         _user_genesets;
 
         // Each of the user's SNPs corresponds to a geneset. These are the
         // sizes of the genesets.
-        std::vector<size_t>
+        std::vector<ulong>
         _user_geneset_sizes;
 
         // Put genesets into bins, where the key to a bin is the size of the
         // contained genesets in that bin.
-        std::map<int, std::vector<std::vector<size_t> > >
+        std::map<ulong, std::vector<std::vector<ulong> > >
         _geneset_bins;
 
         // Is the first column of the expression filled with 1s and 0s?

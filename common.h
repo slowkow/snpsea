@@ -25,6 +25,10 @@
 
 using namespace Eigen;
 
+#ifndef ulong
+typedef unsigned long ulong;
+#endif
+
 // Create a vector with the number of iterations to perform at each step,
 // where we double the number of interations at each step.
 static std::vector<long> iterations(long start, long max)
@@ -69,8 +73,8 @@ static std::string timestamp(std::string fmt="%c") {
 
 struct genomic_interval {
     std::string chrom;
-    int start;
-    int end;
+    ulong start;
+    ulong end;
 };
 
 // This class is useful for reading tab-delimited tables of text.
@@ -222,37 +226,6 @@ static bool argsort_desc(const argsort_pair & left, const argsort_pair & right)
 }
 
 // Rank data in ascorting order with tie.method="mean" as in R.
-static std::vector<double> rankdata(std::vector<double> & x)
-{
-    std::vector<double> indices(x.size());
-    // Return an empty vector if we received one.
-    if (x.size() == 0) {
-        return indices;
-    }
-    // Create a vector of pairs (index, value).
-    std::vector<argsort_pair> data(x.size());
-    for (int i = 0; i < x.size(); i++) {
-        data[i].first = i;
-        data[i].second = x[i];
-    }
-    std::sort(data.begin(), data.end(), argsort_asc);
-   
-    auto val = [&] (int i) { return data[i].second; };
-    auto ord = [&] (int i) { return data[i].first; };
-
-    for (int i = 0, reps; i < data.size(); i += reps) {
-        reps = 1;
-        while (i + reps < data.size() && val(i) == val(i + reps)) {
-            ++reps;
-        }
-        for (int j = 0; j < reps; j++) {
-            indices[ord(i + j)] = (2.0 * i + reps - 1.0) / 2.0 + 1.0;
-        }
-    }
-    return indices;
-}
-
-// This function is the same, but works on some Eigen objects.
 template<typename Derived>
 VectorXd rankdata(const MatrixBase<Derived> & x)
 {
@@ -299,6 +272,40 @@ template <typename T>
 static std::set<T> make_set(std::vector<T> vec)
 {
     return std::set<T> (vec.begin(), vec.end());
+}
+
+static std::string strip_extension(const std::string & filename) {
+    size_t lastdot = filename.find_last_of(".");
+    if (lastdot == std::string::npos) return filename;
+    return filename.substr(0, lastdot); 
+}
+
+static std::vector<ulong> SampleWithoutReplacement(
+    ulong populationSize,
+    ulong sampleSize
+)
+{
+    static std::default_random_engine generator;
+    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
+
+    ulong t = 0; // total input records dealt with
+    ulong m = 0; // number of items selected so far
+    double u;
+
+    std::vector<ulong> samples;
+
+    while (m < sampleSize) {
+        u = distribution(generator);
+
+        if ((populationSize - t) * u < sampleSize - m) {
+            samples.push_back(t);
+            m++;
+        }
+
+        t++;
+    }
+
+    return samples;
 }
 
 #endif

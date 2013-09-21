@@ -25,7 +25,7 @@ int main(int argc, const char * argv[])
         "        --condition file.txt\n"
         "        --out folder/\n"
         "        --slop 250e3\n"
-        "        --processes 4\n"
+        "        --threads 2\n"
         "        --null-snpsets 100\n"
         "        --min-observations 25\n"
         "        --max-iterations 1e6\n\n";
@@ -139,8 +139,8 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Number of processes to use. [default: 1]",
-        "--processes" // Flag token.
+        "Number of threads to use. [default: 1]",
+        "--threads" // Flag token.
     );
 
     opt.add(
@@ -239,7 +239,7 @@ int main(int argc, const char * argv[])
     mkpath(out_folder);
 
     int
-    processes,
+    threads,
     slop;
     
     long
@@ -247,7 +247,7 @@ int main(int argc, const char * argv[])
     min_observations,
     max_iterations;
 
-    opt.get("--processes")->getInt(processes);
+    opt.get("--threads")->getInt(threads);
     opt.get("--null-snpsets")->getLong(null_snpset_replicates);
     opt.get("--min-observations")->getLong(min_observations);
 
@@ -288,7 +288,7 @@ int main(int argc, const char * argv[])
         condition_file,
         out_folder,
         slop,
-        processes,
+        threads,
         null_snpset_replicates,
         min_observations,
         max_iterations
