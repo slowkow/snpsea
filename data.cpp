@@ -23,32 +23,22 @@ snpspec::snpspec(
     ulong max_iterations 
 )
 {
-    std::cout
-            << "snpspec --snps " << user_snpset_files.at(0);
-
-    for (int i = 1; i < user_snpset_files.size(); i++) {
-        std::cout << ",\n               " << user_snpset_files.at(i);
-    }
-    std::cout << "\n";
-
-    std::cout
-            << "        --expression " + expression_file + "\n"
-            << "        --gene-intervals " + gene_intervals_file + "\n"
-            << "        --snp-intervals " + snp_intervals_file + "\n"
-            << "        --null-snps " + null_snps_file + "\n";
-
-    if (condition_file.length() > 0) {
-        std::cout << "        --condition " + condition_file + "\n";
-    }
-
-    std::cout
-            << "        --out " + out_folder + "\n"
-            << "        --slop " << slop << "\n"
-            << "        --threads " << threads << "\n"
-            << "        --null-snpsets " << null_snpset_replicates << "\n"
-            << "        --min-observations " << min_observations << "\n"
-            << "        --max-iterations " << max_iterations << "\n"
-            << std::endl;
+    write_args(
+        user_snpset_files,
+        expression_file,
+        gene_intervals_file,
+        snp_intervals_file,
+        null_snps_file,
+        condition_file,
+        out_folder,
+        slop,
+        threads,
+        null_snpset_replicates,
+        min_observations,
+        max_iterations,
+        -1,
+        std::cout
+    );
 
     // Read names.
     std::cout << timestamp() << " # Reading files..." << std::endl;
@@ -88,6 +78,7 @@ snpspec::snpspec(
         // Cache these values ahead of time.
         _binary_sums = _expression.colwise().sum();
         _binary_probs = _binary_sums / _expression.rows();
+        _binary_expression = true;
     } else {
         // TODO Condition the matrix on the specified columns.
 
@@ -113,26 +104,56 @@ snpspec::snpspec(
     threads = clamp(threads, 1, cpu_count());
     omp_set_num_threads(threads);
 
+    int which_snpset_file = -1;
     for (auto f : user_snpset_files) {
+        which_snpset_file++;
+
         read_names(f, _user_snp_names);
 
         // Construct a path based on the the user's SNPs file and the
         // expression file.
-        std::string path = out_folder + "/" +
-            strip_extension(basename(f.c_str())) + "_" +
-            strip_extension(basename(expression_file.c_str()));
+        std::string path = output_folder(out_folder, f, expression_file);
         mkpath(path);
 
-        // TODO Merge SNPs that share genes or have overlapping genes.
-//        for (int i = 0; i < _user_snp_names.size(); i++) {
-//            for (int j = i + 1; j < _user_snp_names.size(); j++) {
-//                
-//            }
-//        }
+        std::ofstream args (path + "/args.txt");
+        write_args(
+            user_snpset_files,
+            expression_file,
+            gene_intervals_file,
+            snp_intervals_file,
+            null_snps_file,
+            condition_file,
+            out_folder,
+            slop,
+            threads,
+            null_snpset_replicates,
+            min_observations,
+            max_iterations,
+            which_snpset_file,
+            args
+        );
+        args.close();
 
-        // 1. Report the genes overlapping the user's SNPs.
-        // 2. Clear and fill _user_genesets and _user_geneset_sizes.
-        report_user_snp_genes(path + "/snp_genes.txt", slop);
+        // Overlap the user's SNP intervals with the gene intervals. Record
+        // the SNPs that are not present in the --snp-intervals file. Also
+        // record the gene sets and their sizes.
+        overlap_genes(
+            _user_snp_names,
+            _user_absent_snp_names,
+            _user_genesets,
+            _user_geneset_sizes,
+            slop
+        );
+
+        // Merge SNPs that share genes or have overlapping genes.
+        merge_user_snps(
+            _user_snp_names,
+            _user_genesets,
+            _user_geneset_sizes
+        );
+
+        // Report the genes overlapping the user's SNPs.
+        report_user_snp_genes(path + "/snp_genes.txt");
 
         for (auto & size : _user_geneset_sizes) {
             if (size > MAX_GENES) {
@@ -179,10 +200,10 @@ snpspec::snpspec(
                       << " null SNP sets...\n"
                       << std::flush;
 
-            // Calculate some p-values for matched null SNP sets.
+            // Calculate some p-values for matched null gene sets.
             calculate_pvalues(
-                path + "/pvalues_null.txt",
-                generate_snpset(),
+                path + "/null_pvalues.txt",
+                generate_genesets(),
                 min_observations,
                 max_iterations,
                 null_snpset_replicates
@@ -195,10 +216,15 @@ snpspec::snpspec(
         std::cout << timestamp() << " # Computing user's SNP set...\n"
                   << std::flush;
 
+        std::vector<std::vector<ulong> > genesets;
+        for (auto item : _user_genesets) {
+            genesets.push_back(item.second);
+        }
+
         // Calculate p-values for the user's SNP set.
         calculate_pvalues(
             path + "/pvalues.txt",
-            _user_genesets,
+            genesets,
             min_observations,
             max_iterations,
             1L
@@ -206,6 +232,58 @@ snpspec::snpspec(
 
         std::cout << timestamp() << " # done.\n\n";
     }
+}
+
+void snpspec::write_args(
+    std::vector<std::string> user_snpset_files,
+    std::string expression_file,
+    std::string gene_intervals_file,
+    std::string snp_intervals_file,
+    std::string null_snps_file,
+    std::string condition_file,
+    std::string out_folder,
+    ulong slop,
+    int threads,
+    ulong null_snpset_replicates,
+    ulong min_observations,
+    ulong max_iterations,
+    int which_snpset_file,
+    std::ostream & stream
+)
+{
+    assert(which_snpset_file < (int) user_snpset_files.size());
+
+    if (which_snpset_file < 0) {
+        stream << "snpspec --snps " << user_snpset_files.at(0); 
+        for (int i = 1; i < user_snpset_files.size(); i++) {
+            stream << ",\n               " << user_snpset_files.at(i);
+        }
+        stream << "\n";
+    } else {
+        stream
+                << "snpspec --snps "
+                << user_snpset_files.at(which_snpset_file)
+                << "\n";
+    }
+
+    stream 
+            << "        --expression " + expression_file + "\n"
+            << "        --gene-intervals " + gene_intervals_file + "\n"
+            << "        --snp-intervals " + snp_intervals_file + "\n"
+            << "        --null-snps " + null_snps_file + "\n";
+
+    if (condition_file.length() > 0) {
+        stream << "        --condition " + condition_file + "\n";
+    }
+
+    stream
+            << "        --out " + out_folder + "\n"
+            << "        --slop " << slop << "\n"
+            << "        --threads " << threads << "\n"
+            << "        --null-snpsets " << null_snpset_replicates << "\n"
+            << "        --min-observations " << min_observations << "\n"
+            << "        --max-iterations " << max_iterations << "\n"
+            << std::endl;
 }
 
 // Read an optionally gzipped text file and store the first column in a set of
@@ -250,7 +328,7 @@ void snpspec::read_bed_intervals(
 // an interval tree. (Actually, one interval tree for each chromosome.)
 void snpspec::read_bed_interval_tree(
     std::string filename,
-    const std::vector<std::string> & whitelist,
+    const std::vector<std::string> & row_names,
     std::map<std::string, IntervalTree<ulong> > & tree
 )
 {
@@ -261,26 +339,27 @@ void snpspec::read_bed_interval_tree(
     }
 
     // Convert the vector to a set.
-    std::set<std::string> whiteset(whitelist.begin(), whitelist.end());
+    std::set<std::string> row_names_set(row_names.begin(), row_names.end());
 
     // Map a chromosome name to a vector of intervals.
     typedef Interval<ulong> interval;
     std::map<std::string, vector<interval> > intervals;
 
-    // Rather than storing the Entrez IDs in the tree, we'll store the indices
-    // of the Entrez IDs in the provided vector.
+    // Rather than storing the gene identifiers in the tree, we'll store the
+    // indices of the gene identifiers in the provided vector.
     std::map<std::string, ulong> index;
-    for (int i = 0; i < whitelist.size(); i++) {
-        index[whitelist.at(i)] = i;
+    for (ulong i = 0; i < row_names.size(); i++) {
+        index[row_names.at(i)] = i;
     }
 
     ulong skipped_genes = 0;
     BEDRow row;
     while (stream >> row) {
         // Add an interval to the vector for the corresponding chromosome.
-        // (The value stored in the tree is a pair of integers, and it is
-        // later retrieved with the findOverlapping() method.)
-        if (whiteset.count(row.name) != 0) {
+        // (The value stored in the tree is a ulong that is an index to the
+        // row names of the --expression matrix. It is later retrieved
+        // with the findOverlapping() method.)
+        if (row_names_set.count(row.name) != 0) {
             intervals[row.i.chrom].push_back(
                 interval(row.i.start, row.i.end, index[row.name])
             );
@@ -373,29 +452,30 @@ void snpspec::read_gct(
     }
 }
 
-void snpspec::report_user_snp_genes(const std::string & filename, ulong slop)
+void snpspec::overlap_genes(
+    std::set<std::string> & snp_names,
+    std::set<std::string> & absent_snp_names,
+    std::map<std::string, std::vector<ulong> > & genesets,
+    std::vector<ulong> & geneset_sizes,
+    ulong slop
+)
 {
-    ofstream stream(filename);
-
-    std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";
-
-    // Print the column names.
-    stream << "chrom\tstart\tend\tname\tn_genes\tgenes\n";
+    std::cout << timestamp()
+              << " # Overlapping SNP intervals with gene intervals...\n";
 
     // Clear out the old gene sets from previous runs.
-    _user_geneset_sizes.clear();
-    _user_genesets.clear();
-    // TODO This would be nice to report to the user...
-    //_user_genesets_absent.clear();
+    absent_snp_names.clear();
+    geneset_sizes.clear();
+    genesets.clear();
 
-    // Print a row for each of the user's SNPs.
-    for (auto snp : _user_snp_names) {
-        // If snp's not found in the reference SNP intervals, print a blank.
+    for (auto snp : snp_names) {
         if (_snp_intervals.count(snp) == 0) {
-            stream << "NA\tNA\tNA\t" << snp << "\tNA\tNA\n";
+            std::cout << timestamp() << " # "
+                      << snp << " not found in --snp-intervals file.\n";
+            absent_snp_names.insert(snp);
         } else {
             // Find the SNP's interval and find overlapping genes.
-            genomic_interval snp_interval = _snp_intervals[snp];
+            auto snp_interval = _snp_intervals[snp];
             std::vector<Interval<ulong> > gene_intervals;
 
             _gene_interval_tree[snp_interval.chrom].findOverlapping(
@@ -404,7 +484,7 @@ void snpspec::report_user_snp_genes(const std::string & filename, ulong slop)
                 gene_intervals
             );
 
-            // Adjust with slop and try again if we found no genes.
+            // If we found no genes, adjust with slop and try again.
             if (gene_intervals.size() == 0) {
                 _gene_interval_tree[snp_interval.chrom].findOverlapping(
                     std::max(1UL, snp_interval.start - slop),
@@ -413,6 +493,63 @@ void snpspec::report_user_snp_genes(const std::string & filename, ulong slop)
                 );
             }
 
+            if (gene_intervals.size() > 0) {
+                // Indices for lookup in the expression matrix.
+                std::vector<ulong> gene_ids;
+
+                // Save the sizes of the gene sets. These values are later
+                // used to generate random matched SNP sets.
+                geneset_sizes.push_back(gene_intervals.size());
+
+                for (int i = 0; i < gene_intervals.size(); i++) {
+                    gene_ids.push_back(gene_intervals.at(i).value);
+                }
+
+                genesets[snp] = gene_ids;
+            }
+        }
+    }
+    std::cout << timestamp() << " # done.\n";
+}
+
+void snpspec::merge_user_snps(
+    std::set<std::string> & snp_names,
+    std::map<std::string, std::vector<ulong> > & genesets,
+    std::vector<ulong> & geneset_sizes
+)
+{
+    // Brute force, check all pairs of SNPs.
+    // If the SNPs reside on the same chromosome and have shared or
+    // overlapping genes, then merge them.
+    for (int i = 0; i < snp_names.size(); i++) {
+        for (int j = i + 1; j < snp_names.size(); j++) {
+            
+        }
+    }
+}
+
+void snpspec::report_user_snp_genes(const std::string & filename)
+{
+    std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";
+
+    ofstream stream(filename);
+
+    // Print the column names.
+    stream << "chrom\tstart\tend\tname\tn_genes\tgenes\n";
+
+    // Print a row for each of the user's SNPs.
+    for (auto snp : _user_snp_names) {
+        // TODO If this is a merged SNP, then print the interval that captures
+        // the entire merged locus.
+        // Check for presence of ':' and then split on it.
+        // Loop through the snps and choose the min start, max end.
+
+        // If snp is not found in --snp-intervals then print NA.
+        if (_user_genesets.count(snp) == 0) {
+            stream << "NA\tNA\tNA\t" << snp << "\tNA\tNA\n";
+        } else {
+            auto snp_interval = _snp_intervals[snp];
+            auto geneset = _user_genesets[snp];
             // Print a BED line with two extra columns:
             //      - number of overlapping genes
             //      - Entrez IDs
@@ -420,26 +557,15 @@ void snpspec::report_user_snp_genes(const std::string & filename, ulong slop)
                    << snp_interval.start << '\t'
                    << snp_interval.end << '\t'
                    << snp << '\t'
-                   << gene_intervals.size() << '\t';
+                   << geneset.size() << '\t';
 
-            if (gene_intervals.size() > 0) {
-                // Indices for lookup in the expression matrix.
-                std::vector<ulong> gene_ids;
-
-                // Save the sizes of the user's SNP's gene set. These values
-                // are later used to generate random matched SNP sets.
-                _user_geneset_sizes.push_back(gene_intervals.size());
-
+            if (geneset.size() > 0) {
                 // Print the first gene, then prepend a comma to the next.
-                stream << _row_names.at(gene_intervals.at(0).value);
-                gene_ids.push_back(gene_intervals.at(0).value);
+                stream << _row_names.at(geneset.at(0));
 
-                for (int i = 1; i < gene_intervals.size(); i++) {
-                    stream << ',' << _row_names.at(gene_intervals.at(i).value);
-                    gene_ids.push_back(gene_intervals.at(i).value);
+                for (int i = 1; i < geneset.size(); i++) {
+                    stream << ',' << _row_names.at(geneset.at(i));
                 }
-
-                _user_genesets.push_back(gene_ids);
             }
             stream << std::endl;
         }
@@ -531,12 +657,12 @@ void snpspec::bin_genesets(ulong slop, ulong max_genes)
 
 // Generate a vector of vectors. Each inner vector contains gene indices for
 // looking up rows in the expression.
-std::vector<std::vector<ulong> > snpspec::generate_snpset()
+std::vector<std::vector<ulong> > snpspec::generate_genesets()
 {
     // Standard Mersenne Twister random number generator.
     static std::mt19937 generator;
 
-    std::vector<std::vector<ulong> > snpset;
+    std::vector<std::vector<ulong> > genesets;
     for (auto s : _user_geneset_sizes) {
         // Uniform integer distribution.
         std::uniform_int_distribution<ulong>
@@ -544,22 +670,22 @@ std::vector<std::vector<ulong> > snpspec::generate_snpset()
 
         auto r = distribution(generator);
 
-        snpset.push_back(_geneset_bins[s].at(r));
+        genesets.push_back(_geneset_bins[s].at(r));
     }
-    return snpset;
+    return genesets;
 }
 
 // Returns a score for a column in the binary _expression matrix using the
 // genes in the given set of gene sets.
 double snpspec::score_binary(
     const ulong & col,
-    const std::vector<std::vector<ulong> > & snpset
+    const std::vector<std::vector<ulong> > & genesets
 )
 {
     ulong n = _binary_sums(col);
     double p = _binary_probs(col);
     double score = 0.0;
-    for (auto geneset : snpset) {
+    for (auto geneset : genesets) {
         int k = 0;
         for (auto gene_id : geneset) {
             if (_expression(gene_id, col) > 0) {
@@ -575,11 +701,11 @@ double snpspec::score_binary(
 // the genes in the given set of gene sets.
 double snpspec::score_quantitative(
     const ulong & col,
-    const std::vector<std::vector<ulong> > & snpset
+    const std::vector<std::vector<ulong> > & genesets
 )
 {
     double score = 0.0;
-    for (auto geneset : snpset) {
+    for (auto geneset : genesets) {
         double percentile = 1.0;
         for (auto gene_id : geneset) {
             percentile = std::min(percentile, _expression(gene_id, col));
@@ -644,7 +770,7 @@ void snpspec::calculate_pvalues(
                     #pragma omp for
                     for (long i = 0; i < count; i++) {
                         // Call the appropriate scoring function.
-                        if ((*this.*score_function)(col, generate_snpset())
+                        if ((*this.*score_function)(col, generate_genesets())
                                 >= user_score) {
                             thread_observed += 1;
                         }
@@ -675,9 +801,10 @@ void snpspec::calculate_pvalues(
             if (replicates > 1) {
                 stream << '\t' << replicate;
             } else {
-                if ((col + 1) %  10 == 0) std::cout << '.';
-                if ((col + 1) %  50 == 0) std::cout << ' ';
-                if ((col + 1) % 100 == 0) std::cout << col + 1 << '\n';
+                std::cout << '.';
+                if ((col + 1) %  5 == 0) std::cout << ' ';
+                if ((col + 1) % 10 == 0) std::cout << ' ';
+                if ((col + 1) % 50 == 0) std::cout << col + 1 << '\n';
                 std::cout << std::flush;
             }
 
@@ -686,9 +813,10 @@ void snpspec::calculate_pvalues(
 
         // Display a period for each replicate.
         if (replicates > 1) {
-            if ((replicate + 1) %  10 == 0) std::cout << '.';
-            if ((replicate + 1) %  50 == 0) std::cout << ' ';
-            if ((replicate + 1) % 100 == 0) std::cout << replicate + 1 << '\n';
+            std::cout << '.';
+            if ((replicate + 1) %  5 == 0) std::cout << ' ';
+            if ((replicate + 1) % 10 == 0) std::cout << ' ';
+            if ((replicate + 1) % 50 == 0) std::cout << replicate + 1 << '\n';
             std::cout << std::flush;
         }
     }
@@ -697,3 +825,4 @@ void snpspec::calculate_pvalues(
 
     stream.close();
 }
+
