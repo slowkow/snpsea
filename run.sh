@@ -68,30 +68,26 @@ go2013=$base/data/GO/allHumanGO.gct.gz
 allsnps=$(echo ${snpfiles[*]} | tr ' ' ',')
 
 #for snps in ${snpfiles[*]} # ${Random[*]}
-for snps in $allsnps
+snps="$base/data/Hu2011/RA_SNPs.txt,$base/data/JessicavanSetten/61_SNPs.txt"
+
+for expression in $go2013 # $immgen2012 $novartis $go2013
 do
-    #echo $snps
-    for expression in $immgen2010 $immgen2012 $novartis $go2013
-    do
-        echo $(date) $expression
+    out=out/batch/$(date +%Y%m%d) # /${a}_$(basename $expression .gct.gz)
+    mkdir -p $out
 
-        #a=$(echo $snps | perl -ne 'm`([^/]+)/([^/]+)\.txt` && print "$1_$2"')
-        out=out/batch/$(date +%Y%m%d) # /${a}_$(basename $expression .gct.gz)
-        mkdir -p $out
-
-        #    --condition $condition
-        options=(
-            --snps $snps
-            --expression $expression
-            --gene-intervals $base/reference/genes.hg19.ucsc.bed
-            --null-snps $base/reference/TGP.pruned.txt.gz
-            --out $out
-            --snp-intervals $base/reference/TGP.bed.gz
-            --slop 250e3
-            --processes 6
-            --min-observations 50
-            --max-iterations 1e6
-        )
-        time ./snpspec ${options[*]} | tee $out/log.txt
-    done
+    #    --condition $condition
+    options=(
+        --snps $snps
+        --expression $expression
+        --gene-intervals $base/reference/genes.hg19.ucsc.bed
+        --null-snps $base/reference/TGP.pruned.txt.gz
+        --out $out
+        --snp-intervals $base/reference/TGP.bed.gz
+        --slop 250e3
+        --threads 6
+        --null-snpsets 0
+        --min-observations 50
+        --max-iterations 1e6
+    )
+    ./snpspec ${options[*]} | tee -a $out/log.txt
 done
