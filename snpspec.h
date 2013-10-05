@@ -117,9 +117,11 @@ class snpspec
         _snp_names,
         _condition_names;
 
+        // Name of a SNP => genomic interval.
         std::map<std::string, genomic_interval>
         _snp_intervals;
 
+        // Name of a chromosome => interval tree.
         std::map<std::string, IntervalTree<ulong> >
         _gene_interval_tree;
 
