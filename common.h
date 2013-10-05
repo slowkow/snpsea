@@ -77,6 +77,37 @@ struct genomic_interval {
     ulong end;
 };
 
+// Compose multiple streams to print to more than one place at once.
+class ComposeStream : public std::ostream
+{
+    struct ComposeBuffer : public std::streambuf {
+        void addBuffer(std::streambuf* buf) {
+            bufs.push_back(buf);
+        }
+        virtual int overflow(int c) {
+            std::for_each(
+                bufs.begin(),
+                bufs.end(),
+                std::bind2nd(std::mem_fun(&std::streambuf::sputc), c)
+            );
+            return c;
+        }
+
+        private:
+            std::vector<std::streambuf*>    bufs;
+
+    };  
+    ComposeBuffer myBuffer;
+    public: 
+        ComposeStream() : std::ostream(NULL) {
+            std::ostream::rdbuf(&myBuffer);
+        }   
+        void linkStream(std::ostream& out) {
+            out.flush();
+            myBuffer.addBuffer(out.rdbuf());
+        }
+};
+
 // This class is useful for reading tab-delimited tables of text.
 class Row
 {
@@ -280,6 +311,18 @@ static std::string strip_extension(const std::string & filename) {
     return filename.substr(0, lastdot); 
 }
 
+static std::string output_folder(
+    std::string base,
+    std::string user_snpset_file,
+    std::string expression_file
+) {
+    std::string path = base + "/" +
+        strip_extension(basename(user_snpset_file.c_str())) + "_" +
+        strip_extension(basename(expression_file.c_str()));
+    return path;
+}
+
+/*
 static std::vector<ulong> SampleWithoutReplacement(
     ulong populationSize,
     ulong sampleSize
@@ -307,5 +350,6 @@ static std::vector<ulong> SampleWithoutReplacement(
 
     return samples;
 }
+*/
 
 #endif
