@@ -568,35 +568,9 @@ void snpspec::merge_user_snps(
         new_geneset_sizes.push_back(genes_a.size());
     }
 
-    std::cout << "### BEFORE\n";
-    for (auto snp : snp_names) {
-        std::cout << snp << "\n";
-        if (genesets.count(snp) > 0) {
-            std::cout << "\t";
-            for (auto gene : genesets[snp]) {
-                std::cout << gene << ", ";
-            }
-            std::cout << "\n";
-        }
-        std::cout << std::flush;
-    }
-
     snp_names = new_snp_names;
     genesets = new_genesets;
     geneset_sizes = new_geneset_sizes;
-
-    std::cout << "### AFTER\n";
-    for (auto snp : snp_names) {
-        std::cout << snp << "\n";
-        if (genesets.count(snp) > 0) {
-            std::cout << "\t";
-            for (auto gene : genesets[snp]) {
-                std::cout << gene << ", ";
-            }
-            std::cout << "\n";
-        }
-        std::cout << std::flush;
-    }
 }
 
 void snpspec::report_user_snp_genes(const std::string & filename)
