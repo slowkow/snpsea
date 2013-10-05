@@ -25,6 +25,23 @@ class snpspec
             ulong max_iterations 
         );
 
+        void write_args(
+            std::vector<std::string> user_snpset_files,
+            std::string expression_file,
+            std::string gene_intervals_file,
+            std::string snp_intervals_file,
+            std::string null_snps_file,
+            std::string condition_file,
+            std::string out_folder,
+            ulong slop,
+            int threads,
+            ulong null_snpset_replicates,
+            ulong min_observations,
+            ulong max_iterations,
+            int which_snpset_file,
+            std::ostream & stream
+        );
+
         void read_names(
             std::string filename,
             std::set<std::string> & names
@@ -44,11 +61,25 @@ class snpspec
 
         void read_bed_interval_tree(
             std::string filename,
-            const std::vector<std::string> & whitelist,
+            const std::vector<std::string> & row_names,
             std::map<std::string, IntervalTree<ulong> > & tree
         );
 
-        void report_user_snp_genes(const std::string & filename, ulong slop);
+        void overlap_genes(
+            std::set<std::string> & snp_names,
+            std::set<std::string> & absent_snp_names,
+            std::map<std::string, std::vector<ulong> > & genesets,
+            std::vector<ulong> & geneset_sizes,
+            ulong slop
+        );
+
+        void merge_user_snps(
+            std::set<std::string> & snp_names,
+            std::map<std::string, std::vector<ulong> > & genesets,
+            std::vector<ulong> & geneset_sizes
+        );
+
+        void report_user_snp_genes(const std::string & filename);
 
         void drop_snp_intervals();
 
@@ -56,18 +87,18 @@ class snpspec
 
         void bin_genesets(ulong slop, ulong max_genes);
 
-        std::vector<std::vector<ulong> > generate_snpset();
+        std::vector<std::vector<ulong> > generate_genesets();
 
         MatrixXd geneset_pvalues_binary(std::vector<ulong> & geneset);
 
         double score_binary(
             const ulong & col,
-            const std::vector<std::vector<ulong> > & snpset
+            const std::vector<std::vector<ulong> > & genesets
         );
 
         double score_quantitative(
             const ulong & col,
-            const std::vector<std::vector<ulong> > & snpset
+            const std::vector<std::vector<ulong> > & genesets
         );
 
         void calculate_pvalues(
@@ -81,6 +112,7 @@ class snpspec
     private:
         std::set<std::string>
         _user_snp_names,
+        _user_absent_snp_names,
         _null_snp_names,
         _snp_names,
         _condition_names;
@@ -107,7 +139,7 @@ class snpspec
         _col_names;
 
         // The genesets for the user's SNPs.
-        std::vector<std::vector<ulong> >
+        std::map<std::string, std::vector<ulong> >
         _user_genesets;
 
         // Each of the user's SNPs corresponds to a geneset. These are the
