@@ -322,6 +322,17 @@ static std::string output_folder(
     return path;
 }
 
+static std::vector<std::string> split_string(std::string s, char delim)
+{
+    std::stringstream stream (s);
+    std::string item;
+    std::vector<std::string> result;
+    while (std::getline(stream, item, delim)) {
+        result.push_back(item);
+    }
+    return result;
+}
+
 /*
 static std::vector<ulong> SampleWithoutReplacement(
     ulong populationSize,

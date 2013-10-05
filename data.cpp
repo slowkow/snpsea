@@ -188,7 +188,8 @@ snpspec::snpspec(
         }
 
         std::cout << timestamp()
-                  << " # Computing up to " << scientific << max_iterations
+                  << " # Computing up to "
+                  << scientific << double(max_iterations)
                   << " iterations for each column in the expression with "
                   << fixed << threads << " threads...\n"
                   << std::flush;
@@ -321,7 +322,7 @@ void snpspec::read_bed_intervals(
         intervals[row.name] = row.i;
     }
     std::cout << timestamp() << " # \"" + filename + "\" has "
-              << intervals.size() << " items." << std::endl;
+              << intervals.size() << " intervals." << std::endl;
 }
 
 // Read an optionally gzipped BED file and store the genomic intervals in
@@ -355,11 +356,12 @@ void snpspec::read_bed_interval_tree(
     ulong skipped_genes = 0;
     BEDRow row;
     while (stream >> row) {
-        // Add an interval to the vector for the corresponding chromosome.
-        // (The value stored in the tree is a ulong that is an index to the
-        // row names of the --expression matrix. It is later retrieved
-        // with the findOverlapping() method.)
+        // Skip the gene if it is not present in the expression matrix.
         if (row_names_set.count(row.name) != 0) {
+            // Add an interval to the vector for the corresponding chromosome.
+            // (The value stored in the tree is a ulong that is an index to
+            // the row names of the --expression matrix. It is later retrieved
+            // with the findOverlapping() method.)
             intervals[row.i.chrom].push_back(
                 interval(row.i.start, row.i.end, index[row.name])
             );
@@ -518,13 +520,82 @@ void snpspec::merge_user_snps(
     std::vector<ulong> & geneset_sizes
 )
 {
+    // Create new variables and fill them after merging SNPs.
+    std::set<std::string> new_snp_names;
+    std::map<std::string, std::vector<ulong> > new_genesets;
+    std::vector<ulong> new_geneset_sizes;
+
+    std::set<std::string> merged_snps;
+
     // Brute force, check all pairs of SNPs.
-    // If the SNPs reside on the same chromosome and have shared or
+    // If two SNPs reside on the same chromosome and have shared or
     // overlapping genes, then merge them.
-    for (int i = 0; i < snp_names.size(); i++) {
-        for (int j = i + 1; j < snp_names.size(); j++) {
+    for (auto a : snp_names) {
+        if (genesets.count(a) == 0) continue;
+        if (merged_snps.count(a) > 0) continue;
+
+        std::vector<ulong> genes_a = genesets[a];
+        std::sort(genes_a.begin(), genes_a.end());
+
+        std::string merged_snp = a;
+
+        for (auto b : snp_names) {
+            if (a.compare(b) == 0) continue;
+            if (genesets.count(b) == 0) continue;
+            if (merged_snps.count(b) > 0) continue;
+
+            std::vector<ulong> genes_b = genesets[b];
+            std::sort(genes_b.begin(), genes_b.end());
             
+            // Find the union of the two gene sets.
+            std::vector<ulong> genes_ab (genes_a.size() + genes_b.size());
+            std::vector<ulong>::iterator it;
+            it = std::set_union(genes_a.begin(), genes_a.end(),
+                                genes_b.begin(), genes_b.end(),
+                                genes_ab.begin());
+            genes_ab.resize(it - genes_ab.begin());
+
+            if (genes_ab.size() < genes_a.size() + genes_b.size()) {
+                merged_snp += ":" + b;
+                genes_a = genes_ab;
+                merged_snps.insert(a);
+                merged_snps.insert(b);
+            }
         }
+
+        new_snp_names.insert(merged_snp);
+        new_genesets[merged_snp] = genes_a;
+        new_geneset_sizes.push_back(genes_a.size());
+    }
+
+    std::cout << "### BEFORE\n";
+    for (auto snp : snp_names) {
+        std::cout << snp << "\n";
+        if (genesets.count(snp) > 0) {
+            std::cout << "\t";
+            for (auto gene : genesets[snp]) {
+                std::cout << gene << ", ";
+            }
+            std::cout << "\n";
+        }
+        std::cout << std::flush;
+    }
+
+    snp_names = new_snp_names;
+    genesets = new_genesets;
+    geneset_sizes = new_geneset_sizes;
+
+    std::cout << "### AFTER\n";
+    for (auto snp : snp_names) {
+        std::cout << snp << "\n";
+        if (genesets.count(snp) > 0) {
+            std::cout << "\t";
+            for (auto gene : genesets[snp]) {
+                std::cout << gene << ", ";
+            }
+            std::cout << "\n";
+        }
+        std::cout << std::flush;
     }
 }
 
@@ -539,23 +610,42 @@ void snpspec::report_user_snp_genes(const std::string & filename)
 
     // Print a row for each of the user's SNPs.
     for (auto snp : _user_snp_names) {
-        // TODO If this is a merged SNP, then print the interval that captures
-        // the entire merged locus.
-        // Check for presence of ':' and then split on it.
-        // Loop through the snps and choose the min start, max end.
-
-        // If snp is not found in --snp-intervals then print NA.
+        // If the snp is not found in --snp-intervals then print NA.
         if (_user_genesets.count(snp) == 0) {
             stream << "NA\tNA\tNA\t" << snp << "\tNA\tNA\n";
         } else {
-            auto snp_interval = _snp_intervals[snp];
+            std::string chrom;
+            ulong start = 0;
+            ulong end = 0;
+
+            // This is a merged SNP, so print the interval that captures the
+            // entire merged locus.
+            if (snp.find(":") != std::string::npos) {
+                // Loop through the snps and choose the min start, max end.
+                for (auto merged_snp : split_string(snp, ':')) {
+                    auto snp_interval = _snp_intervals[merged_snp];
+                    chrom = snp_interval.chrom;
+                    if (start == 0 || snp_interval.start < start) {
+                        start = snp_interval.start;
+                    }
+                    if (end == 0 || snp_interval.end > end) {
+                        end = snp_interval.end;
+                    }
+                }
+            } else {
+                auto snp_interval = _snp_intervals[snp];
+                chrom = snp_interval.chrom;
+                start = snp_interval.start;
+                end = snp_interval.end;
+            }
+
             auto geneset = _user_genesets[snp];
             // Print a BED line with two extra columns:
             //      - number of overlapping genes
             //      - Entrez IDs
-            stream << snp_interval.chrom << '\t'
-                   << snp_interval.start << '\t'
-                   << snp_interval.end << '\t'
+            stream << chrom << '\t'
+                   << start << '\t'
+                   << end << '\t'
                    << snp << '\t'
                    << geneset.size() << '\t';
 
