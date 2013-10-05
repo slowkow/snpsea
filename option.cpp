@@ -144,13 +144,13 @@ int main(int argc, const char * argv[])
     );
 
     opt.add(
-        "100", // Default.
+        "10", // Default.
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "Test this many null matched SNP sets, so you can see how the "
         "distributions of null results for each expression column. "
-        "[default: 100]",
+        "[default: 10]",
         "--null-snpsets" // Flag token.
     );
 
