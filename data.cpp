@@ -657,9 +657,14 @@ void snpspec::merge_user_snps(
     genesets = new_genesets;
     geneset_sizes = new_geneset_sizes;
 
-    std::cout << timestamp() << " # done. Merged "
-              << count_snps << " SNPs into "
-              << count_loci << " loci.\n" << std::flush;
+    if (count_snps > 0) {
+        std::cout << timestamp() << " # done. Merged "
+                  << count_snps << " SNPs into "
+                  << count_loci << " loci.\n" << std::flush;
+    } else {
+        std::cout << timestamp() << " # done. No SNPs were merged.\n"
+                  << std::flush;
+    }
 }
 
 void snpspec::report_user_snp_genes(const std::string & filename)
