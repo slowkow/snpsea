@@ -93,6 +93,11 @@ class snpspec
 
         void report_missing_conditions();
 
+        void condition(
+            MatrixXd & matrix,
+            std::set<std::string> & col_names
+        );
+
         void bin_genesets(ulong slop, ulong max_genes);
 
         std::vector<std::vector<ulong> > matched_genesets();

@@ -85,6 +85,7 @@ snpspec::snpspec(
         _binary_expression = true;
     } else {
         // TODO Condition the matrix on the specified columns.
+        condition(_expression, _condition_names);
 
         // Normalize the matrix.
         _expression.colwise().normalize();
@@ -780,6 +781,53 @@ void snpspec::report_missing_conditions()
     }
 }
 
+// Condition the expression matrix on the specified column names. Each column
+// is projected onto a condition column, and its projection is substracted.
+void snpspec::condition(
+    MatrixXd & matrix,
+    std::set<std::string> & col_names
+)
+{
+    //std::cout << "column names: ";
+    //for (auto col_name : _col_names) std::cout << col_name << " ";
+    //std::cout << std::endl;
+
+    std::vector<std::string>
+    new_col_names (_col_names.begin(), _col_names.end());
+
+    std::vector<size_t> idxs;
+   
+    for (const auto & col_name : col_names) {
+        auto it = std::find(_col_names.begin(), _col_names.end(), col_name);
+        size_t col_index = it - _col_names.begin();
+
+        idxs.push_back(col_index);
+
+        const auto b = VectorXd(matrix.col(col_index));
+
+        for (size_t col = 0; col < _col_names.size(); col++) {
+            auto a = matrix.col(col);
+            auto projection = a.dot(b) / b.dot(b) * b;
+            
+            //std::cout << "\na:\n" << a << "\n";
+            //std::cout << "b:\n" << b << "\n";
+            //std::cout << "projection:\n" << projection << "\n";
+
+            matrix.col(col) -= projection;
+        }
+    }
+    // Remove the condition columns from the matrix.
+    removeColumns(idxs, matrix);
+    // Remove the condition column names. Sort descending, then delete them.
+    std::sort(idxs.begin(), idxs.end(), std::greater<int>());
+    for (auto idx : idxs) {
+        new_col_names.erase(new_col_names.begin() + idx);
+    }
+    //std::cout << "new column names: ";
+    //for (auto col_name : new_col_names) std::cout << col_name << " ";
+    //std::cout << std::endl;
+}
+
 void snpspec::bin_genesets(ulong slop, ulong max_genes)
 {
     for (const auto & item : _snp_intervals) {
@@ -1044,4 +1092,3 @@ void snpspec::calculate_pvalues(
 
     stream.close();
 }
-
