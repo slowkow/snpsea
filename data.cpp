@@ -733,6 +733,10 @@ void snpspec::report_user_snp_genes(const std::string & filename)
     std::cout << timestamp() << " # done." << std::endl;
 }
 
+/*
+// Drop intervals for SNPs absent from "--null-snps". This is desirable to
+// reduce memory usage, but must be done after the user's SNPs are assigned
+// intervals.
 void snpspec::drop_snp_intervals()
 {
     ulong dropped_snps = 0;
@@ -750,6 +754,7 @@ void snpspec::drop_snp_intervals()
               << " SNP intervals that are absent from the provided null set."
               << std::endl;
 }
+*/
 
 void snpspec::report_missing_conditions()
 {
