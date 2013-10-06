@@ -893,18 +893,33 @@ void snpspec::report_pvalues(
     for (const auto & kv : genesets) {
         // Iterate through each column.
         for (int col = 0; col < _col_names.size(); col++) {
-            double percentile = 1.0;
-            std::string min_gene;
-            for (auto gene_id : kv.second) {
-                if (_expression(gene_id, col) < percentile) {
-                    percentile = _expression(gene_id, col);
-                    min_gene = _row_names[gene_id];
-                }
-            }
             double pvalue = 1;
-            if (percentile < 1.0) {
-                // Each gene set contributes to the score.
-                pvalue = 1 - pow(1 - percentile, kv.second.size());
+            std::string min_gene;
+            if (_binary_expression) {
+                ulong n = _binary_sums(col);
+                double p = _binary_probs(col);
+                int k = 0;
+                for (auto gene_id : kv.second) {
+                    if (_expression(gene_id, col) > 0) {
+                        k++;
+                    }
+                }
+                pvalue = gsl_ran_binomial_pdf(k, p, n);
+                // The p-value does not depend on a single gene for binary
+                // matrices, but instead for the whole gene set.
+                min_gene = "NULL";
+            } else {
+                double percentile = 1.0;
+                for (auto gene_id : kv.second) {
+                    if (_expression(gene_id, col) < percentile) {
+                        percentile = _expression(gene_id, col);
+                        min_gene = _row_names[gene_id];
+                    }
+                }
+                if (percentile < 1.0) {
+                    // Each gene set contributes to the score.
+                    pvalue = 1 - pow(1 - percentile, kv.second.size());
+                }
             }
             // The SNP's name, column name, best rank gene, p-value.
             stream << kv.first << "\t"
