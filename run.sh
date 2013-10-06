@@ -68,11 +68,13 @@ go2013=$base/data/GO/allHumanGO.gct.gz
 allsnps=$(echo ${snpfiles[*]} | tr ' ' ',')
 
 #for snps in ${snpfiles[*]} # ${Random[*]}
-snps="$base/data/Hu2011/RA_SNPs.txt,$base/data/JessicavanSetten/61_SNPs.txt"
+#snps="$base/data/Hu2011/RA_SNPs.txt,$base/data/JessicavanSetten/61_SNPs.txt"
+#snps="$base/data/JessicavanSetten/61_SNPs.txt"
+snps="random20,random30"
 
-for expression in $go2013 # $immgen2012 $novartis $go2013
+for expression in $immgen2012 $novartis $go2013
 do
-    out=out/batch/$(date +%Y%m%d) # /${a}_$(basename $expression .gct.gz)
+    out=out/$(date +%Y%m%d) # /${a}_$(basename $expression .gct.gz)
     mkdir -p $out
 
     #    --condition $condition
@@ -85,7 +87,7 @@ do
         --snp-intervals $base/reference/TGP.bed.gz
         --slop 250e3
         --threads 6
-        --null-snpsets 0
+        --null-snpsets 10000
         --min-observations 50
         --max-iterations 1e6
     )

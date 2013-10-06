@@ -199,11 +199,15 @@ static bool mkpath(const std::string & path)
 inline bool file_exists(const std::string & path)
 {
     struct stat buffer;
-    if (stat(path.c_str(), &buffer) != 0) {
+    return stat(path.c_str(), &buffer) == 0;
+}
+
+static void assert_file_exists(const std::string & path)
+{
+    if (!file_exists(path)) {
         std::cerr << "ERROR: File does not exist: " + path << std::endl;
         exit(EXIT_FAILURE);
     }
-    return true;
 }
 
 // These two functions are inspired by:
@@ -299,11 +303,20 @@ static bool is_binary(const MatrixBase<Derived> & x)
     return true;
 }
 
+// Convert a vector to a set.
 template <typename T>
 static std::set<T> make_set(std::vector<T> vec)
 {
     return std::set<T> (vec.begin(), vec.end());
 }
+
+// Convert a set to a vector.
+template <typename T>
+static std::vector<T> make_vector(std::set<T> set)
+{
+    return std::vector<T> (set.begin(), set.end());
+}
+
 
 static std::string strip_extension(const std::string & filename) {
     size_t lastdot = filename.find_last_of(".");

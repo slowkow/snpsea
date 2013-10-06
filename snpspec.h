@@ -47,6 +47,14 @@ class snpspec
             std::set<std::string> & names
         );
 
+        std::vector<ulong> snp_geneset(std::string, ulong slop);
+
+        void random_snps(
+            std::string filename,
+            std::set<std::string> & names,
+            ulong slop
+        );
+
         void read_bed_intervals(
             std::string filename,
             std::map<std::string, genomic_interval> & intervals
@@ -87,7 +95,9 @@ class snpspec
 
         void bin_genesets(ulong slop, ulong max_genes);
 
-        std::vector<std::vector<ulong> > generate_genesets();
+        std::vector<std::vector<ulong> > matched_genesets();
+
+        std::vector<std::vector<ulong> > random_genesets(int n, ulong slop);
 
         MatrixXd geneset_pvalues_binary(std::vector<ulong> & geneset);
 
@@ -99,6 +109,11 @@ class snpspec
         double score_quantitative(
             const ulong & col,
             const std::vector<std::vector<ulong> > & genesets
+        );
+
+        void report_pvalues(
+            const std::string filename,
+            const std::map<std::string, std::vector<ulong> > genesets
         );
 
         void calculate_pvalues(

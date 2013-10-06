@@ -17,7 +17,7 @@ int main(int argc, const char * argv[])
     opt.overview = "SNPspec\n=======";
     opt.syntax = "snpspec [OPTIONS]";
     opt.example =
-        "snpspec --snps file.txt \n"
+        "snpspec --snps file.txt   or   --snps random20 \n"
         "        --expression file.gct.gz\n"
         "        --null-snps file.txt\n"
         "        --snp-intervals file.bed.gz\n"
@@ -58,7 +58,8 @@ int main(int argc, const char * argv[])
         1, // Required?
         -1, // Number of args expected.
         ',', // Delimiter if expecting multiple args.
-        "List of SNPs to test.", // Help description.
+        "List of SNPs to test. Use 'randomN' with an integer N"
+        " for a random SNP list of that length.", // Help description.
         "--snps" // Flag token.
     );
 
@@ -224,15 +225,28 @@ int main(int argc, const char * argv[])
 
     // Ensure the files exist.
     for (auto f : user_snpset_files) {
-        file_exists(f);
+        // The argument may be a filename or a string like "random20".
+        if (f.find("random") == 0) {
+            // Grab the number, ensure it is above zero.
+            std::string::size_type sz;
+            int n = std::stoi(f.substr(6), &sz);
+            if (n <= 0) {
+                std::cerr << "ERROR: --snps " + f << std::endl;
+                std::cerr << "Must be like: random20" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+        } else {
+            // Otherwise, ensure the file exists.
+            assert_file_exists(f);
+        }
     }
-    file_exists(expression_file);
-    file_exists(gene_intervals_file);
-    file_exists(snp_intervals_file);
-    file_exists(null_snps_file);
+    assert_file_exists(expression_file);
+    assert_file_exists(gene_intervals_file);
+    assert_file_exists(snp_intervals_file);
+    assert_file_exists(null_snps_file);
     // Optional.
     if (condition_file.length() > 0) {
-        file_exists(condition_file);
+        assert_file_exists(condition_file);
     }
 
     // Create the output directory.
