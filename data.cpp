@@ -778,7 +778,12 @@ void snpspec::report_missing_conditions()
 void snpspec::bin_genesets(ulong slop, ulong max_genes)
 {
     for (const auto & item : _snp_intervals) {
-        std::vector<ulong> geneset = snp_geneset(item.first, slop);
+        std::string snp = item.first;
+
+        // We want to sample from the list in "--null-snps".
+        if (_null_snp_names.count(snp) == 0) continue;
+
+        std::vector<ulong> geneset = snp_geneset(snp, slop);
 
         // Put the geneset in a bin that corresponds to its size.
         ulong n_genes = geneset.size();
