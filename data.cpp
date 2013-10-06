@@ -1,5 +1,6 @@
 #include "snpspec.h"
 
+// Include functions for controlling threads through OpenMP.
 #ifdef _OPENMP
 #include <omp.h>
 #else
@@ -8,6 +9,7 @@
 #define omp_set_num_threads() 0
 #endif
 
+// Main function that executes all of the intermediate steps.
 snpspec::snpspec(
     std::vector<std::string> user_snpset_files,
     std::string expression_file,
@@ -40,11 +42,13 @@ snpspec::snpspec(
         std::cout
     );
 
-    // Read names.
+    // Read names of null SNPs that will be sampled to create random or
+    // matched SNP sets.
     std::cout << timestamp() << " # Reading files..." << std::endl;
     read_names(null_snps_file, _null_snp_names);
 
-    // Optional.
+    // Optional condition file to condition on specified columns in the
+    // expression matrix.
     if (condition_file.length() > 0) {
         read_names(condition_file, _condition_names);
     }
@@ -52,7 +56,7 @@ snpspec::snpspec(
     // Read SNP names and intervals.
     read_bed_intervals(snp_intervals_file, _snp_intervals);
 
-    // Read the gene expression GCT file.
+    // Read the gene expression matrix.
     read_gct(expression_file, _row_names, _col_names, _expression);
 
     // Read the gene intervals but only keep the ones listed in the GCT.
@@ -286,30 +290,25 @@ void snpspec::write_args(
         }
         stream << "\n";
     } else {
-        stream
-                << "snpspec --snps "
-                << user_snpset_files.at(which_snpset_file)
-                << "\n";
+        stream << "snpspec --snps "
+               << user_snpset_files.at(which_snpset_file) << "\n";
     }
 
-    stream 
-            << "        --expression " + expression_file + "\n"
-            << "        --gene-intervals " + gene_intervals_file + "\n"
-            << "        --snp-intervals " + snp_intervals_file + "\n"
-            << "        --null-snps " + null_snps_file + "\n";
+    stream << "        --expression " << expression_file << "\n"
+           << "        --gene-intervals " << gene_intervals_file << "\n"
+           << "        --snp-intervals " << snp_intervals_file << "\n"
+           << "        --null-snps " << null_snps_file << "\n";
 
     if (condition_file.length() > 0) {
-        stream << "        --condition " + condition_file + "\n";
+        stream << "        --condition " << condition_file << "\n";
     }
 
-    stream
-            << "        --out " + out_folder + "\n"
-            << "        --slop " << slop << "\n"
-            << "        --threads " << threads << "\n"
-            << "        --null-snpsets " << null_snpset_replicates << "\n"
-            << "        --min-observations " << min_observations << "\n"
-            << "        --max-iterations " << max_iterations << "\n"
-            << std::endl;
+    stream << "        --out " << out_folder << "\n"
+           << "        --slop " << slop << "\n"
+           << "        --threads " << threads << "\n"
+           << "        --null-snpsets " << null_snpset_replicates << "\n"
+           << "        --min-observations " << min_observations << "\n"
+           << "        --max-iterations " << max_iterations << "\n";
 }
 
 // Read an optionally gzipped text file and store the first column in a set of
@@ -330,6 +329,8 @@ void snpspec::read_names(std::string filename, std::set<std::string> & names)
               << names.size() << " items." << std::endl;
 }
 
+// Given the name of a SNP, look up its interval and find overlapping genes.
+// Report the offsets to lookup the genes in the expression matrix.
 std::vector<ulong> snpspec::snp_geneset(std::string snp, ulong slop)
 {
     auto snp_interval = _snp_intervals[snp];
@@ -466,12 +467,11 @@ void snpspec::read_bed_interval_tree(
         }
     }
 
-    std::cout
-            << timestamp()
-            << " # Skipped loading " << skipped_genes
-            << " gene intervals because they are absent from the"
-            << " expression file."
-            << std::endl;
+    std::cout << timestamp()
+              << " # Skipped loading " << skipped_genes
+              << " gene intervals because they are absent from the"
+              << " expression file."
+              << std::endl;
 
     // Loop through the chromosomes.
     for (auto item : intervals) {
@@ -730,7 +730,7 @@ void snpspec::report_user_snp_genes(const std::string & filename)
     }
     stream.close();
 
-    std::cout << timestamp() << " # done.\n";
+    std::cout << timestamp() << " # done." << std::endl;
 }
 
 void snpspec::drop_snp_intervals()
@@ -745,11 +745,10 @@ void snpspec::drop_snp_intervals()
             ++it;
         }
     }
-    std::cout
-            << timestamp()
-            << " # Dropped " << dropped_snps
-            << " SNP intervals that do not belong to the provided null set."
-            << std::endl;
+    std::cout << timestamp()
+              << " # Dropped " << dropped_snps
+              << " SNP intervals that are absent from the provided null set."
+              << std::endl;
 }
 
 void snpspec::report_missing_conditions()
