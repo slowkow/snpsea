@@ -247,10 +247,6 @@ snpspec::snpspec(
                       << std::flush;
         }
 
-        std::cout << timestamp()
-                  << " # Computing one column at a time ...\n"
-                  << std::flush;
-
         std::vector<std::vector<ulong> > genesets;
         for (auto item : _user_genesets) {
             genesets.push_back(item.second);
@@ -258,6 +254,10 @@ snpspec::snpspec(
 
         // Report p-values and gene identifiers for each SNP-column pair.
         report_pvalues(path + "/snp_pvalues.txt", _user_genesets);
+
+        std::cout << timestamp()
+                  << " # Computing one column at a time ...\n"
+                  << std::flush;
 
         // Calculate p-values for the user's SNP set.
         calculate_pvalues(
@@ -953,6 +953,8 @@ void snpspec::report_pvalues(
     const std::map<std::string, std::vector<ulong> > genesets
 )
 {
+    std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";
+
     // Open the file.
     ofstream stream (filename);
     // Write the header.
@@ -997,6 +999,8 @@ void snpspec::report_pvalues(
         }
     }
     stream.close();
+
+    std::cout << timestamp() << " # done." << std::endl;
 }
 
 void snpspec::calculate_pvalues(
@@ -1076,6 +1080,8 @@ void snpspec::calculate_pvalues(
         }
 
         double pvalue = double(nulls_observed) / double(nulls_tested);
+
+        if (nulls_observed == 0) pvalue = 1.0 / double(nulls_tested);
 
         stream << _col_names.at(col) << '\t' << pvalue << '\t'
                << nulls_observed << '\t' << nulls_tested;
