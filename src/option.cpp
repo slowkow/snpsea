@@ -14,7 +14,9 @@ int main(int argc, const char * argv[])
 {
     ezOptionParser opt;
 
-    opt.overview = "SNPspec\n=======";
+    opt.overview = "==============================\n"
+                   "=         SNPspec v0.1       =\n"
+                   "==============================\n";
     opt.syntax = "snpspec [OPTIONS]";
     opt.example =
         "snpspec --snps file.txt   or   --snps random20 \n"
@@ -30,7 +32,8 @@ int main(int argc, const char * argv[])
         "        --min-observations 25\n"
         "        --max-iterations 1e6\n\n";
     opt.footer =
-        "SNPspec 0.1  Copyright (C) 2013 Kamil Slowikowski\n"
+        "SNPspec v0.1  Copyright (C) 2013 Kamil Slowikowski"
+        " <slowikow@broadinstitute.org>\n"
         "This program is free and without warranty.\n";
 
     opt.add(
@@ -279,7 +282,7 @@ int main(int argc, const char * argv[])
     if (max_iterations <= 0) {
         std::cerr << "ERROR: Invalid option: --max-iterations " 
                   << max_iterations << std::endl
-                  << "This option cannot exceed 1e18.\n";
+                  << "This option may not exceed 1e18.\n";
         exit(EXIT_FAILURE);
     }
 
