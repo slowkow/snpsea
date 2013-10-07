@@ -1,0 +1,3 @@
+[submodule "intervaltree"]
+	path = intervaltree
+	url = git://github.com/slowkow/intervaltree.git
