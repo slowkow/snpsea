@@ -25,6 +25,8 @@ snpspec::snpspec(
     ulong max_iterations 
 )
 {
+    std::cout << "# SNPspec v0.1\n\n";
+
     write_args(
         user_snpset_files,
         expression_file,
@@ -44,7 +46,7 @@ snpspec::snpspec(
 
     // Read names of null SNPs that will be sampled to create random or
     // matched SNP sets.
-    std::cout << timestamp() << " # Reading files..." << std::endl;
+    std::cout << timestamp() << " # Reading files ..." << std::endl;
     read_names(null_snps_file, _null_snp_names);
 
     // Optional condition file to condition on specified columns in the
@@ -202,15 +204,15 @@ snpspec::snpspec(
         std::cout << timestamp()
                   << " # Computing up to "
                   << scientific << double(max_iterations)
-                  << " iterations for each column in the expression with "
-                  << fixed << threads << " threads...\n"
+                  << " iterations for each column with "
+                  << fixed << threads << " threads ...\n"
                   << std::flush;
 
         if (null_snpset_replicates > 0) {
             std::cout << timestamp()
                       << " # Computing " 
                       << scientific << null_snpset_replicates
-                      << " null SNP sets...\n"
+                      << " null SNP sets ...\n"
                       << std::flush;
 
             for (ulong replicate = 0;
@@ -242,7 +244,8 @@ snpspec::snpspec(
                       << std::flush;
         }
 
-        std::cout << timestamp() << " # Computing user's SNP set...\n"
+        std::cout << timestamp()
+                  << " # Computing one column at a time ...\n"
                   << std::flush;
 
         std::vector<std::vector<ulong> > genesets;
@@ -310,7 +313,7 @@ void snpspec::write_args(
            << "        --threads " << threads << "\n"
            << "        --null-snpsets " << null_snpset_replicates << "\n"
            << "        --min-observations " << min_observations << "\n"
-           << "        --max-iterations " << max_iterations << "\n";
+           << "        --max-iterations " << max_iterations << "\n\n";
 }
 
 // Read an optionally gzipped text file and store the first column in a set of
@@ -569,7 +572,7 @@ void snpspec::overlap_genes(
 )
 {
     std::cout << timestamp()
-              << " # Overlapping SNP intervals with gene intervals...\n";
+              << " # Overlapping SNP intervals with gene intervals ...\n";
 
     // Clear out the old gene sets from previous runs.
     absent_snp_names.clear();
@@ -606,7 +609,7 @@ void snpspec::merge_user_snps(
     std::set<std::string> merged_snps;
 
     std::cout << timestamp()
-              << " # Merging SNPs with shared genes...\n";
+              << " # Merging SNPs with shared genes ...\n";
 
     int count_snps = 0;
     int count_loci = 0;
