@@ -87,11 +87,23 @@ snpspec::snpspec(
         _binary_expression = true;
     } else {
         _binary_expression = false;
-        // TODO Condition the matrix on the specified columns.
+
+        // DEBUG
+        std::ofstream before ("before.txt");
+        before << _expression << '\n';
+        before.close();
+
+        // Condition the matrix on the specified columns.
         condition(_expression, _condition_names);
 
         // Normalize the matrix.
-        _expression.colwise().normalize();
+
+        // This is wrong, the operation is performed without saving!
+        //_expression.colwise().normalize();
+        // This works!
+        _expression =
+            _expression.array().colwise() /
+            _expression.rowwise().norm().eval().array();
 
         // Reverse percentile rank each column of the matrix.
         // So, a small value like 0.02 means the given gene is highly specific
@@ -100,6 +112,14 @@ snpspec::snpspec(
             _expression.col(i) =
                 rankdata(_expression.col(i)) / _expression.rows();
         }
+        
+        // DEBUG
+        std::ofstream after ("after.txt");
+        after << _expression << '\n';
+        after.close();
+
+        std::cerr << "EXITING PREMATURELY" << std::endl;
+        exit(EXIT_FAILURE);
     }
 
     // 1. Find a geneset for each SNP by querying the gene interval tree.
