@@ -1561,7 +1561,7 @@ bool ezOptionParser::exportFile(const char * filename, bool all) {
 
   OptionGroup *g;
   // Sort first flag of each group with other groups.
-  std::sort(stringPtrs.begin(), stringPtrs.end(), CmpOptStringPtr);
+  ////std::sort(stringPtrs.begin(), stringPtrs.end(), CmpOptStringPtr);
   for(i=0; i < n; ++i) {
     g = get(stringPtrs[i]->c_str());
     if (g->isSet || all) {
@@ -1777,13 +1777,13 @@ void ezOptionParser::getUsage(std::string & usage, int width, Layout layout) {
 
   usage.append(overview);
   usage.append("\n\n");
-  usage.append("USAGE: ");
+  usage.append("USAGE:\n\n");
   usage.append(syntax);
   usage.append("\n\nOPTIONS:\n\n");
   getUsageDescriptions(usage, width, layout);
 
   if (!example.empty()) {
-    usage.append("EXAMPLES:\n\n");
+    usage.append("\nEXAMPLES:\n\n");
     usage.append(example);
   }
   
@@ -1810,7 +1810,7 @@ void ezOptionParser::getUsageDescriptions(std::string & usage, int width, Layout
   std::string opts;
   std::vector<std::string> sortedOpts;
   // Sort first flag of each group with other groups.
-  std::sort(stringPtrs.begin(), stringPtrs.end(), CmpOptStringPtr);
+  ////std::sort(stringPtrs.begin(), stringPtrs.end(), CmpOptStringPtr);
    for(i=0; i < groups.size(); ++i) {
     //printf("DEBUG:%d: %d %d %s\n", __LINE__, i, stringPtrToIndexMap[stringPtrs[i]], stringPtrs[i]->c_str());
     k = stringPtrToIndexMap[stringPtrs[i]];
@@ -2098,7 +2098,7 @@ void ezOptionParser::prettyPrint(std::string & out) {
   }
 
   // Sort first flag of each group with other groups.
-  std::sort(stringPtrs.begin(), stringPtrs.end(), CmpOptStringPtr);
+  ////std::sort(stringPtrs.begin(), stringPtrs.end(), CmpOptStringPtr);
 
   out += "\nOptions:\n";
   OptionGroup *g;
