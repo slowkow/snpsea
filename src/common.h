@@ -327,11 +327,11 @@ static std::string strip_extension(const std::string & filename) {
 static std::string output_folder(
     std::string base,
     std::string user_snpset_file,
-    std::string expression_file
+    std::string gene_matrix_file 
 ) {
     std::string path = base + "/" +
         strip_extension(basename(user_snpset_file.c_str())) + "_" +
-        strip_extension(basename(expression_file.c_str()));
+        strip_extension(basename(gene_matrix_file.c_str()));
     return path;
 }
 

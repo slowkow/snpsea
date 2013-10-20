@@ -14,27 +14,39 @@ int main(int argc, const char * argv[])
 {
     ezOptionParser opt;
 
-    opt.overview = "==============================\n"
-                   "=         SNPspec v0.1       =\n"
-                   "==============================\n";
+    opt.overview = "SNPspec: an efficient statistical assessment for"
+                   " enrichment\n"
+                   "of continuous or binary gene annotations within disease"
+                   " loci."
+                   "\n======================================================="
+                   "======";
     opt.syntax = "snpspec [OPTIONS]";
     opt.example =
-        "snpspec --snps file.txt   or   --snps random20 \n"
-        "        --expression file.gct.gz\n"
-        "        --null-snps file.txt\n"
-        "        --snp-intervals file.bed.gz\n"
-        "        --gene-intervals file.bed.gz\n"
-        "        --condition file.txt\n"
-        "        --out folder/\n"
-        "        --slop 250e3\n"
-        "        --threads 2\n"
-        "        --null-snpsets 100\n"
-        "        --min-observations 25\n"
+        "  1. Condition each column in --gene-matrix on the columns listed\n"
+        "     in the --condition file.\n"
+        "  2. Test each column in --gene-matrix for enrichment of genes\n"
+        "     within SNP intervals provided in --snp-intervals.\n"
+        "  3. Replicate the test with the null matched SNP sets\n"
+        "     sampled from: --null-snps\n"
+        "     for the specified number of iterations: --max-iterations\n"
+        "     and stop testing a column after --min-observations null SNP\n"
+        "     sets with higher scores are observed.\n\n"
+        "snpspec --snps file.txt               \\ # or   --snps random20 \n"
+        "        --gene-matrix file.gct.gz     \\\n"
+        "        --null-snps file.txt          \\\n"
+        "        --snp-intervals file.bed.gz   \\\n"
+        "        --gene-intervals file.bed.gz  \\\n"
+        "        --condition file.txt          \\\n"
+        "        --out folder                  \\\n"
+        "        --slop 250e3                  \\\n"
+        "        --threads 2                   \\\n"
+        "        --null-snpsets 100            \\\n"
+        "        --min-observations 25         \\\n"
         "        --max-iterations 1e6\n\n";
     opt.footer =
         "SNPspec v0.1  Copyright (C) 2013 Kamil Slowikowski"
         " <slowikow@broadinstitute.org>\n"
-        "This program is free and without warranty.\n";
+        "This program is free and without warranty under the MIT license.\n\n";
 
     opt.add(
         "", // Default.
@@ -51,7 +63,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         0, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Display version and exit.", // Help description.
+        "Display version and exit.\n\n", // Help description.
         "-v",       // Flag token.
         "--version" // Flag token.
     );
@@ -61,8 +73,10 @@ int main(int argc, const char * argv[])
         1, // Required?
         -1, // Number of args expected.
         ',', // Delimiter if expecting multiple args.
-        "List of SNPs to test. Use 'randomN' with an integer N"
-        " for a random SNP list of that length.", // Help description.
+        "One ore more text files separated by a comma. Each file must contain"
+        " SNP identifiers in the first column.\n"
+        "Instead of a file name, you may use 'randomN' with an integer N for"
+        " a random SNP list of length N.\n\n",
         "--snps" // Flag token.
     );
 
@@ -71,10 +85,9 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Gene expression file in GCT format. The Name column "
-        "must contain Entrez IDs for genes. These IDs are "
-        "looked up in the --genes file.",
-        "--expression" // Flag token.
+        "Gene matrix file in GCT format. The Name column must contain the"
+        " same gene identifiers as in --gene-intervals.\n\n",
+        "--gene-matrix" // Flag token.
     );
 
     opt.add(
@@ -82,9 +95,8 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "BED file with all known gene intervals and two name columns:\n"
-        "   - Entrez ID\n"
-        "   - HGNC Symbol",
+        "BED file with gene intervals. The fourth column must contain the"
+        " same gene identifiers as in --gene-matrix.\n\n",
         "--gene-intervals" // Flag token.
     );
 
@@ -93,7 +105,8 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "BED file with all known SNP intervals.",
+        "BED file with all known SNP intervals. The fourth column must"
+        " contain the same SNP identifiers as in --snps and --null-snps.\n\n",
         "--snp-intervals" // Flag token.
     );
 
@@ -102,60 +115,66 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Names of SNPs to sample when generating random SNP sets "
-        "matched on the number of implicated genes. These must be "
-        "a subset of the --snp-intervals SNPs.",
+        "Text file with SNP identifiers to sample when generating null"
+        " matched or random SNP sets. These SNPs must be a subset of"
+        " --snp-intervals.\n\n",
         "--null-snps" // Flag token.
     );
 
     opt.add(
         "", // Default.
-        0, // Required?
-        1, // Number of args expected.
-        0, // Delimiter if expecting multiple args.
-        "List of columns in --expression to condition on before calculating "
-        "p-values. Each column in --expression is projected onto each column "
-        "listed in this file and its projection is subtracted.",
-        "--condition" // Flag token.
-    );
-
-    opt.add(
-        "", // Default.
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Create output files in this directory.", // Help description.
+        "Create output files in this directory.\n\n", // Help description.
         "--out" // Flag token.
     );
 
     opt.add(
-        "250000", // Default.
-        1, // Required?
+        "", // Default.
+        0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "If a SNP overlaps no genes, extend its interval this many "
-        "nucleotides further and try again. [default: 250000]",
-        "--slop" // Flag token.
+        "Text file with a list of columns in --gene-matrix to condition on"
+        " before calculating p-values. Each column in --gene-matrix is"
+        " projected onto each column listed in this file and its projection"
+        " is subtracted.\n\n",
+        "--condition" // Flag token.
     );
 
+    ezOptionValidator* vU8 = new ezOptionValidator(ezOptionValidator::U8);
+    opt.add(
+        "250000", // Default.
+        0, // Required?
+        1, // Number of args expected.
+        0, // Delimiter if expecting multiple args.
+        "If a SNP overlaps no gene intervals, extend the SNP interval this"
+        " many nucleotides further and try again.\n[default: 250000]\n\n",
+        "--slop", // Flag token.
+        vU8
+    );
+
+    auto gt1 = new ezOptionValidator("s4", "ge", "1");
     opt.add(
         "1", // Default.
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Number of threads to use. [default: 1]",
-        "--threads" // Flag token.
+        "Number of threads to use.\n[default: 1]\n\n",
+        "--threads", // Flag token.
+        gt1
     );
 
+    auto gt0 = new ezOptionValidator("s4", "ge", "0");
     opt.add(
         "10", // Default.
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Test this many null matched SNP sets, so you can see how the "
-        "distributions of null results for each expression column. "
-        "[default: 10]",
-        "--null-snpsets" // Flag token.
+        "Test this many null matched SNP sets, so you can compare"
+        " your results to a distribution of null results.\n[default: 10]\n\n",
+        "--null-snpsets", // Flag token.
+        gt0
     );
 
     opt.add(
@@ -163,9 +182,12 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Stop testing a column in --expression after observing this "
-        "many null SNP sets with >= specificity scores. [default: 25]",
-        "--min-observations" // Flag token.
+        "Stop testing a column in --gene-matrix after observing this many"
+        " null SNP sets with specificity scores greater or equal to those"
+        " obtained with the SNP set in --snps. Increase this value to obtain"
+        " more accurate p-values.\n[default: 25]\n\n",
+        "--min-observations", // Flag token.
+        gt1
     );
 
     opt.add(
@@ -173,8 +195,11 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Maximum number of null SNP sets generated. [default: 1000]",
-        "--max-iterations" // Flag token.
+        "Maximum number of null SNP sets tested against each column in"
+        " --gene-matrix. Increase this value to resolve smaller p-values."
+        "\n[default: 1000]\n\n",
+        "--max-iterations", // Flag token.
+        gt1
     );
 
     // Read the options.
@@ -188,22 +213,20 @@ int main(int argc, const char * argv[])
     std::vector<std::string> badOptions;
     int i;
     if (!opt.gotRequired(badOptions)) {
-        for (i = 0; i < badOptions.size(); ++i) {
-            std::cerr
-                    << "ERROR: Missing required option "
-                    << badOptions[i] << ".\n\n";
-        }
         Usage(opt);
+        for (i = 0; i < badOptions.size(); ++i) {
+            std::cerr << "ERROR: Missing required option "
+                      << badOptions[i] << ".\n\n";
+        }
         return 1;
     }
 
     if (!opt.gotExpected(badOptions)) {
-        for (i = 0; i < badOptions.size(); ++i) {
-            std::cerr
-                    << "ERROR: Got unexpected number of arguments for option "
-                    << badOptions[i] << ".\n\n";
-        }
         Usage(opt);
+        for (i = 0; i < badOptions.size(); ++i) {
+            std::cerr << "ERROR: Got unexpected number of arguments for "
+                      << badOptions[i] << ".\n\n";
+        }
         return 1;
     }
 
@@ -211,7 +234,7 @@ int main(int argc, const char * argv[])
     user_snpset_files;
 
     std::string
-    expression_file,
+    gene_matrix_file,
     gene_intervals_file,
     snp_intervals_file,
     null_snps_file,
@@ -219,7 +242,7 @@ int main(int argc, const char * argv[])
     out_folder;
 
     opt.get("--snps")->getStrings(user_snpset_files);
-    opt.get("--expression")->getString(expression_file);
+    opt.get("--gene-matrix")->getString(gene_matrix_file);
     opt.get("--gene-intervals")->getString(gene_intervals_file);
     opt.get("--snp-intervals")->getString(snp_intervals_file);
     opt.get("--null-snps")->getString(null_snps_file);
@@ -243,7 +266,7 @@ int main(int argc, const char * argv[])
             assert_file_exists(f);
         }
     }
-    assert_file_exists(expression_file);
+    assert_file_exists(gene_matrix_file);
     assert_file_exists(gene_intervals_file);
     assert_file_exists(snp_intervals_file);
     assert_file_exists(null_snps_file);
@@ -298,7 +321,7 @@ int main(int argc, const char * argv[])
     // Run the analysis.
     snpspec(
         user_snpset_files,
-        expression_file,
+        gene_matrix_file,
         gene_intervals_file,
         snp_intervals_file,
         null_snps_file,

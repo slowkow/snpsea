@@ -12,7 +12,7 @@ class snpspec
     public:
         snpspec(
             std::vector<std::string> user_snpset_files,
-            std::string expression_file,
+            std::string gene_matrix_file,
             std::string gene_intervals_file,
             std::string snp_intervals_file,
             std::string null_snps_file,
@@ -27,7 +27,7 @@ class snpspec
 
         void write_args(
             std::vector<std::string> user_snpset_files,
-            std::string expression_file,
+            std::string gene_matrix_file,
             std::string gene_intervals_file,
             std::string snp_intervals_file,
             std::string null_snps_file,
@@ -146,16 +146,17 @@ class snpspec
         _gene_interval_tree;
 
         MatrixXd
-        _expression;
+        _gene_matrix;
 
-        // For binary expression, pre-calculate the column sums and those sums
-        // divided by the number of rows.
-        // For any expression, store the column scores for the user's SNPs.
-        VectorXd
-        _binary_sums,
-        _binary_probs;
+        // For a binary gene matrix, pre-calculate the column sums and those
+        // sums divided by the number of rows.
+        VectorXd _binary_sums;
 
-        // The row and column names of the provided GCT expression file.
+        // For a continuous gene matrix, store the column scores for the
+        // user's SNPs.
+        VectorXd _binary_probs;
+
+        // The row and column names of the provided GCT gene matrix file.
         std::vector<std::string>
         _row_names,
         _col_names;
@@ -174,9 +175,9 @@ class snpspec
         std::map<ulong, std::vector<std::vector<ulong> > >
         _geneset_bins;
 
-        // Is the first column of the expression filled with 1s and 0s?
+        // Is the first column of the gene matrix filled with 1s and 0s?
         bool
-        _binary_expression;
+        _binary_gene_matrix;
 };
 
 #endif

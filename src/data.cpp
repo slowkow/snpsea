@@ -12,7 +12,7 @@
 // Main function that executes all of the intermediate steps.
 snpspec::snpspec(
     std::vector<std::string> user_snpset_files,
-    std::string expression_file,
+    std::string gene_matrix_file,
     std::string gene_intervals_file,
     std::string snp_intervals_file,
     std::string null_snps_file,
@@ -29,7 +29,7 @@ snpspec::snpspec(
 
     write_args(
         user_snpset_files,
-        expression_file,
+        gene_matrix_file,
         gene_intervals_file,
         snp_intervals_file,
         null_snps_file,
@@ -50,7 +50,7 @@ snpspec::snpspec(
     read_names(null_snps_file, _null_snp_names);
 
     // Optional condition file to condition on specified columns in the
-    // expression matrix.
+    // gene matrix.
     if (condition_file.length() > 0) {
         read_names(condition_file, _condition_names);
     }
@@ -58,8 +58,8 @@ snpspec::snpspec(
     // Read SNP names and intervals.
     read_bed_intervals(snp_intervals_file, _snp_intervals);
 
-    // Read the gene expression matrix.
-    read_gct(expression_file, _row_names, _col_names, _expression);
+    // Read the gene matrix.
+    read_gct(gene_matrix_file, _row_names, _col_names, _gene_matrix);
 
     // Read the gene intervals but only keep the ones listed in the GCT.
     read_bed_interval_tree(
@@ -71,37 +71,37 @@ snpspec::snpspec(
     std::cout << timestamp() << " # done." << std::endl;
 
     // Report names from the conditions file that are absent from the
-    // expression file.
+    // gene matrix file.
     report_missing_conditions();
 
     // Drop all SNP intervals except those in the null set.
     //drop_snp_intervals();
 
     // Check if the matrix is binary by reading the first column.
-    if (is_binary(_expression.col(0))) {
+    if (is_binary(_gene_matrix.col(0))) {
         // Let the user know we detected it.
         std::cout << timestamp() << " # Expression is binary." << std::endl;
         // Cache these values ahead of time.
-        _binary_sums = _expression.colwise().sum();
-        _binary_probs = _binary_sums / _expression.rows();
-        _binary_expression = true;
+        _binary_sums = _gene_matrix.colwise().sum();
+        _binary_probs = _binary_sums / _gene_matrix.rows();
+        _binary_gene_matrix = true;
     } else {
-        _binary_expression = false;
+        _binary_gene_matrix = false;
 
         // Condition the matrix on the specified columns.
-        condition(_expression, _condition_names);
+        condition(_gene_matrix, _condition_names);
 
         // Normalize the matrix.
-        _expression =
-            _expression.array().colwise() /
-            _expression.rowwise().norm().eval().array();
+        _gene_matrix =
+            _gene_matrix.array().colwise() /
+            _gene_matrix.rowwise().norm().eval().array();
 
         // Reverse percentile rank each column of the matrix.
         // So, a small value like 0.02 means the given gene is highly specific
         // to the column. A large value means the gene is non-specific.
-        for (int i = 0; i < _expression.cols(); i++) {
-            _expression.col(i) =
-                rankdata(_expression.col(i)) / _expression.rows();
+        for (int i = 0; i < _gene_matrix.cols(); i++) {
+            _gene_matrix.col(i) =
+                rankdata(_gene_matrix.col(i)) / _gene_matrix.rows();
         }
     }
 
@@ -129,14 +129,14 @@ snpspec::snpspec(
         }
 
         // Construct a path based on the the user's SNPs file and the
-        // expression file.
-        std::string path = output_folder(out_folder, f, expression_file);
+        // gene matrix file.
+        std::string path = output_folder(out_folder, f, gene_matrix_file);
         mkpath(path);
 
         std::ofstream args (path + "/args.txt");
         write_args(
             user_snpset_files,
-            expression_file,
+            gene_matrix_file,
             gene_intervals_file,
             snp_intervals_file,
             null_snps_file,
@@ -274,7 +274,7 @@ snpspec::snpspec(
 
 void snpspec::write_args(
     std::vector<std::string> user_snpset_files,
-    std::string expression_file,
+    std::string gene_matrix_file,
     std::string gene_intervals_file,
     std::string snp_intervals_file,
     std::string null_snps_file,
@@ -302,7 +302,7 @@ void snpspec::write_args(
                << user_snpset_files.at(which_snpset_file) << "\n";
     }
 
-    stream << "        --expression " << expression_file << "\n"
+    stream << "        --gene-matrix " << gene_matrix_file << "\n"
            << "        --gene-intervals " << gene_intervals_file << "\n"
            << "        --snp-intervals " << snp_intervals_file << "\n"
            << "        --null-snps " << null_snps_file << "\n";
@@ -338,7 +338,7 @@ void snpspec::read_names(std::string filename, std::set<std::string> & names)
 }
 
 // Given the name of a SNP, look up its interval and find overlapping genes.
-// Report the offsets to lookup the genes in the expression matrix.
+// Report the offsets to lookup the genes in the gene matrix.
 std::vector<ulong> snpspec::snp_geneset(std::string snp, ulong slop)
 {
     auto snp_interval = _snp_intervals[snp];
@@ -361,7 +361,7 @@ std::vector<ulong> snpspec::snp_geneset(std::string snp, ulong slop)
     }
 
     if (gene_intervals.size() > 0) {
-        // Indices used for lookup in the expression.
+        // Indices used for lookup in the gene matrix.
         for (auto interval : gene_intervals) {
             indices.push_back(interval.value);
         }
@@ -469,12 +469,12 @@ void snpspec::read_bed_interval_tree(
     ulong skipped_genes = 0;
     BEDRow row;
     while (stream >> row) {
-        // Skip the gene if it is not present in the expression matrix.
+        // Skip the gene if it is not present in the gene matrix.
         if (row_names_set.count(row.name) != 0) {
             // Add an interval to the vector for the corresponding chromosome.
             // (The value stored in the tree is a ulong that is an index to
-            // the row names of the --expression matrix. It is later retrieved
-            // with the findOverlapping() method.)
+            // the row names of the gene matrix. It is later retrieved with
+            // the findOverlapping() method.)
             intervals[row.i.chrom].push_back(
                 interval(row.i.start, row.i.end, index[row.name])
             );
@@ -486,7 +486,7 @@ void snpspec::read_bed_interval_tree(
     std::cout << timestamp()
               << " # Skipped loading " << skipped_genes
               << " gene intervals because they are absent from the"
-              << " expression file."
+              << " --gene-matrix file."
               << std::endl;
 
     // Loop through the chromosomes.
@@ -787,7 +787,7 @@ void snpspec::report_missing_conditions()
     );
 
     if (_condition_difference.size() > 0) {
-        std::cerr << "ERROR: Conditions not found in expression file:"
+        std::cerr << "ERROR: Conditions not found in --gene-matrix file:"
                   << std::endl;
         for (auto name : _condition_difference) {
             std::cerr << name << std::endl;
@@ -796,17 +796,13 @@ void snpspec::report_missing_conditions()
     }
 }
 
-// Condition the expression matrix on the specified column names. Each column
-// is projected onto a condition column, and its projection is substracted.
+// Condition the gene matrix on the specified column names. Each column is
+// projected onto a condition column, and its projection is substracted.
 void snpspec::condition(
     MatrixXd & matrix,
     std::set<std::string> & col_names
 )
 {
-    //std::cout << "column names: ";
-    //for (auto col_name : _col_names) std::cout << col_name << " ";
-    //std::cout << std::endl;
-
     std::vector<std::string>
     new_col_names (_col_names.begin(), _col_names.end());
 
@@ -824,10 +820,6 @@ void snpspec::condition(
             auto a = matrix.col(col);
             auto projection = a.dot(b) / b.dot(b) * b;
             
-            //std::cout << "\na:\n" << a << "\n";
-            //std::cout << "b:\n" << b << "\n";
-            //std::cout << "projection:\n" << projection << "\n";
-
             matrix.col(col) -= projection;
         }
     }
@@ -838,9 +830,8 @@ void snpspec::condition(
     for (auto idx : idxs) {
         new_col_names.erase(new_col_names.begin() + idx);
     }
-    //std::cout << "new column names: ";
-    //for (auto col_name : new_col_names) std::cout << col_name << " ";
-    //std::cout << std::endl;
+    // Replace the old column names with new ones.
+    _col_names = new_col_names;
 }
 
 void snpspec::bin_genesets(ulong slop, ulong max_genes)
@@ -861,14 +852,14 @@ void snpspec::bin_genesets(ulong slop, ulong max_genes)
             if (n_genes > max_genes) {
                 n_genes = max_genes;
             }
-            // Indices used for lookup in the expression.
+            // Indices used for lookup in the gene matrix.
             _geneset_bins[n_genes].push_back(geneset);
         }
     }
 }
 
 // Generate a vector of vectors. Each inner vector contains gene indices for
-// looking up rows in the expression.
+// looking up rows in the gene matrix.
 std::vector<std::vector<ulong> > snpspec::matched_genesets()
 {
     // Standard Mersenne Twister random number generator.
@@ -904,7 +895,7 @@ std::vector<std::vector<ulong> > snpspec::random_genesets(int n, ulong slop)
     return genesets;
 }
 
-// Returns a score for a column in the binary _expression matrix using the
+// Returns a score for a column in the binary gene matrix using the
 // genes in the given set of gene sets.
 double snpspec::score_binary(
     const ulong & col,
@@ -917,7 +908,7 @@ double snpspec::score_binary(
     for (auto geneset : genesets) {
         int k = 0;
         for (auto gene_id : geneset) {
-            if (_expression(gene_id, col) > 0) {
+            if (_gene_matrix(gene_id, col) > 0) {
                 k++;
             }
         }
@@ -926,7 +917,7 @@ double snpspec::score_binary(
     return std::isfinite(score) ? score : 0.0;
 }
 
-// Returns a score for a column in the quantitative _expression matrix using
+// Returns a score for a column in the quantitative gene matrix using
 // the genes in the given set of gene sets.
 double snpspec::score_quantitative(
     const ulong & col,
@@ -937,7 +928,7 @@ double snpspec::score_quantitative(
     for (auto geneset : genesets) {
         double percentile = 1.0;
         for (auto gene_id : geneset) {
-            percentile = std::min(percentile, _expression(gene_id, col));
+            percentile = std::min(percentile, _gene_matrix(gene_id, col));
         }
         if (percentile < 1.0) {
             // Each gene set contributes to the score.
@@ -965,12 +956,12 @@ void snpspec::report_pvalues(
         for (int col = 0; col < _col_names.size(); col++) {
             double pvalue = 1;
             std::string min_gene;
-            if (_binary_expression) {
+            if (_binary_gene_matrix) {
                 ulong n = _binary_sums(col);
                 double p = _binary_probs(col);
                 int k = 0;
                 for (auto gene_id : kv.second) {
-                    if (_expression(gene_id, col) > 0) {
+                    if (_gene_matrix(gene_id, col) > 0) {
                         k++;
                     }
                 }
@@ -981,8 +972,8 @@ void snpspec::report_pvalues(
             } else {
                 double percentile = 1.0;
                 for (auto gene_id : kv.second) {
-                    if (_expression(gene_id, col) < percentile) {
-                        percentile = _expression(gene_id, col);
+                    if (_gene_matrix(gene_id, col) < percentile) {
+                        percentile = _gene_matrix(gene_id, col);
                         min_gene = _row_names[gene_id];
                     }
                 }
@@ -1016,7 +1007,7 @@ void snpspec::calculate_pvalues(
 
     // Set the appropriate scoring function.
     auto score_function = &snpspec::score_quantitative;
-    if (_binary_expression) {
+    if (_binary_gene_matrix) {
         score_function = &snpspec::score_binary;
     }
 
@@ -1030,7 +1021,7 @@ void snpspec::calculate_pvalues(
         stream.open(filename, std::fstream::out | std::fstream::app);
     }
 
-    for (ulong col = 0; col < _expression.cols(); col++) {
+    for (ulong col = 0; col < _gene_matrix.cols(); col++) {
         // Shared across all threads.
         double user_score = (*this.*score_function)(col, genesets);
 
