@@ -14,23 +14,24 @@ int main(int argc, const char * argv[])
 {
     ezOptionParser opt;
 
-    opt.overview = "SNPspec: an efficient statistical assessment for"
-                   " enrichment\n"
-                   "of continuous or binary gene annotations within disease"
-                   " loci."
-                   "\n======================================================="
-                   "======";
+    opt.overview =
+        "SNPspec: an efficient statistical assessment for enrichment\n"
+        "of continuous or binary gene annotations within disease loci.\n"
+        "=============================================================";
     opt.syntax = "snpspec [OPTIONS]";
     opt.example =
+        "Steps:\n"
         "  1. Condition each column in --gene-matrix on the columns listed\n"
         "     in the --condition file.\n"
         "  2. Test each column in --gene-matrix for enrichment of genes\n"
-        "     within SNP intervals provided in --snp-intervals.\n"
+        "     for the user's SNPs in --snps assigned to SNP intervals\n"
+        "     provided in --snp-intervals.\n"
         "  3. Replicate the test with the null matched SNP sets\n"
         "     sampled from: --null-snps\n"
         "     for the specified number of iterations: --max-iterations\n"
         "     and stop testing a column after --min-observations null SNP\n"
-        "     sets with higher scores are observed.\n\n"
+        "     sets with higher scores are observed.\n"
+        "\n"
         "snpspec --snps file.txt               \\ # or   --snps random20 \n"
         "        --gene-matrix file.gct.gz     \\\n"
         "        --null-snps file.txt          \\\n"
@@ -73,8 +74,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         -1, // Number of args expected.
         ',', // Delimiter if expecting multiple args.
-        "One ore more text files separated by a comma. Each file must contain"
-        " SNP identifiers in the first column.\n"
+        "Text file with SNP identifiers in the first column.\n"
         "Instead of a file name, you may use 'randomN' with an integer N for"
         " a random SNP list of length N.\n\n",
         "--snps" // Flag token.
@@ -230,10 +230,8 @@ int main(int argc, const char * argv[])
         return 1;
     }
 
-    std::vector<std::string>
-    user_snpset_files;
-
     std::string
+    user_snpset_file,
     gene_matrix_file,
     gene_intervals_file,
     snp_intervals_file,
@@ -241,7 +239,7 @@ int main(int argc, const char * argv[])
     condition_file,
     out_folder;
 
-    opt.get("--snps")->getStrings(user_snpset_files);
+    opt.get("--snps")->getString(user_snpset_file);
     opt.get("--gene-matrix")->getString(gene_matrix_file);
     opt.get("--gene-intervals")->getString(gene_intervals_file);
     opt.get("--snp-intervals")->getString(snp_intervals_file);
@@ -250,21 +248,19 @@ int main(int argc, const char * argv[])
     opt.get("--out")->getString(out_folder);
 
     // Ensure the files exist.
-    for (auto f : user_snpset_files) {
-        // The argument may be a filename or a string like "random20".
-        if (f.find("random") == 0) {
-            // Grab the number, ensure it is above zero.
-            std::string::size_type sz;
-            int n = std::stoi(f.substr(6), &sz);
-            if (n <= 0) {
-                std::cerr << "ERROR: --snps " + f << std::endl;
-                std::cerr << "Must be like: random20" << std::endl;
-                exit(EXIT_FAILURE);
-            }
-        } else {
-            // Otherwise, ensure the file exists.
-            assert_file_exists(f);
+    // The argument may be a filename or a string like "random20".
+    if (user_snpset_file.find("random") == 0) {
+        // Grab the number, ensure it is above zero.
+        std::string::size_type sz;
+        int n = std::stoi(user_snpset_file.substr(6), &sz);
+        if (n <= 0) {
+            std::cerr << "ERROR: --snps " + user_snpset_file << std::endl;
+            std::cerr << "Must be like: random20" << std::endl;
+            exit(EXIT_FAILURE);
         }
+    } else {
+        // Otherwise, ensure the file exists.
+        assert_file_exists(user_snpset_file);
     }
     assert_file_exists(gene_matrix_file);
     assert_file_exists(gene_intervals_file);
@@ -320,7 +316,7 @@ int main(int argc, const char * argv[])
 
     // Run the analysis.
     snpspec(
-        user_snpset_files,
+        user_snpset_file,
         gene_matrix_file,
         gene_intervals_file,
         snp_intervals_file,

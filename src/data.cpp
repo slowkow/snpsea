@@ -11,7 +11,7 @@
 
 // Main function that executes all of the intermediate steps.
 snpspec::snpspec(
-    std::vector<std::string> user_snpset_files,
+    std::string user_snpset_file,
     std::string gene_matrix_file,
     std::string gene_intervals_file,
     std::string snp_intervals_file,
@@ -28,7 +28,7 @@ snpspec::snpspec(
     std::cout << "# SNPspec v0.1\n\n";
 
     write_args(
-        user_snpset_files,
+        user_snpset_file,
         gene_matrix_file,
         gene_intervals_file,
         snp_intervals_file,
@@ -40,7 +40,6 @@ snpspec::snpspec(
         null_snpset_replicates,
         min_observations,
         max_iterations,
-        -1,
         std::cout
     );
 
@@ -115,165 +114,156 @@ snpspec::snpspec(
     threads = clamp(threads, 1, cpu_count());
     omp_set_num_threads(threads);
 
-    int which_snpset_file = -1;
-    for (auto f : user_snpset_files) {
-        which_snpset_file++;
+    int n_random_snps = 0;
 
-        int n_random_snps = 0;
-
-        if (file_exists(f)) {
-            read_names(f, _user_snp_names);
-        } else {
-            random_snps(f, _user_snp_names, slop);
-            n_random_snps = _user_snp_names.size();
-        }
-
-        // Construct a path based on the the user's SNPs file and the
-        // gene matrix file.
-        std::string path = output_folder(out_folder, f, gene_matrix_file);
-        mkpath(path);
-
-        std::ofstream args (path + "/args.txt");
-        write_args(
-            user_snpset_files,
-            gene_matrix_file,
-            gene_intervals_file,
-            snp_intervals_file,
-            null_snps_file,
-            condition_file,
-            out_folder,
-            slop,
-            threads,
-            null_snpset_replicates,
-            min_observations,
-            max_iterations,
-            which_snpset_file,
-            args
-        );
-        args.close();
-
-        // Overlap the user's SNP intervals with the gene intervals. Record
-        // the SNPs that are not present in the --snp-intervals file. Also
-        // record the gene sets and their sizes.
-        overlap_genes(
-            _user_snp_names,
-            _user_absent_snp_names,
-            _user_genesets,
-            _user_geneset_sizes,
-            slop
-        );
-
-        // Merge SNPs that share genes or have overlapping genes.
-        merge_user_snps(
-            _user_snp_names,
-            _user_genesets,
-            _user_geneset_sizes
-        );
-
-        // Report the genes overlapping the user's SNPs.
-        report_user_snp_genes(path + "/snp_genes.txt");
-
-        for (auto & size : _user_geneset_sizes) {
-            if (size > MAX_GENES) {
-                size = MAX_GENES;
-            }
-        }
-
-        std::cout << timestamp()
-                  << " # On each iteration, we'll test "
-                  << _user_geneset_sizes.size()
-                  << " gene sets from these bins:" << std::endl;
-        // Report how many genesets exist of each size.
-        for (auto item : _geneset_bins) {
-            int n_items = std::count(
-                _user_geneset_sizes.begin(),
-                _user_geneset_sizes.end(),
-                item.first
-            );
-            if (n_items > 0) {
-                std::cout << timestamp()
-                          << " # " << setw(3) << n_items
-                          << " gene sets with size ";
-                if (item.first == MAX_GENES) {
-                    std::cout << ">= "<< setw(2) << item.first;
-                } else {
-                    std::cout << setw(2) << item.first;
-                }
-                std::cout << " from a pool of size " << item.second.size()
-                          << std::endl;
-            }
-        }
-
-        std::cout << timestamp()
-                  << " # Computing up to "
-                  << scientific << double(max_iterations)
-                  << " iterations for each column with "
-                  << fixed << threads << " threads ...\n"
-                  << std::flush;
-
-        if (null_snpset_replicates > 0) {
-            std::cout << timestamp()
-                      << " # Computing " 
-                      << scientific << null_snpset_replicates
-                      << " null SNP sets ...\n"
-                      << std::flush;
-
-            for (ulong replicate = 0;
-                    replicate < null_snpset_replicates; replicate++) {
-                // The user specified something like "random20" so let's generated
-                // a totally random list of SNPs without matching.
-                if (n_random_snps > 0) {
-                    // Calculate p-values for random null gene sets.
-                    calculate_pvalues(
-                        path + "/null_pvalues.txt",
-                        random_genesets(n_random_snps, slop),
-                        min_observations,
-                        max_iterations,
-                        null_snpset_replicates
-                    );
-                } else {
-                    // Calculate p-values for matched null gene sets.
-                    calculate_pvalues(
-                        path + "/null_pvalues.txt",
-                        matched_genesets(),
-                        min_observations,
-                        max_iterations,
-                        null_snpset_replicates
-                    );
-                }
-            }
-
-            std::cout << timestamp() << " # done.\n"
-                      << std::flush;
-        }
-
-        std::vector<std::vector<ulong> > genesets;
-        for (auto item : _user_genesets) {
-            genesets.push_back(item.second);
-        }
-
-        // Report p-values and gene identifiers for each SNP-column pair.
-        report_pvalues(path + "/snp_pvalues.txt", _user_genesets);
-
-        std::cout << timestamp()
-                  << " # Computing one column at a time ...\n"
-                  << std::flush;
-
-        // Calculate p-values for the user's SNP set.
-        calculate_pvalues(
-            path + "/pvalues.txt",
-            genesets,
-            min_observations,
-            max_iterations,
-            1L
-        );
-
-        std::cout << timestamp() << " # done.\n\n";
+    if (file_exists(user_snpset_file)) {
+        read_names(user_snpset_file, _user_snp_names);
+    } else {
+        random_snps(user_snpset_file, _user_snp_names, slop);
+        n_random_snps = _user_snp_names.size();
     }
+
+    mkpath(out_folder);
+
+    std::ofstream args (out_folder + "/args.txt");
+    write_args(
+        user_snpset_file,
+        gene_matrix_file,
+        gene_intervals_file,
+        snp_intervals_file,
+        null_snps_file,
+        condition_file,
+        out_folder,
+        slop,
+        threads,
+        null_snpset_replicates,
+        min_observations,
+        max_iterations,
+        args
+    );
+    args.close();
+
+    // Overlap the user's SNP intervals with the gene intervals. Record
+    // the SNPs that are not present in the --snp-intervals file. Also
+    // record the gene sets and their sizes.
+    overlap_genes(
+        _user_snp_names,
+        _user_absent_snp_names,
+        _user_genesets,
+        _user_geneset_sizes,
+        slop
+    );
+
+    // Merge SNPs that share genes or have overlapping genes.
+    merge_user_snps(
+        _user_snp_names,
+        _user_genesets,
+        _user_geneset_sizes
+    );
+
+    // Report the genes overlapping the user's SNPs.
+    report_user_snp_genes(out_folder + "/snp_genes.txt");
+
+    for (auto & size : _user_geneset_sizes) {
+        if (size > MAX_GENES) {
+            size = MAX_GENES;
+        }
+    }
+
+    std::cout << timestamp()
+              << " # On each iteration, we'll test "
+              << _user_geneset_sizes.size()
+              << " gene sets from these bins:" << std::endl;
+    // Report how many genesets exist of each size.
+    for (auto item : _geneset_bins) {
+        int n_items = std::count(
+            _user_geneset_sizes.begin(),
+            _user_geneset_sizes.end(),
+            item.first
+        );
+        if (n_items > 0) {
+            std::cout << timestamp()
+                      << " # " << setw(3) << n_items
+                      << " gene sets with size ";
+            if (item.first == MAX_GENES) {
+                std::cout << ">= "<< setw(2) << item.first;
+            } else {
+                std::cout << setw(2) << item.first;
+            }
+            std::cout << " from a pool of size " << item.second.size()
+                      << std::endl;
+        }
+    }
+
+    std::cout << timestamp()
+              << " # Computing up to "
+              << scientific << double(max_iterations)
+              << " iterations for each column with "
+              << fixed << threads << " threads ...\n"
+              << std::flush;
+
+    if (null_snpset_replicates > 0) {
+        std::cout << timestamp()
+                  << " # Computing " 
+                  << scientific << null_snpset_replicates
+                  << " null SNP sets ...\n"
+                  << std::flush;
+
+        for (ulong replicate = 0;
+                replicate < null_snpset_replicates; replicate++) {
+            // The user specified something like "random20" so let's
+            // generate a totally random list of SNPs without matching.
+            if (n_random_snps > 0) {
+                // Calculate p-values for random null gene sets.
+                calculate_pvalues(
+                    out_folder + "/null_pvalues.txt",
+                    random_genesets(n_random_snps, slop),
+                    min_observations,
+                    max_iterations,
+                    null_snpset_replicates
+                );
+            } else {
+                // Calculate p-values for matched null gene sets.
+                calculate_pvalues(
+                    out_folder + "/null_pvalues.txt",
+                    matched_genesets(),
+                    min_observations,
+                    max_iterations,
+                    null_snpset_replicates
+                );
+            }
+        }
+
+        std::cout << timestamp() << " # done.\n"
+                  << std::flush;
+    }
+
+    std::vector<std::vector<ulong> > genesets;
+    for (auto item : _user_genesets) {
+        genesets.push_back(item.second);
+    }
+
+    // Report p-values and gene identifiers for each SNP-column pair.
+    report_pvalues(out_folder + "/snp_pvalues.txt", _user_genesets);
+
+    std::cout << timestamp()
+              << " # Computing one column at a time ...\n"
+              << std::flush;
+
+    // Calculate p-values for the user's SNP set.
+    calculate_pvalues(
+        out_folder + "/pvalues.txt",
+        genesets,
+        min_observations,
+        max_iterations,
+        1L
+    );
+
+    std::cout << timestamp() << " # done.\n\n";
 }
 
 void snpspec::write_args(
-    std::vector<std::string> user_snpset_files,
+    std::string user_snpset_file,
     std::string gene_matrix_file,
     std::string gene_intervals_file,
     std::string snp_intervals_file,
@@ -285,24 +275,11 @@ void snpspec::write_args(
     ulong null_snpset_replicates,
     ulong min_observations,
     ulong max_iterations,
-    int which_snpset_file,
     std::ostream & stream
 )
 {
-    assert(which_snpset_file < (int) user_snpset_files.size());
-
-    if (which_snpset_file < 0) {
-        stream << "snpspec --snps " << user_snpset_files.at(0); 
-        for (int i = 1; i < user_snpset_files.size(); i++) {
-            stream << ",\n               " << user_snpset_files.at(i);
-        }
-        stream << "\n";
-    } else {
-        stream << "snpspec --snps "
-               << user_snpset_files.at(which_snpset_file) << "\n";
-    }
-
-    stream << "        --gene-matrix " << gene_matrix_file << "\n"
+    stream << "snpspec --snps " << user_snpset_file << "\n"
+           << "        --gene-matrix " << gene_matrix_file << "\n"
            << "        --gene-intervals " << gene_intervals_file << "\n"
            << "        --snp-intervals " << snp_intervals_file << "\n"
            << "        --null-snps " << null_snps_file << "\n";
@@ -653,7 +630,7 @@ void snpspec::merge_user_snps(
                 if (count_snps == 0) {
                     count_snps = 2;
                 } else {
-                    count_snps++;
+                    count_snps += 2;
                 }
                 merged_snp += ":" + b;
                 genes_a = genes_ab;

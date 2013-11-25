@@ -11,7 +11,7 @@ class snpspec
 {
     public:
         snpspec(
-            std::vector<std::string> user_snpset_files,
+            std::string user_snpset_file,
             std::string gene_matrix_file,
             std::string gene_intervals_file,
             std::string snp_intervals_file,
@@ -26,7 +26,7 @@ class snpspec
         );
 
         void write_args(
-            std::vector<std::string> user_snpset_files,
+            std::string user_snpset_file,
             std::string gene_matrix_file,
             std::string gene_intervals_file,
             std::string snp_intervals_file,
@@ -38,7 +38,6 @@ class snpspec
             ulong null_snpset_replicates,
             ulong min_observations,
             ulong max_iterations,
-            int which_snpset_file,
             std::ostream & stream
         );
 

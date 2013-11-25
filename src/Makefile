@@ -10,7 +10,7 @@ INTERVAL_TREE_PATH = ../intervaltree
 
 INCLUDE = -I $(EIGEN_PATH) -I $(INTERVAL_TREE_PATH)
 
-DEBUG = #-ggdb
+#DEBUG = -ggdb
 
 # Compiler flags
 CXXFLAGS = $(DEBUG) -w -O3 -m64 -static -fopenmp -std=c++0x 
