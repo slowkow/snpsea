@@ -520,6 +520,9 @@ void snpspec::read_gct(
     // Read the number of rows and columns.
     unsigned int rows, cols;
     stream >> rows >> cols;
+    // Skip to next line.
+    std::getline(stream, str);
+
     if (rows <= 0 || cols <= 0) {
         std::cerr
                 << "ERROR: Line 2 of GCT file is malformed " + filename
@@ -536,15 +539,16 @@ void snpspec::read_gct(
     data.resize(rows, cols);
 
     // Skip "Name" and "Description".
-    for (int c = 0; c < 2; c++) {
-        stream >> str;
-    }
+    std::getline(stream, str, '\t');
+    std::getline(stream, str, '\t');
     // Read the column names.
-    for (int c = 0; c < cols; c++) {
-        stream >> str;
+    for (int c = 0; c < cols - 1; c++) {
+        std::getline(stream, str, '\t');
+        str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
         col_names.push_back(str);
     }
-
+    stream >> str;
+    col_names.push_back(str);
     // Skip to next line.
     std::getline(stream, str);
 
