@@ -72,8 +72,8 @@ int main(int argc, const char * argv[])
     opt.add(
         "", // Default.
         1, // Required?
-        -1, // Number of args expected.
-        ',', // Delimiter if expecting multiple args.
+        1, // Number of args expected.
+        0, // Delimiter if expecting multiple args.
         "Text file with SNP identifiers in the first column.\n"
         "Instead of a file name, you may use 'randomN' with an integer N for"
         " a random SNP list of length N.\n\n",
