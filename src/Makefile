@@ -1,42 +1,49 @@
-# Makefile for SNPspec
-# 
+# Makefile for SNPsea
 # Supported platforms: Unix / Linux
 
-# Compiler
+# Compiler.
 CXX = g++
 
-EIGEN_PATH = ../eigen-eigen-ffa86ffb5570
-INTERVAL_TREE_PATH = ../intervaltree
+# Paths to external resources.
+EIGEN_PATH = ../ext/eigen
+EIGEN_URL = https://bitbucket.org/eigen/eigen
 
-INCLUDE = -I $(EIGEN_PATH) -I $(INTERVAL_TREE_PATH)
+INTERVAL_TREE_PATH = ../ext/intervaltree
+INTERVAL_TREE_URL = https://github.com/slowkow/intervaltree.git
 
+# Compiler flags.
 #DEBUG = -ggdb
-
-# Compiler flags
-CXXFLAGS = $(DEBUG) -w -O3 -m64 -static -fopenmp -std=c++0x 
+INCLUDE = -I $(EIGEN_PATH) -I $(INTERVAL_TREE_PATH)
+CXXFLAGS = $(DEBUG) -w -O3 -m64 -static -fopenmp -std=c++0x
 CXXFLAGS += $(INCLUDE) -DEIGEN_NO_DEBUG
 LIB = -static -lz -lpthread -lm -ldl -lgsl
 
+# Header files, source files, objects, binary.
 HDR = ezOptionParser.h zfstream.h snpspec.h common.h
 SRC = option.cpp zfstream.cpp data.cpp
 OBJ = $(SRC:.cpp=.o)
+BIN = ../bin/snpspec
 
-OUTPUT = ../bin/snpspec
+all : $(BIN)
 
-all : $(OUTPUT) 
+$(BIN) : intervaltree eigen
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ) $(LIB)
 
-$(OUTPUT) :
-	$(CXX) $(CXXFLAGS) -o $(OUTPUT) $(OBJ) $(LIB) 
+$(OBJ) : $(HDR)
 
-$(OBJ) : $(HDR) $(INTERVALTREE)
+# Make an object file for each C++ source file.
+%.o : %.cpp
+	$(CXX) $(CXXFLAGS) -c $<
 
-.cpp.o : 
-	$(CXX) $(CXXFLAGS) -c $*.cpp
-.SUFFIXES : .cpp .c .o $(SUFFIXES)
+$(BIN) : $(OBJ)
 
-$(OUTPUT) : $(OBJ)
+.PHONY: intervaltree eigen clean
 
-FORCE:
+intervaltree: $(INTERVAL_TREE_PATH)
+	test -d $< || git clone $(INTERVAL_TREE_URL) $<
 
-clean: 
-	rm -f $(OBJ) $(OUTPUT)
+eigen: $(EIGEN_PATH)
+	test -d $< || hg clone $(EIGEN_URL) $<
+
+clean:
+	rm -f $(OBJ) $(BIN)
