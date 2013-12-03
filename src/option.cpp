@@ -2,7 +2,7 @@
 // See LICENSE for GPLv3 license.
 
 #include "ezOptionParser.h"
-#include "snpspec.h"
+#include "snpsea.h"
 
 using namespace ez;
 
@@ -18,10 +18,10 @@ int main(int argc, const char * argv[])
     ezOptionParser opt;
 
     opt.overview =
-        "SNPspec: an efficient statistical assessment for enrichment\n"
+        "SNPsea: an efficient statistical assessment for enrichment\n"
         "of continuous or binary gene annotations within disease loci.\n"
         "=============================================================";
-    opt.syntax = "snpspec [OPTIONS]";
+    opt.syntax = "snpsea [OPTIONS]";
     opt.example =
         "Steps:\n"
         "  1. Condition each column in --gene-matrix on the columns listed\n"
@@ -35,20 +35,20 @@ int main(int argc, const char * argv[])
         "     and stop testing a column after --min-observations null SNP\n"
         "     sets with higher scores are observed.\n"
         "\n"
-        "snpspec --snps file.txt               \\ # or   --snps random20 \n"
-        "        --gene-matrix file.gct.gz     \\\n"
-        "        --null-snps file.txt          \\\n"
-        "        --snp-intervals file.bed.gz   \\\n"
-        "        --gene-intervals file.bed.gz  \\\n"
-        "        --condition file.txt          \\\n"
-        "        --out folder                  \\\n"
-        "        --slop 250e3                  \\\n"
-        "        --threads 2                   \\\n"
-        "        --null-snpsets 100            \\\n"
-        "        --min-observations 25         \\\n"
-        "        --max-iterations 1e6\n\n";
+        "snpsea --snps file.txt               \\ # or   --snps random20 \n"
+        "       --gene-matrix file.gct.gz     \\\n"
+        "       --null-snps file.txt          \\\n"
+        "       --snp-intervals file.bed.gz   \\\n"
+        "       --gene-intervals file.bed.gz  \\\n"
+        "       --condition file.txt          \\\n"
+        "       --out folder                  \\\n"
+        "       --slop 250e3                  \\\n"
+        "       --threads 2                   \\\n"
+        "       --null-snpsets 100            \\\n"
+        "       --min-observations 25         \\\n"
+        "       --max-iterations 1e6\n\n";
     opt.footer =
-        "SNPspec v0.1  Copyright (C) 2013 Kamil Slowikowski"
+        "SNPsea v0.1  Copyright (C) 2013 Kamil Slowikowski"
         " <slowikow@broadinstitute.org>\n"
         "This program is free and without warranty under the MIT license.\n\n";
 
@@ -318,7 +318,7 @@ int main(int argc, const char * argv[])
     //opt.exportFile(out_folder + "/args.txt", true);
 
     // Run the analysis.
-    snpspec(
+    snpsea(
         user_snpset_file,
         gene_matrix_file,
         gene_intervals_file,

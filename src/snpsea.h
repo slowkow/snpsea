@@ -1,8 +1,8 @@
 // Copyright (c) 2013 Kamil Slowikowski
 // See LICENSE for GPLv3 license.
 
-#ifndef _SNPSPEC_H
-#define _SNPSPEC_H
+#ifndef _SNPSEA_H
+#define _SNPSEA_H
 
 #include <Eigen/Dense>
 #include "IntervalTree.h"
@@ -10,10 +10,10 @@
 
 using namespace Eigen;
 
-class snpspec
+class snpsea
 {
     public:
-        snpspec(
+        snpsea(
             std::string user_snpset_file,
             std::string gene_matrix_file,
             std::string gene_intervals_file,

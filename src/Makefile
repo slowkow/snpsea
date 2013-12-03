@@ -19,14 +19,15 @@ CXXFLAGS += $(INCLUDE) -DEIGEN_NO_DEBUG
 LIB = -static -lz -lpthread -lm -ldl -lgsl
 
 # Header files, source files, objects, binary.
-HDR = ezOptionParser.h zfstream.h snpspec.h common.h
+HDR = ezOptionParser.h zfstream.h snpsea.h common.h
 SRC = option.cpp zfstream.cpp data.cpp
 OBJ = $(SRC:.cpp=.o)
-BIN = ../bin/snpspec
+BIN = ../bin/snpsea
 
 all : $(BIN)
 
 $(BIN) : intervaltree eigen
+    mkdir -p ../bin
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ) $(LIB)
 
 $(OBJ) : $(HDR)

@@ -1,7 +1,7 @@
 // Copyright (c) 2013 Kamil Slowikowski
 // See LICENSE for GPLv3 license.
 
-#include "snpspec.h"
+#include "snpsea.h"
 
 // Include functions for controlling threads through OpenMP.
 #ifdef _OPENMP
@@ -13,7 +13,7 @@
 #endif
 
 // Main function that executes all of the intermediate steps.
-snpspec::snpspec(
+snpsea::snpsea(
     std::string user_snpset_file,
     std::string gene_matrix_file,
     std::string gene_intervals_file,
@@ -28,7 +28,7 @@ snpspec::snpspec(
     ulong max_iterations 
 )
 {
-    std::cout << "# SNPspec v0.1\n\n";
+    std::cout << "# SNPsea v0.1\n\n";
 
     write_args(
         user_snpset_file,
@@ -265,7 +265,7 @@ snpspec::snpspec(
     std::cout << timestamp() << " # done.\n\n";
 }
 
-void snpspec::write_args(
+void snpsea::write_args(
     std::string user_snpset_file,
     std::string gene_matrix_file,
     std::string gene_intervals_file,
@@ -281,27 +281,27 @@ void snpspec::write_args(
     std::ostream & stream
 )
 {
-    stream << "snpspec --snps " << user_snpset_file << "\n"
-           << "        --gene-matrix " << gene_matrix_file << "\n"
-           << "        --gene-intervals " << gene_intervals_file << "\n"
-           << "        --snp-intervals " << snp_intervals_file << "\n"
-           << "        --null-snps " << null_snps_file << "\n";
+    stream << "snpsea --snps " << user_snpset_file << "\n"
+           << "       --gene-matrix " << gene_matrix_file << "\n"
+           << "       --gene-intervals " << gene_intervals_file << "\n"
+           << "       --snp-intervals " << snp_intervals_file << "\n"
+           << "       --null-snps " << null_snps_file << "\n";
 
     if (condition_file.length() > 0) {
-        stream << "        --condition " << condition_file << "\n";
+        stream << "       --condition " << condition_file << "\n";
     }
 
-    stream << "        --out " << out_folder << "\n"
-           << "        --slop " << slop << "\n"
-           << "        --threads " << threads << "\n"
-           << "        --null-snpsets " << null_snpset_replicates << "\n"
-           << "        --min-observations " << min_observations << "\n"
-           << "        --max-iterations " << max_iterations << "\n\n";
+    stream << "       --out " << out_folder << "\n"
+           << "       --slop " << slop << "\n"
+           << "       --threads " << threads << "\n"
+           << "       --null-snpsets " << null_snpset_replicates << "\n"
+           << "       --min-observations " << min_observations << "\n"
+           << "       --max-iterations " << max_iterations << "\n\n";
 }
 
 // Read an optionally gzipped text file and store the first column in a set of
 // strings.
-void snpspec::read_names(std::string filename, std::set<std::string> & names)
+void snpsea::read_names(std::string filename, std::set<std::string> & names)
 {
     gzifstream str(filename.c_str());
     if (!str.is_open()) {
@@ -319,7 +319,7 @@ void snpspec::read_names(std::string filename, std::set<std::string> & names)
 
 // Given the name of a SNP, look up its interval and find overlapping genes.
 // Report the offsets to lookup the genes in the gene matrix.
-std::vector<ulong> snpspec::snp_geneset(std::string snp, ulong slop)
+std::vector<ulong> snpsea::snp_geneset(std::string snp, ulong slop)
 {
     auto snp_interval = _snp_intervals[snp];
     std::vector<ulong> indices;
@@ -351,7 +351,7 @@ std::vector<ulong> snpspec::snp_geneset(std::string snp, ulong slop)
 }
 
 // Generate a number of random SNPs given a filename like "random20".
-void snpspec::random_snps(
+void snpsea::random_snps(
     std::string filename,
     std::set<std::string> & names,
     ulong slop
@@ -400,7 +400,7 @@ void snpspec::random_snps(
 
 // Read an optionally gzipped BED file and store the genomic intervals in
 // a map of name => interval.
-void snpspec::read_bed_intervals(
+void snpsea::read_bed_intervals(
     std::string filename,
     std::map<std::string, genomic_interval> & intervals
 )
@@ -420,7 +420,7 @@ void snpspec::read_bed_intervals(
 
 // Read an optionally gzipped BED file and store the genomic intervals in
 // an interval tree. (Actually, one interval tree for each chromosome.)
-void snpspec::read_bed_interval_tree(
+void snpsea::read_bed_interval_tree(
     std::string filename,
     const std::vector<std::string> & row_names,
     std::map<std::string, IntervalTree<ulong> > & tree
@@ -476,7 +476,7 @@ void snpspec::read_bed_interval_tree(
     }
 }
 
-void snpspec::read_gct(
+void snpsea::read_gct(
     std::string filename,
     std::vector<std::string> & row_names,
     std::vector<std::string> & col_names,
@@ -550,7 +550,7 @@ void snpspec::read_gct(
     }
 }
 
-void snpspec::overlap_genes(
+void snpsea::overlap_genes(
     std::set<std::string> & snp_names,
     std::set<std::string> & absent_snp_names,
     std::map<std::string, std::vector<ulong> > & genesets,
@@ -582,7 +582,7 @@ void snpspec::overlap_genes(
     std::cout << timestamp() << " # done.\n";
 }
 
-void snpspec::merge_user_snps(
+void snpsea::merge_user_snps(
     std::set<std::string> & snp_names,
     std::map<std::string, std::vector<ulong> > & genesets,
     std::vector<ulong> & geneset_sizes
@@ -598,7 +598,6 @@ void snpspec::merge_user_snps(
     std::cout << timestamp()
               << " # Merging SNPs with shared genes ...\n";
 
-    int count_snps = 0;
     int count_loci = 0;
 
     // Brute force, check all pairs of SNPs.
@@ -630,11 +629,6 @@ void snpspec::merge_user_snps(
             genes_ab.resize(it - genes_ab.begin());
 
             if (genes_ab.size() < genes_a.size() + genes_b.size()) {
-                if (count_snps == 0) {
-                    count_snps = 2;
-                } else {
-                    count_snps += 2;
-                }
                 merged_snp += ":" + b;
                 genes_a = genes_ab;
                 merged_snps.insert(a);
@@ -657,9 +651,9 @@ void snpspec::merge_user_snps(
     genesets = new_genesets;
     geneset_sizes = new_geneset_sizes;
 
-    if (count_snps > 0) {
+    if (count_loci > 0) {
         std::cout << timestamp() << " # done. Merged "
-                  << count_snps << " SNPs into "
+                  << merged_snps.size() << " SNPs into "
                   << count_loci << " loci.\n" << std::flush;
     } else {
         std::cout << timestamp() << " # done. No SNPs were merged.\n"
@@ -667,7 +661,7 @@ void snpspec::merge_user_snps(
     }
 }
 
-void snpspec::report_user_snp_genes(const std::string & filename)
+void snpsea::report_user_snp_genes(const std::string & filename)
 {
     std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";
 
@@ -737,7 +731,7 @@ void snpspec::report_user_snp_genes(const std::string & filename)
 // Drop intervals for SNPs absent from "--null-snps". This is desirable to
 // reduce memory usage, but must be done after the user's SNPs are assigned
 // intervals.
-void snpspec::drop_snp_intervals()
+void snpsea::drop_snp_intervals()
 {
     ulong dropped_snps = 0;
     auto it = _snp_intervals.begin();
@@ -756,7 +750,7 @@ void snpspec::drop_snp_intervals()
 }
 */
 
-void snpspec::report_missing_conditions()
+void snpsea::report_missing_conditions()
 {
     if (_condition_names.size() == 0) {
         return;
@@ -782,7 +776,7 @@ void snpspec::report_missing_conditions()
 
 // Condition the gene matrix on the specified column names. Each column is
 // projected onto a condition column, and its projection is substracted.
-void snpspec::condition(
+void snpsea::condition(
     MatrixXd & matrix,
     std::set<std::string> & col_names
 )
@@ -818,7 +812,7 @@ void snpspec::condition(
     _col_names = new_col_names;
 }
 
-void snpspec::bin_genesets(ulong slop, ulong max_genes)
+void snpsea::bin_genesets(ulong slop, ulong max_genes)
 {
     for (const auto & item : _snp_intervals) {
         std::string snp = item.first;
@@ -844,7 +838,7 @@ void snpspec::bin_genesets(ulong slop, ulong max_genes)
 
 // Generate a vector of vectors. Each inner vector contains gene indices for
 // looking up rows in the gene matrix.
-std::vector<std::vector<ulong> > snpspec::matched_genesets()
+std::vector<std::vector<ulong> > snpsea::matched_genesets()
 {
     // Standard Mersenne Twister random number generator.
     static std::mt19937 generator;
@@ -863,7 +857,7 @@ std::vector<std::vector<ulong> > snpspec::matched_genesets()
 }
 
 // Same as matched_genesets(), but pick gene sets randomly without matching.
-std::vector<std::vector<ulong> > snpspec::random_genesets(int n, ulong slop)
+std::vector<std::vector<ulong> > snpsea::random_genesets(int n, ulong slop)
 {
     std::vector<std::vector<ulong> > genesets;
     // Get a list of random SNPs.
@@ -881,7 +875,7 @@ std::vector<std::vector<ulong> > snpspec::random_genesets(int n, ulong slop)
 
 // Returns a score for a column in the binary gene matrix using the
 // genes in the given set of gene sets.
-double snpspec::score_binary(
+double snpsea::score_binary(
     const ulong & col,
     const std::vector<std::vector<ulong> > & genesets
 )
@@ -903,7 +897,7 @@ double snpspec::score_binary(
 
 // Returns a score for a column in the quantitative gene matrix using
 // the genes in the given set of gene sets.
-double snpspec::score_quantitative(
+double snpsea::score_quantitative(
     const ulong & col,
     const std::vector<std::vector<ulong> > & genesets
 )
@@ -923,7 +917,7 @@ double snpspec::score_quantitative(
 }
 
 
-void snpspec::report_pvalues(
+void snpsea::report_pvalues(
     const std::string filename,
     const std::map<std::string, std::vector<ulong> > genesets
 )
@@ -978,7 +972,7 @@ void snpspec::report_pvalues(
     std::cout << timestamp() << " # done." << std::endl;
 }
 
-void snpspec::calculate_pvalues(
+void snpsea::calculate_pvalues(
     std::string filename,
     std::vector<std::vector<ulong> > genesets,
     long min_observations,
@@ -990,9 +984,9 @@ void snpspec::calculate_pvalues(
     replicate++;
 
     // Set the appropriate scoring function.
-    auto score_function = &snpspec::score_quantitative;
+    auto score_function = &snpsea::score_quantitative;
     if (_binary_gene_matrix) {
-        score_function = &snpspec::score_binary;
+        score_function = &snpsea::score_binary;
     }
 
     std::fstream stream;
