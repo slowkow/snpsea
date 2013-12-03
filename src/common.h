@@ -1,3 +1,6 @@
+// Copyright (c) 2013 Kamil Slowikowski
+// See LICENSE for GPLv3 license.
+
 #ifndef __COMMON_H
 #define __COMMON_H
 

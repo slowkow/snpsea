@@ -1,3 +1,6 @@
+// Copyright (c) 2013 Kamil Slowikowski
+// See LICENSE for GPLv3 license.
+
 #ifndef _SNPSPEC_H
 #define _SNPSPEC_H
 

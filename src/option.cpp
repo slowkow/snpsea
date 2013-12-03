@@ -1,3 +1,6 @@
+// Copyright (c) 2013 Kamil Slowikowski
+// See LICENSE for GPLv3 license.
+
 #include "ezOptionParser.h"
 #include "snpspec.h"
 
