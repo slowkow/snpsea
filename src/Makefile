@@ -27,7 +27,7 @@ BIN = ../bin/snpsea
 all : $(BIN)
 
 $(BIN) : intervaltree eigen
-    mkdir -p ../bin
+	mkdir -p ../bin
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ) $(LIB)
 
 $(OBJ) : $(HDR)
