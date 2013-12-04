@@ -26,7 +26,7 @@ BIN = ../bin/snpsea
 
 all : $(BIN)
 
-$(BIN) : intervaltree eigen
+$(BIN) : $(INTERVAL_TREE_PATH) $(EIGEN_PATH)
 	mkdir -p ../bin
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ) $(LIB)
 
@@ -40,11 +40,14 @@ $(BIN) : $(OBJ)
 
 .PHONY: intervaltree eigen clean
 
-intervaltree: $(INTERVAL_TREE_PATH)
-	test -d $< || git clone $(INTERVAL_TREE_URL) $<
+../ext :
+	mkdir $@
 
-eigen: $(EIGEN_PATH)
-	test -d $< || hg clone $(EIGEN_URL) $<
+$(INTERVAL_TREE_PATH) :
+	git clone $(INTERVAL_TREE_URL) $@
+
+$(EIGEN_PATH) :
+	hg clone $(EIGEN_URL) $@
 
 clean:
 	rm -f $(OBJ) $(BIN)
