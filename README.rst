@@ -1,7 +1,9 @@
-=======================================================================
-SNPsea: SNP set enrichment analysis for condition-specificity of gene
-measurements or binary annotations within trait-associated loci.
-=======================================================================
+=======
+SNPsea
+=======
+
+SNP set enrichment analysis for condition-specificity of gene measurements or
+binary annotations within trait-associated loci.
 
 .. contents::
 
