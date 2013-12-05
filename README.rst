@@ -60,8 +60,7 @@ Quick Start
 Documentation
 -------------
 
-Read the manual:
+Read the manual_ and see http://www.broadinstitute.org/mpg/snpsea for more
+information.
 
-    doc/SNPspec_manual.pdf
-
-See http://www.broadinstitute.org/mpg/snpsea for more information.
+.. _manual: https://github.com/slowkow/snpsea/blob/master/doc/SNPsea_manual.pdf?raw=true
