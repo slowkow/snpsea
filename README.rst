@@ -52,6 +52,8 @@ Please cite the following publication if you use this method:
 Quick Start
 -----------
 
+::
+
     cd src
     make
     ../bin/snpsea
