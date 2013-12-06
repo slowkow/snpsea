@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="generator" content="pandoc" />
+    <meta name="author" content="Kamil Slowikowski" />
+    <meta name="date" content="2013-11-26" />
+    <title>SNPsea v0.1 Reference Manual</title>
+    <style type="text/css">code{white-space: pre;}</style>
+    <style type="text/css">
+        body {
+            width: 55em; margin-left: auto; margin-right: auto;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAANCAMAAACTkM4rAAAAM1BMVEXy8vLz8/P5+fn19fXt7e329vb4+Pj09PTv7+/u7u739/fw8PD7+/vx8fHr6+v6+vrs7Oz2LjW2AAAAkUlEQVR42g3KyXHAQAwDQYAQj12ItvOP1qqZZwMMPVnd06XToQvz4L2HDQ2iRgkvA7yPPB+JD+OUPnfzZ0JNZh6kkQus5NUmR7g4Jpxv5XN6nYWNmtlq9o3zuK6w3XRsE1pQIEGPIsdtTP3m2cYwlPv6MbL8/QASsKppZefyDmJPbxvxa/NrX1TJ1yp20fhj9D+SiAWWLU8myQAAAABJRU5ErkJggg==);
+        }
+        p { line-height: 150%; }
+        pre { margin-left: 4em; }
+        a { color: #576b60; }
+    </style>
+    <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">SNPsea v0.1 Reference Manual</h1>
+<h2 class="author">Kamil Slowikowski</h2>
+<h3 class="date">November 26, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#contact">Contact</a></li>
+<li><a href="#visual-summary">Visual Summary</a></li>
+</ul></li>
+<li><a href="#installation">Installation</a><ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#c-libraries">C++ Libraries</a></li>
+<li><a href="#python-packages">Python Packages</a></li>
+<li><a href="#r-packages">R Packages</a></li>
+</ul></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#example">Example</a></li>
+<li><a href="#options">Options</a></li>
+<li><a href="#input-file-formats">Input File Formats</a></li>
+<li><a href="#output-files">Output Files</a></li>
+<li><a href="#output-visualizations">Output Visualizations</a></li>
+</ul></li>
+</ul>
+</div>
+<p></p>
+<h1 id="introduction"><a href="#introduction">Introduction</a></h1>
+<p>SNPsea is a nonparametric permutation analysis originally conceived to test for enrichment of sample-specific expression of genes in loci near trait-associated SNPs.</p>
+<p>The implementation described here is generalized, so you may provide a quantitative gene matrix with gene expression (or any other measurements) or a binary gene matrix with presence absence (1, 0) values. The columns of the matrix might be tissues, cell types, GO annotation codes, or any other types of conditions. In general, this analysis is appropriate when you are interested in testing for enrichment of sample-specificity of genes linked to a given set of trait-associated SNPs.</p>
+<p>Genome-wide association analyses have identified disease and trait loci across the genome, thereby implicating many nearby linked genes.</p>
+<p>The following hypothesis is tested by this analysis:</p>
+<blockquote>
+<p>If trait-associated alleles impact a small number of pathogenic tissues or cell types, then the subset of genes with critical functions in those pathogenic cell types are likely to be within trait-associated loci.</p>
+</blockquote>
+<p>We assume that a gene's specificity to a given condition is a reasonable indicator of the gene's importance to the function of that condition.</p>
+<p>Please see the following publications for additional information outside the scope of this reference manual:</p>
+<blockquote>
+<p>Slowikowski, K. et al. SNPsea: test trait-associated loci for enrichment of condition-specificity of gene measurements or binary annotations. Manuscript in progress.</p>
+</blockquote>
+<blockquote>
+<p>Hu, X. et al. Integrating autoimmune risk loci with gene-expression data identifies specific pathogenic immune cell subsets. The American Journal of Human Genetics 89, 496–506 (2011). <a href="http://www.ncbi.nlm.nih.gov/pubmed/21963258">PubMed</a></p>
+</blockquote>
+<h2 id="contact"><a href="#contact">Contact</a></h2>
+<p>Please contact me with questions and comments: <script type="text/javascript">
+<!--
+h='&#98;&#114;&#x6f;&#x61;&#100;&#x69;&#110;&#x73;&#116;&#x69;&#116;&#x75;&#116;&#x65;&#46;&#x6f;&#114;&#x67;';a='&#64;';n='&#x73;&#108;&#x6f;&#x77;&#x69;&#x6b;&#x6f;&#x77;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x73;&#108;&#x6f;&#x77;&#x69;&#x6b;&#x6f;&#x77;&#32;&#x61;&#116;&#32;&#98;&#114;&#x6f;&#x61;&#100;&#x69;&#110;&#x73;&#116;&#x69;&#116;&#x75;&#116;&#x65;&#32;&#100;&#x6f;&#116;&#32;&#x6f;&#114;&#x67;</noscript></p>
+<h2 id="visual-summary"><a href="#visual-summary">Visual Summary</a></h2>
+<h3 id="flow-chart"><a href="#flow-chart">Flow Chart</a></h3>
+<p><img src="figures/flowchart.png" alt="flowchart" /><br /></p>
+<p>This flow chart shows the input data required to perform the analysis, and a summary of the intermediate steps.</p>
+<h1 id="installation"><a href="#installation">Installation</a></h1>
+<p>First, install the dependencies listed below. Then run:</p>
+<pre><code>    cd snpsea/src
+    make</code></pre>
+<p>You may move the generated executable file wherever you like:</p>
+<pre><code>    mv snpsea/bin/snpsea ~/bin/</code></pre>
+<h2 id="data"><a href="#data">Data</a></h2>
+<p>Download the compressed archive with data required to perform this analysis here:</p>
+<blockquote>
+<p><a href="http://www.broadinstitute.org/mpg/snpsea/SNPsea_data.zip">http://www.broadinstitute.org/mpg/snpsea/SNPsea_data.zip</a></p>
+</blockquote>
+<p>Contents:</p>
+<pre><code>    GO2013.gct.gz
+    Lango2010.txt.gz
+    NCBIgenes2013.bed.gz
+    NovartisGeneAtlas2004.gct.gz
+    ImmGen2012.gct.gz
+    LDL_Teslovich2010.txt
+    TGP2011.bed.gz</code></pre>
+<h3 id="go2013.gct.gz"><a href="#go2013.gct.gz"><code>GO2013.gct.gz</code></a></h3>
+<p>A GCT formatted gene matrix with 1s and 0s indicating presence or absence of genes in Gene Ontology annotations.</p>
+<h3 id="lango2010.txt.gz"><a href="#lango2010.txt.gz"><code>Lango2010.txt.gz</code></a></h3>
+<p>A list of SNPs pruned by linkage disequilibrium that span the whole genome. Null SNP sets matched on the number of genes in the user's SNP set are sampled from this list. See this paper for more information:</p>
+<blockquote>
+<p>Lango allen H, Estrada K, Lettre G, et al. Hundreds of variants clustered in genomic loci and biological pathways affect human height. Nature. 2010;467(7317):832-8. <a href="http://www.ncbi.nlm.nih.gov/pubmed/20881960">PubMed</a></p>
+</blockquote>
+<h3 id="ncbigenes2013.bed.gz"><a href="#ncbigenes2013.bed.gz"><code>NCBIgenes2013.bed.gz</code></a></h3>
+<p>Gene coordinates were obtained from the <a href="ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/">NCBI</a>. The coordinates I provide are a subset of those listed in <code>gene2refseq.gz</code>.</p>
+<h3 id="novartisgeneatlas2004.gct.gz"><a href="#novartisgeneatlas2004.gct.gz"><code>NovartisGeneAtlas2004.gct.gz</code></a></h3>
+<p>Gene expression data for 79 human tissues from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133">GSE1133</a>. Replicates for each tissue profile were averaged. For each gene, the single probe with the largest minimum was selected.</p>
+<blockquote>
+<p>Su AI et al. A gene atlas of the mouse and human protein-encoding transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7</p>
+</blockquote>
+<h3 id="immgen2012.gct.gz"><a href="#immgen2012.gct.gz"><code>ImmGen2012.gct.gz</code></a></h3>
+<p>Gene expression data for 249 blood cell types from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">GSE15907</a>. Replicates for each cell type profile were averaged. For each gene, the single probe with the largest minimum was selected.</p>
+<blockquote>
+<p>Immunological Genome Project.</p>
+</blockquote>
+<h3 id="ldl_teslovich2010.txt"><a href="#ldl_teslovich2010.txt"><code>LDL_Teslovich2010.txt</code></a></h3>
+<p>37 SNPs taken from:</p>
+<blockquote>
+<p>Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and population relevance of 95 loci for blood lipids. Nature. 2010;466(7307):707-13. <a href="http://www.ncbi.nlm.nih.gov/pubmed/20686565">PubMed</a></p>
+</blockquote>
+<h3 id="tgp2011.bed.gz"><a href="#tgp2011.bed.gz"><code>TGP2011.bed.gz</code></a></h3>
+<p>Linkage intervals for a filtered set of SNPs from the <a href="http://www.1000genomes.org/">1000 Genomes Project</a> Phase 1 (May 21, 2011). SNP genotypes were obtained from the <a href="http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3/">BEAGLE</a> release v3 website and processed to create linkage intervals for each SNP. The linkage intervals were extended to the nearest <a href="http://hapmap.ncbi.nlm.nih.gov/downloads/">HapMap</a> recombination hotspot with &gt;3 cM/Mb recombination rate.</p>
+<h2 id="c-libraries"><a href="#c-libraries">C++ Libraries</a></h2>
+<p><a href="http://eigen.tuxfamily.org">Eigen</a></p>
+<p>Eigen is a C++ template library for linear algebra: matrices, vectors, numerical solvers, and related algorithms.</p>
+<p><strong>Instructions:</strong> Download the latest version and unpack it. Ensure the SNPsea Makefile points to the folder that contains eigen.</p>
+<p><a href="http://www.open-mpi.org">OpenMPI</a></p>
+<p>MPI is a standardized API typically used for parallel and/or distributed computing. Open MPI is an open source, freely available implementation.</p>
+<p><strong>Instructions:</strong> Install on Ubuntu with:</p>
+<pre><code>    sudo apt-get install libopenmpi-dev</code></pre>
+<p><a href="http://www.gnu.org/software/gsl">GSL - GNU Scientific Library</a></p>
+<p>The GNU Scientific Library (GSL) is a numerical library for C and C++ programmers.</p>
+<p><strong>Instructions:</strong> Install on Ubuntu with:</p>
+<pre><code>    sudo apt-get install libgsl0-dev</code></pre>
+<p><a href="http://gcc.gnu.org">GCC, the GNU Compiler</a></p>
+<p>I use <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> features in my C++ code, so you must use a compiler that supports them. I compiled successfully with versions 4.6.3 and 4.8.1.</p>
+<h2 id="python-packages"><a href="#python-packages">Python Packages</a></h2>
+<p>To plot visualizations of the results, you will need Python 2.7 and the packages listed below. Note: the packages available on the Ubuntu repositories may be outdated and might fail to work.</p>
+<p><strong>Instructions:</strong> Install with <a href="http://www.pip-installer.org">pip</a>:</p>
+<pre><code>    pip install numpy pandas matplotlib</code></pre>
+<p><a href="http://www.numpy.org">numpy</a></p>
+<p>NumPy is the fundamental package for scientific computing with Python.</p>
+<p><a href="http://pandas.pydata.org">pandas</a></p>
+<p>pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language.</p>
+<p><a href="http://matplotlib.org">matplotlib</a></p>
+<p>matplotlib is a python 2D plotting library which produces publication quality figures in a variety of hardcopy formats and interactive environments across platforms.</p>
+<h2 id="r-packages"><a href="#r-packages">R Packages</a></h2>
+<p>Some visualizations use R and ggplot2 instead of Python and matplotlib.</p>
+<p><strong>Instructions:</strong> Start a session in R and run:</p>
+<pre class="sourceCode R"><code class="sourceCode r">    <span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;data.table&quot;</span>, <span class="st">&quot;reshape2&quot;</span>, <span class="st">&quot;gap&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>))</code></pre>
+<p><a href="http://cran.r-project.org/web/packages/data.table">data.table</a></p>
+<p>Extension of data.frame for fast indexing, fast ordered joins, fast assignment, fast grouping and list columns.</p>
+<p><a href="http://cran.r-project.org/web/packages/reshape2">reshape2</a></p>
+<p>Flexibly reshape data: a reboot of the reshape package.</p>
+<p><a href="http://cran.r-project.org/web/packages/gap">gap</a></p>
+<p>Genetic analysis package.</p>
+<p><a href="http://cran.r-project.org/web/packages/ggplot2">ggplot2</a></p>
+<p>An implementation of the Grammar of Graphics.</p>
+<h1 id="usage"><a href="#usage">Usage</a></h1>
+<h2 id="example"><a href="#example">Example</a></h2>
+<p>Here is a <a href="http://www.gnu.org/software/bash/manual/bashref.html">Bash</a> script with a usage example:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="ot">options=(</span>
+        <span class="kw">--snps</span> LDL_Teslovich2010.txt
+        <span class="kw">--gene-matrix</span> NovartisGeneAtlas2004.gct.gz
+        <span class="kw">--gene-intervals</span> NCBIgenes2013.bed.gz
+        <span class="kw">--snp-intervals</span> TGP2011.bed.gz
+        <span class="kw">--null-snps</span> Lango2010.txt.gz
+        <span class="kw">--out</span> out
+        <span class="kw">--slop</span> 250e3
+        <span class="kw">--threads</span> 4
+        <span class="kw">--null-snpsets</span> 1e3
+        <span class="kw">--min-observations</span> 50
+        <span class="kw">--max-iterations</span> 1e6
+    )
+    <span class="kw">snpsea</span> <span class="ot">${options[*]}</span> <span class="kw">&gt;</span> log.txt</code></pre>
+<p>This will run the analysis on SNPs associated with LDL cholesterol and test for tissue-specific expression of the nearby genes across 79 human tissues in the Novartis 2011 gene expression matrix. Additionally, 1000 null random matched SNP sets will be tested and their results will also be recorded. Each tissue will be tested up to 1 million times, or testing will stop for a tissue if 50 matched SNP sets are observed to achieve a higher specificity score than the user's SNPs.</p>
+<h2 id="options"><a href="#options">Options</a></h2>
+<p>All input files may be optionally compressed with <a href="http://www.gzip.org/"><code>gzip</code></a>.</p>
+<h3 id="required"><a href="#required">Required</a></h3>
+<pre><code>
+    --snps ARG               Text file with SNP identifiers in the first
+                             column. Instead of a file name, you may use
+                             &#39;randomN&#39; with an integer N for a random SNP list
+                             of length N.
+
+    --gene-matrix ARG        Gene matrix file in GCT format. The Name column
+                             must contain the same gene identifiers as in
+                             --gene-intervals.
+
+    --gene-intervals ARG     BED file with gene intervals. The fourth column
+                             must contain the same gene identifiers as in
+                             --gene-matrix.
+
+    --snp-intervals ARG      BED file with all known SNP intervals. The fourth
+                             column must contain the same SNP identifiers as
+                             in --snps and --null-snps.
+
+    --null-snps ARG          Text file with names of SNPs to sample when
+                             generating null matched or random SNP sets.
+                             These SNPs must be a subset of --snp-intervals.
+
+    --out ARG                Create output files in this directory. It will be
+                             created if it does not already exist.</code></pre>
+<h3 id="optional"><a href="#optional">Optional</a></h3>
+<pre><code>    --condition ARG          Text file with a list of columns in --gene-matrix
+                             to condition on before calculating p-values. Each
+                             column in --gene-matrix is projected onto each
+                             column listed in this file and its projection is
+                             subtracted.
+
+    --slop ARG               If a SNP interval overlaps no gene intervals,
+                             extend the SNP interval this many nucleotides
+                             further and try again.
+                             [default: 250000]
+
+    --threads ARG            Number of threads to use.
+                             [default: 1]
+
+    --null-snpsets ARG       Test this many null matched SNP sets, so you can
+                             compare your results to a distribution of null
+                             results.
+                             [default: 10]
+
+    --min-observations ARG   Stop testing a column in --gene-matrix after
+                             observing this many null SNP sets with 
+                             specificity scores greater or equal to those
+                             obtained with the SNP set in --snps. Increase
+                             this value to obtain more accurate p-values.
+                             [default: 25]
+
+    --max-iterations ARG     Maximum number of null SNP sets tested for each
+                             column in --gene-matrix. Increase this value to
+                             resolve smaller p-values.
+                             [default: 1000]</code></pre>
+<h2 id="input-file-formats"><a href="#input-file-formats">Input File Formats</a></h2>
+<h3 id="snps-arg"><a href="#snps-arg"><code>--snps ARG</code></a></h3>
+<p>You must provide one or more comma-separated text files. SNP identifiers must be listed one per line. Only the first column is used.</p>
+<pre><code>    head LDL_Teslovich2010.txt
+
+    rs11136341  chr8   145043543
+    rs3757354   chr6   16127407
+    rs12027135  chr1   25775733
+    rs217386    chr7   44600695
+    rs1169288   chr12  121416650
+    rs7225700   chr17  45391804
+    rs2479409   chr1   55504650
+    rs247616    chr16  56989590
+    rs2954022   chr8   126482621
+    rs1564348   chr6   160578860</code></pre>
+<p>Instead of providing a file with SNPs, you may use &quot;randomN&quot; like this:</p>
+<pre><code>    --snps random20</code></pre>
+<p>to sample 20 random SNPs from the <strong><code>--snp-intervals</code></strong> file.</p>
+<h3 id="gene-matrix-file"><a href="#gene-matrix-file"><code>--gene-matrix FILE</code></a></h3>
+<p>You must provide a single gene matrix that must be in <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> format.</p>
+<pre><code>    zcat NovartisGeneAtlas2004.gct.gz | cut -f1-4 | head
+
+    #1.2
+    17581  79
+    Name   Description  Colorectal_Adenocarcinoma  Whole_Blood
+    1      A1BG         115.5                      209.5
+    2      A2M          85                         328.5
+    9      NAT1         499                        1578
+    10     NAT2         115                        114
+    12     SERPINA3     419.5                      387.5
+    13     AADAC        125                        252.5
+    14     AAMP         2023                       942.5</code></pre>
+<h3 id="condition-file-optional"><a href="#condition-file-optional"><code>--condition FILE</code> (Optional)</a></h3>
+<p>You may provide column names present in the <strong><code>--gene-matrix</code></strong> file, one per line. The matrix will be conditioned on these columns before the analysis is performed to help you identify secondary signals independent of these columns. Binary (0, 1) matrices will not be conditioned.</p>
+<pre><code>    head conditions.txt
+
+    Whole_Blood</code></pre>
+<h3 id="gene-intervals-file"><a href="#gene-intervals-file"><code>--gene-intervals FILE</code></a></h3>
+<p>You must provide gene intervals in BED format with a fourth column that contains the same gene identifiers as those present in the Name column of the <strong><code>--gene-matrix</code></strong> GCT file. Only the first four columns are used.</p>
+<pre><code>    zcat NCBIgenes2013.bed.gz | head
+
+    chr1  10003485   10045555   64802      NMNAT1
+    chr1  100111430  100160096  54873      PALMD
+    chr1  100163795  100164756  100129320  HMGB3P10
+    chr1  100174205  100232185  391059     FRRS1
+    chr1  10027438   10027515   100847055  MIR5697
+    chr1  100308165  100308317  100270894  RPL39P9
+    chr1  100315632  100389578  178        AGL
+    chr1  100433941  100435837  730081     LOC730081
+    chr1  100435344  100492534  23443      SLC35A3
+    chr1  100503669  100548932  64645      HIAT1</code></pre>
+<h3 id="snp-intervals-file"><a href="#snp-intervals-file"><code>--snp-intervals FILE</code></a></h3>
+<p>SNP linkage intervals must be specified in BED format and include a fourth column with the SNP identifiers. The linkage intervals assigned to the trait-associated SNPs you provide with <strong><code>--snps</code></strong> are taken from this file.</p>
+<pre><code>    zcat TGP2011.bed.gz | head
+
+    chr1    0   254996  rs113759966
+    chr1    0   254996  rs114420996
+    chr1    0   254996  rs114608975
+    chr1    0   254996  rs115209712
+    chr1    0   254996  rs116400033
+    chr1    0   254996  rs116504101
+    chr1    0   254996  rs12184306
+    chr1    0   254996  rs12184307
+    chr1    0   254996  rs138808727
+    chr1    0   254996  rs139113303</code></pre>
+<h3 id="null-snps-file"><a href="#null-snps-file"><code>--null-snps FILE</code></a></h3>
+<p>The null SNPs file must have one SNP identifier per line. Only the first column is used. The identifiers must be a subset of the identifiers in <strong><code>--snp-intervals</code></strong>.</p>
+<pre><code>    zcat Lango2010.txt.gz | head
+
+    rs58108140  chr1    10583
+    rs180734498 chr1    13302
+    rs140337953 chr1    30923
+    rs141149254 chr1    54490
+    rs2462492   chr1    54676
+    rs10399749  chr1    55299
+    rs189727433 chr1    57952
+    rs149755937 chr1    59040
+    rs77573425  chr1    61989
+    rs116440577 chr1    63671</code></pre>
+<h2 id="output-files"><a href="#output-files">Output Files</a></h2>
+<p>The usage example shown above produces the following output files:</p>
+<pre><code>    out/
+        args.txt
+        pvalues.txt
+        null_pvalues.txt
+        snp_genes.txt
+        snp_pvalues.txt</code></pre>
+<h3 id="args.txt"><a href="#args.txt"><code>args.txt</code></a></h3>
+<p>The command line arguments needed to reproduce the analysis.</p>
+<pre><code>    cat args.txt
+
+    snpsea --snps LDL_Teslovich2010.txt
+           --gene-matrix NovartisGeneAtlas2004.gct.gz
+           --gene-intervals NCBIgenes2013.bed.gz
+           --snp-intervals TGP2011.bed.gz
+           --null-snps Lango2010.txt.gz
+           --out out
+           --slop 250000
+           --threads 4
+           --null-snpsets 1000
+           --min-observations 50
+           --max-iterations 1000000</code></pre>
+<h3 id="pvalues.txt"><a href="#pvalues.txt"><code>pvalues.txt</code></a></h3>
+<p>The p-values representing enrichment of sample-specificity for the given SNPs.</p>
+<pre><code>    head pvalues.txt | column -t
+
+    name                      pvalue       nulls_observed  nulls_tested
+    ColorectalAdenocarcinoma  0.87         87              100
+    WholeBlood                0.00606299   77              12700
+    BM-CD33+Myeloid           0.054        81              1500
+    PB-CD14+Monocytes         0.316667     95              300
+    PB-BDCA4+Dentritic_Cells  0.164286     115             700
+    PB-CD56+NKCells           0.000104993  86              819100</code></pre>
+<h3 id="null_pvalues.txt"><a href="#null_pvalues.txt"><code>null_pvalues.txt</code></a></h3>
+<p>If the argument for <strong><code>--snps</code></strong> is the name of a file, the p-values for null matched SNP sets. You can compare these null results to the results for your trait-associated SNPs.</p>
+<p>If the argument for <strong><code>--snps</code></strong> is &quot;randomN&quot; where N is some integer, like &quot;random20&quot; the p-values for random unmatched SNP sets, each with N SNPs.</p>
+<p>The fifth column is the replicate index. The number of replicates performed is specified with <strong><code>--null-snpsets INT</code></strong>.</p>
+<pre><code>    head null_pvalues.txt | column -t
+
+    ColorectalAdenocarcinoma  0.056     84   1500  0
+    WholeBlood                0.236667  71   300   0
+    BM-CD33+Myeloid           0.55      55   100   0
+    PB-CD14+Monocytes         0.59      59   100   0
+    PB-BDCA4+Dentritic_Cells  0.59      59   100   0
+    PB-CD56+NKCells           0.71      71   100   0
+    PB-CD4+Tcells             0.383333  115  300   0
+    PB-CD8+Tcells             0.128571  90   700   0
+    PB-CD19+Bcells            0.168571  118  700   0
+    BM-CD105+Endothelial      0.386667  116  300   0</code></pre>
+<h3 id="snp_genes.txt"><a href="#snp_genes.txt"><code>snp_genes.txt</code></a></h3>
+<p>Each SNP's linkage interval and overlapping genes. If a SNP is not found in the reference file specified with <strong><code>--snp-intervals</code></strong>, then the name of the SNP will be listed and the other columns will contain <code>NA</code>.</p>
+<pre><code>    head snp_genes.txt | column -t
+
+    chrom  start      end        name        n_genes  genes
+    chr7   128560761  128773770  rs10488631  2        3663,23534
+    chr2   100637056  100895271  rs10865035  3        3899,150577,164832
+    chr11  118475098  118746223  rs10892279  2        1656,23187
+    NA     NA         NA         rs99999999  NA       NA
+    chr21  43817297   43851877   rs11203203  1        53347
+    chr1   117256697  117293763  rs11586238  4        914,965,3321,5738
+    chr1   161389417  161637888  rs12746613  5        2212,2213,2215,3310,9103
+    chr2   61068167   61382443   rs13031237  5        5194,5966,84542,339803,339804
+    chr3   58553160   58558769   rs13315591  1        11170</code></pre>
+<h3 id="snp_pvalues.txt"><a href="#snp_pvalues.txt"><code>snp_pvalues.txt</code></a></h3>
+<p>Each SNP, sample, gene with greatest specificity to that sample, and p-value for the SNP-sample pair, adjusted for the number of genes overlapping the given SNP.</p>
+<pre><code>    head snp_pvalues.txt | column -t
+
+    marker      column                    gene   pvalue
+    rs10488631  ColorectalAdenocarcinoma  3663   0.270409
+    rs10488631  WholeBlood                3663   0.302693
+    rs10488631  BM-CD33+Myeloid           3663   0.0569547
+    rs10488631  PB-CD14+Monocytes         3663   0.0960891
+    rs10488631  PB-BDCA4+Dentritic_Cells  3663   0.240571
+    rs10488631  PB-CD56+NKCells           23534  0.58674
+    rs10488631  PB-CD4+Tcells             3663   0.683486
+    rs10488631  PB-CD8+Tcells             23534  0.634216
+    rs10488631  PB-CD19+Bcells            3663   0.261931</code></pre>
+<h2 id="output-visualizations"><a href="#output-visualizations">Output Visualizations</a></h2>
+<h3 id="view-enrichment-of-tissue-specific-gene-expression"><a href="#view-enrichment-of-tissue-specific-gene-expression">View enrichment of tissue-specific gene expression</a></h3>
+<p><img src="figures/Teslovich2010_Novartis2011_pvalues_barplot_25.png" /><br /> Create this visualization with:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">python</span> bin/barplot.py --out out</code></pre>
+<h3 id="view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair"><a href="#view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair">View the most specifically expressed gene for each SNP-tissue pair</a></h3>
+<p><img src="figures/Teslovich2010_Novartis2011_snp_pvalues_heatmap.png" /><br /> Create this visualization with:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">python</span> bin/heatmap.py --out out</code></pre>
+<h3 id="view-the-type-1-error-rate-estimates-for-each-tissue"><a href="#view-the-type-1-error-rate-estimates-for-each-tissue">View the type 1 error rate estimates for each tissue</a></h3>
+<p><img src="figures/type1error_Novartis2004.png" /><br /> Create this visualization with:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">Rscript</span> bin/type1error.R out</code></pre>
+</body>
+</html>
