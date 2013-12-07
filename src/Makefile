@@ -4,6 +4,9 @@
 # Compiler.
 CXX = g++
 
+# Check if the compiler is at least 4.6.
+GCC_VERSION := $(shell $(CXX) -dumpversion | awk '{print $$1>=4.6?"1":"0"}')
+
 # Paths to external resources.
 EIGEN_PATH = ../ext/eigen
 EIGEN_URL = https://bitbucket.org/eigen/eigen
@@ -34,12 +37,17 @@ $(OBJ) : $(HDR)
 
 # Make an object file for each C++ source file.
 %.o : %.cpp
+ifneq "$(GCC_VERSION)" "1"
+	$(error You must use GCC 4.6.3 or greater)
+else
 	$(CXX) $(CXXFLAGS) -c $<
+endif
 
 $(BIN) : $(OBJ)
 
 .PHONY: intervaltree eigen clean
 
+# External dependencies.
 ../ext :
 	mkdir $@
 
