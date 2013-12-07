@@ -50,7 +50,7 @@ int main(int argc, const char * argv[])
     opt.footer =
         "SNPsea v0.1  Copyright (C) 2013 Kamil Slowikowski"
         " <slowikow@broadinstitute.org>\n"
-        "This program is free and without warranty under the MIT license.\n\n";
+        "This program is free and without warranty under the GPLv3 license.\n\n";
 
     opt.add(
         "", // Default.
