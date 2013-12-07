@@ -1,6 +1,6 @@
-% SNPsea v0.1 Reference Manual
+% SNPsea Reference Manual
 % Kamil Slowikowski
-% December 5, 2013
+% December 7, 2013
 
 \pagebreak
 
@@ -85,7 +85,7 @@ You may move the generated executable file wherever you like:
 Download the compressed archive with data required to perform this analysis
 here:
 
-> <http://www.broadinstitute.org/mpg/snpsea/SNPsea_data.zip>
+> <http://www.broadinstitute.org/mpg/snpsea/SNPsea_data_20131204.zip>
 
 Contents:
 
