@@ -44,9 +44,15 @@ References
 
 Please cite the following publication if you use this method:
 
-    Slowikowski, K et al. SNPsea: SNP set enrichment analysis for
-    condition-specificity of gene measurements or binary annotations within
-    trait-associated loci. Manuscript in preparation.
+    Slowikowski, K. et al. SNPsea: test trait-associated loci for enrichment of
+    condition-specificity of gene measurements or binary annotations.
+    Manuscript in progress.
+
+See additional information and examples here:
+
+    Hu, X. et al. Integrating autoimmune risk loci with gene-expression data
+    identifies specific pathogenic immune cell subsets. The American Journal
+    of Human Genetics 89, 496–506 (2011). [PubMed][Hu2011]
 
 
 Quick Start
@@ -54,7 +60,8 @@ Quick Start
 
 ::
 
-    cd src
+    git clone https://github.com/slowkow/snpsea.git
+    cd snpsea/src
     make
     ../bin/snpsea
 
