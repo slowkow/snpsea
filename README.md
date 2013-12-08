@@ -4,15 +4,12 @@ SNPsea
 SNP set enrichment analysis for condition-specificity of gene measurements or
 binary annotations within trait-associated loci.
 
-<table class="image">
-<caption align="bottom">[37 SNP loci][Teslovich2010] associated with LDL
-cholesterol are significantly enriched (P=1e-4, Bonferroni=0.008) for genes
-with specific expression in Liver tissue in a test of [79 human
-tissues][GSE1133].</caption>
-<tr><td><img style="max-width:50%;align:center;"
-src="doc/figures/Teslovich2010_Novartis2011_pvalues_barplot_25.png"></td></tr>
-</table>
+See an **[example]** of [37 SNP loci][Teslovich2010] associated with LDL
+cholesterol that are significantly enriched (P=1e-4, Bonferroni=0.008) for genes
+with specific expression in Liver in a test of [79 human
+tissues][GSE1133].
 
+[example]: doc/figures/Teslovich2010_Novartis2011_pvalues_barplot_25.png
 [Teslovich2010]: http://www.ncbi.nlm.nih.gov/pubmed/20686565
 [GSE1133]: http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133
 
@@ -20,10 +17,10 @@ src="doc/figures/Teslovich2010_Novartis2011_pvalues_barplot_25.png"></td></tr>
 Contents
 --------
 
-- [Overview]
-- [Documentation]
-- [Quick Start]
-- [References]
+- <a href="#overview">Overview</a>
+- <a href="#documentation">Documentation</a>
+- <a href="#quick-start">Quick Start</a>
+- <a href="#references">References</a>
 
 
 Overview
@@ -60,7 +57,7 @@ particular cell type or condition.
 Documentation
 -------------
 
-Read the manual: [HTML]   [PDF]
+Read the manual: [HTML] or [PDF]
 
 See <http://www.broadinstitute.org/mpg/snpsea> for more information.
 
