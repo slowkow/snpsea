@@ -27,7 +27,7 @@
         }
         a { color: #576b60; }
         a[href ^= "http"]:after {
-            content: " " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII=);    
+            content: "⇗";
         }
     </style>
     <style type="text/css">
@@ -118,14 +118,24 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 </blockquote>
 <p>Contents:</p>
 <pre><code>    GO2013.gct.gz
+    ImmGen2012.gct.gz
+    LDL_Teslovich2010.txt
     Lango2010.txt.gz
     NCBIgenes2013.bed.gz
     NovartisGeneAtlas2004.gct.gz
-    ImmGen2012.gct.gz
-    LDL_Teslovich2010.txt
     TGP2011.bed.gz</code></pre>
 <h3 id="go2013.gct.gz"><a href="#go2013.gct.gz"><code>GO2013.gct.gz</code></a></h3>
 <p>A GCT formatted gene matrix with 1s and 0s indicating presence or absence of genes in Gene Ontology annotations.</p>
+<h3 id="immgen2012.gct.gz"><a href="#immgen2012.gct.gz"><code>ImmGen2012.gct.gz</code></a></h3>
+<p>Gene expression data for 249 blood cell types from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">GSE15907</a>. Replicates for each cell type profile were averaged. For each gene, the single probe with the largest minimum was selected.</p>
+<blockquote>
+<p>Immunological Genome Project.</p>
+</blockquote>
+<h3 id="ldl_teslovich2010.txt"><a href="#ldl_teslovich2010.txt"><code>LDL_Teslovich2010.txt</code></a></h3>
+<p>37 SNPs taken from:</p>
+<blockquote>
+<p>Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and population relevance of 95 loci for blood lipids. Nature. 2010;466(7307):707-13. <a href="http://www.ncbi.nlm.nih.gov/pubmed/20686565">PubMed</a></p>
+</blockquote>
 <h3 id="lango2010.txt.gz"><a href="#lango2010.txt.gz"><code>Lango2010.txt.gz</code></a></h3>
 <p>A list of SNPs pruned by linkage disequilibrium that span the whole genome. Null SNP sets matched on the number of genes in the user's SNP set are sampled from this list. See this paper for more information:</p>
 <blockquote>
@@ -137,16 +147,6 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <p>Gene expression data for 79 human tissues from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133">GSE1133</a>. Replicates for each tissue profile were averaged. For each gene, the single probe with the largest minimum was selected.</p>
 <blockquote>
 <p>Su AI et al. A gene atlas of the mouse and human protein-encoding transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7</p>
-</blockquote>
-<h3 id="immgen2012.gct.gz"><a href="#immgen2012.gct.gz"><code>ImmGen2012.gct.gz</code></a></h3>
-<p>Gene expression data for 249 blood cell types from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">GSE15907</a>. Replicates for each cell type profile were averaged. For each gene, the single probe with the largest minimum was selected.</p>
-<blockquote>
-<p>Immunological Genome Project.</p>
-</blockquote>
-<h3 id="ldl_teslovich2010.txt"><a href="#ldl_teslovich2010.txt"><code>LDL_Teslovich2010.txt</code></a></h3>
-<p>37 SNPs taken from:</p>
-<blockquote>
-<p>Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and population relevance of 95 loci for blood lipids. Nature. 2010;466(7307):707-13. <a href="http://www.ncbi.nlm.nih.gov/pubmed/20686565">PubMed</a></p>
 </blockquote>
 <h3 id="tgp2011.bed.gz"><a href="#tgp2011.bed.gz"><code>TGP2011.bed.gz</code></a></h3>
 <p>Linkage intervals for a filtered set of SNPs from the <a href="http://www.1000genomes.org/">1000 Genomes Project</a> Phase 1 (May 21, 2011). SNP genotypes were obtained from the <a href="http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3/">BEAGLE</a> release v3 website and processed to create linkage intervals for each SNP. The linkage intervals were extended to the nearest <a href="http://hapmap.ncbi.nlm.nih.gov/downloads/">HapMap</a> recombination hotspot with &gt;3 cM/Mb recombination rate.</p>
