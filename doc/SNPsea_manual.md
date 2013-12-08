@@ -91,11 +91,11 @@ Contents:
 
 ```
     GO2013.gct.gz
+    ImmGen2012.gct.gz
+    LDL_Teslovich2010.txt
     Lango2010.txt.gz
     NCBIgenes2013.bed.gz
     NovartisGeneAtlas2004.gct.gz
-    ImmGen2012.gct.gz
-    LDL_Teslovich2010.txt
     TGP2011.bed.gz
 ```
 
@@ -104,6 +104,24 @@ Contents:
 
 A GCT formatted gene matrix with 1s and 0s indicating presence or absence of
 genes in Gene Ontology annotations.
+
+
+### `ImmGen2012.gct.gz`
+
+Gene expression data for 249 blood cell types from [GSE15907]. Replicates for
+each cell type profile were averaged. For each gene, the single probe with
+the largest minimum was selected.
+
+> Immunological Genome Project.
+
+
+### `LDL_Teslovich2010.txt`
+
+37 SNPs taken from:
+
+> Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and
+> population relevance of 95 loci for blood lipids. Nature.
+> 2010;466(7307):707-13. [PubMed][Teslovich2010]
 
 
 ### `Lango2010.txt.gz`
@@ -131,24 +149,6 @@ the largest minimum was selected.
 
 > Su AI et al. A gene atlas of the mouse and human protein-encoding
 > transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7
-
-
-### `ImmGen2012.gct.gz`
-
-Gene expression data for 249 blood cell types from [GSE15907]. Replicates for
-each cell type profile were averaged. For each gene, the single probe with
-the largest minimum was selected.
-
-> Immunological Genome Project.
-
-
-### `LDL_Teslovich2010.txt`
-
-37 SNPs taken from:
-
-> Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and
-> population relevance of 95 loci for blood lipids. Nature.
-> 2010;466(7307):707-13. [PubMed][Teslovich2010]
 
 
 ### `TGP2011.bed.gz`
