@@ -85,7 +85,7 @@ You may move the generated executable file wherever you like:
 Download the compressed archive with data required to perform this analysis
 here:
 
-> <http://www.broadinstitute.org/mpg/snpsea/SNPsea_data_20131204.zip>
+> <http://dx.doi.org/10.6084/m9.figshare.871430>
 
 Contents:
 
@@ -103,16 +103,16 @@ Contents:
 ### `GO2013.gct.gz`
 
 A GCT formatted gene matrix with 1s and 0s indicating presence or absence of
-genes in Gene Ontology annotations.
+19,111 genes in 1,751 Gene Ontology annotations.
 
 
 ### `ImmGen2012.gct.gz`
 
-Gene expression data for 249 blood cell types from [GSE15907]. Replicates for
-each cell type profile were averaged. For each gene, the single probe with
-the largest minimum was selected.
+Gene expression data for 15,139 genes across 249 blood cell types from
+[GSE15907]. Replicates for each cell type were averaged. For each gene, the
+single probe with the largest minimum was selected.
 
-> Immunological Genome Project.
+> Immunological Genome Project. <http://www.immgen.org/>
 
 
 ### `LDL_Teslovich2010.txt`
@@ -126,9 +126,9 @@ the largest minimum was selected.
 
 ### `Lango2010.txt.gz`
 
-A list of SNPs pruned by linkage disequilibrium that span the whole genome.
-Null SNP sets matched on the number of genes in the user's SNP set are sampled
-from this list. See this paper for more information:
+A list of 56,890 SNPs pruned by linkage disequilibrium that span the whole
+genome. Null SNP sets matched on the number of genes in the user's SNP set are
+sampled from this list. See this paper for more information:
 
 > Lango allen H, Estrada K, Lettre G, et al. Hundreds of variants clustered in
 > genomic loci and biological pathways affect human height. Nature.
@@ -137,14 +137,14 @@ from this list. See this paper for more information:
 
 ### `NCBIgenes2013.bed.gz`
 
-Gene coordinates were obtained from the [NCBI]. The coordinates I provide are
-a subset of those listed in `gene2refseq.gz`.
+40,437 Gene coordinates were obtained from the [NCBI]. The coordinates
+I provide are a subset of those listed in `gene2refseq.gz`.
 
 
 ### `NovartisGeneAtlas2004.gct.gz`
 
-Gene expression data for 79 human tissues from [GSE1133]. Replicates for
-each tissue profile were averaged. For each gene, the single probe with
+Gene expression data for 17,581 genes across 79 human tissues from [GSE1133].
+Replicates for each tissue were averaged. For each gene, the single probe with
 the largest minimum was selected.
 
 > Su AI et al. A gene atlas of the mouse and human protein-encoding
@@ -153,7 +153,7 @@ the largest minimum was selected.
 
 ### `TGP2011.bed.gz`
 
-Linkage intervals for a filtered set of SNPs from the [1000 Genomes
+Linkage intervals for a filtered set of 22,518,294 SNPs from the [1000 Genomes
 Project][tgp] Phase 1 (May 21, 2011). SNP genotypes were obtained from the
 [BEAGLE] release v3 website and processed to create linkage intervals for each
 SNP. The linkage intervals were extended to the nearest [HapMap] recombination
