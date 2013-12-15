@@ -71,9 +71,9 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Text file with SNP identifiers in the first column.\n"
-        "Instead of a file name, you may use 'randomN' with an integer N for"
-        " a random SNP list of length N.\n",
+        "* Text file with SNP identifiers in the first column."
+        " Instead of a file name, you may use 'randomN' with an integer N for"
+        " a random SNP list of length N.",
         "--snps" // Flag token.
     );
 
@@ -83,7 +83,7 @@ int main(int argc, const char * argv[])
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "* Gene matrix file in GCT format. The Name column must contain the"
-        " same gene identifiers as in --gene-intervals.\n",
+        " same gene identifiers as in --gene-intervals.",
         "--gene-matrix" // Flag token.
     );
 
@@ -93,7 +93,7 @@ int main(int argc, const char * argv[])
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "* BED file with gene intervals. The fourth column must contain the"
-        " same gene identifiers as in --gene-matrix.\n",
+        " same gene identifiers as in --gene-matrix.",
         "--gene-intervals" // Flag token.
     );
 
@@ -103,7 +103,7 @@ int main(int argc, const char * argv[])
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "* BED file with all known SNP intervals. The fourth column must"
-        " contain the same SNP identifiers as in --snps and --null-snps.\n",
+        " contain the same SNP identifiers as in --snps and --null-snps.",
         "--snp-intervals" // Flag token.
     );
 
@@ -114,7 +114,7 @@ int main(int argc, const char * argv[])
         0, // Delimiter if expecting multiple args.
         "* Text file with SNP identifiers to sample when generating null"
         " matched or random SNP sets. These SNPs must be a subset of"
-        " --snp-intervals.\n",
+        " --snp-intervals.",
         "--null-snps" // Flag token.
     );
 
@@ -123,7 +123,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Create output files in this directory.\n", // Help description.
+        "* Create output files in this directory.", // Help description.
         "--out" // Flag token.
     );
 
@@ -135,7 +135,7 @@ int main(int argc, const char * argv[])
         "* Text file with a list of columns in --gene-matrix to condition on"
         " before calculating p-values. Each column in --gene-matrix is"
         " projected onto each column listed in this file and its projection"
-        " is subtracted.\n",
+        " is subtracted.",
         "--condition" // Flag token.
     );
 
@@ -146,7 +146,7 @@ int main(int argc, const char * argv[])
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "* If a SNP overlaps no gene intervals, extend the SNP interval this"
-        " many nucleotides further and try again.\n[default: 250000]\n",
+        " many nucleotides further and try again.\n[default: 250000]",
         "--slop", // Flag token.
         vU8
     );
@@ -157,7 +157,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Number of threads to use.\n[default: 1]\n",
+        "* Number of threads to use. [default: 1]",
         "--threads", // Flag token.
         gt1
     );
@@ -169,7 +169,7 @@ int main(int argc, const char * argv[])
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "* Test this many null matched SNP sets, so you can compare"
-        " your results to a distribution of null results.\n[default: 10]\n",
+        " your results to a distribution of null results.\n[default: 10]",
         "--null-snpsets", // Flag token.
         gt0
     );
@@ -182,7 +182,7 @@ int main(int argc, const char * argv[])
         "* Stop testing a column in --gene-matrix after observing this many"
         " null SNP sets with specificity scores greater or equal to those"
         " obtained with the SNP set in --snps. Increase this value to obtain"
-        " more accurate p-values.\n[default: 25]\n",
+        " more accurate p-values.\n[default: 25]",
         "--min-observations", // Flag token.
         gt1
     );
@@ -194,7 +194,7 @@ int main(int argc, const char * argv[])
         0, // Delimiter if expecting multiple args.
         "* Maximum number of null SNP sets tested against each column in"
         " --gene-matrix. Increase this value to resolve smaller p-values."
-        "\n[default: 1000]\n",
+        "\n[default: 1000]",
         "--max-iterations", // Flag token.
         gt1
     );
