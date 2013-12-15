@@ -13,6 +13,10 @@ tissues][GSE1133].
 [Teslovich2010]: http://www.ncbi.nlm.nih.gov/pubmed/20686565
 [GSE1133]: http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133
 
+**[Download]** the binary for 64 bit Linux.
+
+[Download]: https://github.com/slowkow/snpsea/releases
+
 
 Contents
 --------
