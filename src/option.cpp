@@ -18,37 +18,31 @@ int main(int argc, const char * argv[])
     ezOptionParser opt;
 
     opt.overview =
-        "SNPsea: an efficient statistical assessment for enrichment\n"
-        "of continuous or binary gene annotations within disease loci.\n"
-        "=============================================================";
-    opt.syntax = "snpsea [OPTIONS]";
-    opt.example =
-        "Steps:\n"
-        "  1. Condition each column in --gene-matrix on the columns listed\n"
-        "     in the --condition file.\n"
+        "SNPsea: test trait-associated loci for enrichment\n"
+        "of gene measurements or binary annotations.\n"
+        "=================================================\n"
+        "  1. Condition --gene-matrix on columns listed in --condition.\n"
         "  2. Test each column in --gene-matrix for enrichment of genes\n"
-        "     for the user's SNPs in --snps assigned to SNP intervals\n"
-        "     provided in --snp-intervals.\n"
-        "  3. Replicate the test with the null matched SNP sets\n"
-        "     sampled from: --null-snps\n"
-        "     for the specified number of iterations: --max-iterations\n"
-        "     and stop testing a column after --min-observations null SNP\n"
-        "     sets with higher scores are observed.\n"
-        "\n"
-        "snpsea --snps file.txt               \\ # or   --snps random20 \n"
-        "       --gene-matrix file.gct.gz     \\\n"
-        "       --null-snps file.txt          \\\n"
-        "       --snp-intervals file.bed.gz   \\\n"
-        "       --gene-intervals file.bed.gz  \\\n"
-        "       --condition file.txt          \\\n"
-        "       --out folder                  \\\n"
-        "       --slop 250e3                  \\\n"
-        "       --threads 2                   \\\n"
-        "       --null-snpsets 100            \\\n"
-        "       --min-observations 25         \\\n"
-        "       --max-iterations 1e6\n\n";
+        "     within --snps assigned to intervals in --snp-intervals.\n"
+        "  3. Repeat with the null matched SNP set from --null-snps\n"
+        "     for --max-iterations and stop if --min-observations null SNP\n"
+        "     sets with higher scores are observed for that column.";
+    opt.syntax = "    snpsea [OPTIONS]";
+    opt.example =
+        "    snpsea --snps file.txt               \\ # or  --snps random20 \n"
+        "           --gene-matrix file.gct.gz     \\\n"
+        "           --null-snps file.txt          \\\n"
+        "           --snp-intervals file.bed.gz   \\\n"
+        "           --gene-intervals file.bed.gz  \\\n"
+        "           --condition file.txt          \\\n"
+        "           --out folder                  \\\n"
+        "           --slop 250e3                  \\\n"
+        "           --threads 2                   \\\n"
+        "           --null-snpsets 100            \\\n"
+        "           --min-observations 25         \\\n"
+        "           --max-iterations 1e6\n\n";
     opt.footer =
-        "SNPsea v0.1  Copyright (C) 2013 Kamil Slowikowski"
+        "SNPsea " SNPSEA_VERSION " Copyright (C) 2013 Kamil Slowikowski"
         " <slowikow@broadinstitute.org>\n"
         "This program is free and without warranty under the GPLv3 license.\n\n";
 
@@ -57,7 +51,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         0, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Display usage instructions.", // Help description.
+        "* Display usage instructions.", // Help description.
         "-h",    // Flag token.
         "--help" // Flag token.
     );
@@ -67,7 +61,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         0, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Display version and exit.\n\n", // Help description.
+        "* Display version and exit.\n", // Help description.
         "-v",       // Flag token.
         "--version" // Flag token.
     );
@@ -77,9 +71,9 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Text file with SNP identifiers in the first column.\n"
+        "* Text file with SNP identifiers in the first column.\n"
         "Instead of a file name, you may use 'randomN' with an integer N for"
-        " a random SNP list of length N.\n\n",
+        " a random SNP list of length N.\n",
         "--snps" // Flag token.
     );
 
@@ -88,8 +82,8 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Gene matrix file in GCT format. The Name column must contain the"
-        " same gene identifiers as in --gene-intervals.\n\n",
+        "* Gene matrix file in GCT format. The Name column must contain the"
+        " same gene identifiers as in --gene-intervals.\n",
         "--gene-matrix" // Flag token.
     );
 
@@ -98,8 +92,8 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "BED file with gene intervals. The fourth column must contain the"
-        " same gene identifiers as in --gene-matrix.\n\n",
+        "* BED file with gene intervals. The fourth column must contain the"
+        " same gene identifiers as in --gene-matrix.\n",
         "--gene-intervals" // Flag token.
     );
 
@@ -108,8 +102,8 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "BED file with all known SNP intervals. The fourth column must"
-        " contain the same SNP identifiers as in --snps and --null-snps.\n\n",
+        "* BED file with all known SNP intervals. The fourth column must"
+        " contain the same SNP identifiers as in --snps and --null-snps.\n",
         "--snp-intervals" // Flag token.
     );
 
@@ -118,9 +112,9 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Text file with SNP identifiers to sample when generating null"
+        "* Text file with SNP identifiers to sample when generating null"
         " matched or random SNP sets. These SNPs must be a subset of"
-        " --snp-intervals.\n\n",
+        " --snp-intervals.\n",
         "--null-snps" // Flag token.
     );
 
@@ -129,7 +123,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Create output files in this directory.\n\n", // Help description.
+        "* Create output files in this directory.\n", // Help description.
         "--out" // Flag token.
     );
 
@@ -138,10 +132,10 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Text file with a list of columns in --gene-matrix to condition on"
+        "* Text file with a list of columns in --gene-matrix to condition on"
         " before calculating p-values. Each column in --gene-matrix is"
         " projected onto each column listed in this file and its projection"
-        " is subtracted.\n\n",
+        " is subtracted.\n",
         "--condition" // Flag token.
     );
 
@@ -151,8 +145,8 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "If a SNP overlaps no gene intervals, extend the SNP interval this"
-        " many nucleotides further and try again.\n[default: 250000]\n\n",
+        "* If a SNP overlaps no gene intervals, extend the SNP interval this"
+        " many nucleotides further and try again.\n[default: 250000]\n",
         "--slop", // Flag token.
         vU8
     );
@@ -163,7 +157,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Number of threads to use.\n[default: 1]\n\n",
+        "* Number of threads to use.\n[default: 1]\n",
         "--threads", // Flag token.
         gt1
     );
@@ -174,8 +168,8 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Test this many null matched SNP sets, so you can compare"
-        " your results to a distribution of null results.\n[default: 10]\n\n",
+        "* Test this many null matched SNP sets, so you can compare"
+        " your results to a distribution of null results.\n[default: 10]\n",
         "--null-snpsets", // Flag token.
         gt0
     );
@@ -185,10 +179,10 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Stop testing a column in --gene-matrix after observing this many"
+        "* Stop testing a column in --gene-matrix after observing this many"
         " null SNP sets with specificity scores greater or equal to those"
         " obtained with the SNP set in --snps. Increase this value to obtain"
-        " more accurate p-values.\n[default: 25]\n\n",
+        " more accurate p-values.\n[default: 25]\n",
         "--min-observations", // Flag token.
         gt1
     );
@@ -198,9 +192,9 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Maximum number of null SNP sets tested against each column in"
+        "* Maximum number of null SNP sets tested against each column in"
         " --gene-matrix. Increase this value to resolve smaller p-values."
-        "\n[default: 1000]\n\n",
+        "\n[default: 1000]\n",
         "--max-iterations", // Flag token.
         gt1
     );
@@ -213,13 +207,18 @@ int main(int argc, const char * argv[])
         return 1;
     }
 
+    if (opt.isSet("-v")) {
+        std::cout << SNPSEA_VERSION << std::endl;
+        return 1;
+    }
+
     std::vector<std::string> badOptions;
     int i;
     if (!opt.gotRequired(badOptions)) {
         Usage(opt);
         for (i = 0; i < badOptions.size(); ++i) {
             std::cerr << "ERROR: Missing required option "
-                      << badOptions[i] << ".\n\n";
+                      << badOptions[i] << ".\n";
         }
         return 1;
     }
@@ -228,7 +227,7 @@ int main(int argc, const char * argv[])
         Usage(opt);
         for (i = 0; i < badOptions.size(); ++i) {
             std::cerr << "ERROR: Got unexpected number of arguments for "
-                      << badOptions[i] << ".\n\n";
+                      << badOptions[i] << ".\n";
         }
         return 1;
     }

@@ -28,7 +28,7 @@ snpsea::snpsea(
     ulong max_iterations 
 )
 {
-    std::cout << "# SNPsea v0.1\n\n";
+    std::cout << "# SNPsea " << SNPSEA_VERSION << "\n\n";
 
     write_args(
         user_snpset_file,
