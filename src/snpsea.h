@@ -133,10 +133,17 @@ class snpsea
 
     private:
         std::set<std::string>
+        // The set of SNPs provided by the user.
         _user_snp_names,
+        // Separate the SNPs absent from --snp-intervals.
         _user_absent_snp_names,
+        // Separate the SNPs whose intervals hit 0 genes.
+        _user_naked_snp_names,
+        // Names of SNPs from --null-snps.
         _null_snp_names,
+        // Names of SNPs from --snp-intervals.
         _snp_names,
+        // Names of conditions in --conditions.
         _condition_names;
 
         // Name of a SNP => genomic interval.
