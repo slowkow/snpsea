@@ -402,7 +402,7 @@ void snpsea::random_snps(
 // a map of name => interval.
 void snpsea::read_bed_intervals(
     std::string filename,
-    std::map<std::string, genomic_interval> & intervals
+    std::unordered_map<std::string, genomic_interval> & intervals
 )
 {
     gzifstream stream(filename.c_str());
@@ -423,7 +423,7 @@ void snpsea::read_bed_intervals(
 void snpsea::read_bed_interval_tree(
     std::string filename,
     const std::vector<std::string> & row_names,
-    std::map<std::string, IntervalTree<ulong> > & tree
+    std::unordered_map<std::string, IntervalTree<ulong> > & tree
 )
 {
     gzifstream stream(filename.c_str());
@@ -437,11 +437,11 @@ void snpsea::read_bed_interval_tree(
 
     // Map a chromosome name to a vector of intervals.
     typedef Interval<ulong> interval;
-    std::map<std::string, vector<interval> > intervals;
+    std::unordered_map<std::string, vector<interval> > intervals;
 
     // Rather than storing the gene identifiers in the tree, we'll store the
     // indices of the gene identifiers in the provided vector.
-    std::map<std::string, ulong> index;
+    std::unordered_map<std::string, ulong> index;
     for (ulong i = 0; i < row_names.size(); i++) {
         index[row_names.at(i)] = i;
     }
@@ -553,7 +553,7 @@ void snpsea::read_gct(
 void snpsea::overlap_genes(
     std::set<std::string> & snp_names,
     std::set<std::string> & absent_snp_names,
-    std::map<std::string, std::vector<ulong> > & genesets,
+    std::unordered_map<std::string, std::vector<ulong> > & genesets,
     std::vector<ulong> & geneset_sizes,
     ulong slop
 )
@@ -588,13 +588,13 @@ void snpsea::overlap_genes(
 
 void snpsea::merge_user_snps(
     std::set<std::string> & snp_names,
-    std::map<std::string, std::vector<ulong> > & genesets,
+    std::unordered_map<std::string, std::vector<ulong> > & genesets,
     std::vector<ulong> & geneset_sizes
 )
 {
     // Create new variables and fill them after merging SNPs.
     std::set<std::string> new_snp_names;
-    std::map<std::string, std::vector<ulong> > new_genesets;
+    std::unordered_map<std::string, std::vector<ulong> > new_genesets;
     std::vector<ulong> new_geneset_sizes;
 
     std::set<std::string> merged_snps;
@@ -929,7 +929,7 @@ double snpsea::score_quantitative(
 
 void snpsea::report_pvalues(
     const std::string filename,
-    const std::map<std::string, std::vector<ulong> > genesets
+    const std::unordered_map<std::string, std::vector<ulong> > genesets
 )
 {
     std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";

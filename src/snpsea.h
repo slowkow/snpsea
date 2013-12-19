@@ -61,7 +61,7 @@ class snpsea
 
         void read_bed_intervals(
             std::string filename,
-            std::map<std::string, genomic_interval> & intervals
+            std::unordered_map<std::string, genomic_interval> & intervals
         );
 
         void read_gct(
@@ -74,20 +74,20 @@ class snpsea
         void read_bed_interval_tree(
             std::string filename,
             const std::vector<std::string> & row_names,
-            std::map<std::string, IntervalTree<ulong> > & tree
+            std::unordered_map<std::string, IntervalTree<ulong> > & tree
         );
 
         void overlap_genes(
             std::set<std::string> & snp_names,
             std::set<std::string> & absent_snp_names,
-            std::map<std::string, std::vector<ulong> > & genesets,
+            std::unordered_map<std::string, std::vector<ulong> > & genesets,
             std::vector<ulong> & geneset_sizes,
             ulong slop
         );
 
         void merge_user_snps(
             std::set<std::string> & snp_names,
-            std::map<std::string, std::vector<ulong> > & genesets,
+            std::unordered_map<std::string, std::vector<ulong> > & genesets,
             std::vector<ulong> & geneset_sizes
         );
 
@@ -122,7 +122,7 @@ class snpsea
 
         void report_pvalues(
             const std::string filename,
-            const std::map<std::string, std::vector<ulong> > genesets
+            const std::unordered_map<std::string, std::vector<ulong> > genesets
         );
 
         void calculate_pvalues(
@@ -149,11 +149,11 @@ class snpsea
         _condition_names;
 
         // Name of a SNP => genomic interval.
-        std::map<std::string, genomic_interval>
+        std::unordered_map<std::string, genomic_interval>
         _snp_intervals;
 
         // Name of a chromosome => interval tree.
-        std::map<std::string, IntervalTree<ulong> >
+        std::unordered_map<std::string, IntervalTree<ulong> >
         _gene_interval_tree;
 
         MatrixXd
@@ -173,7 +173,7 @@ class snpsea
         _col_names;
 
         // The genesets for the user's SNPs.
-        std::map<std::string, std::vector<ulong> >
+        std::unordered_map<std::string, std::vector<ulong> >
         _user_genesets;
 
         // Each of the user's SNPs corresponds to a geneset. These are the
@@ -183,7 +183,7 @@ class snpsea
 
         // Put genesets into bins, where the key to a bin is the size of the
         // contained genesets in that bin.
-        std::map<ulong, std::vector<std::vector<ulong> > >
+        std::unordered_map<ulong, std::vector<std::vector<ulong> > >
         _geneset_bins;
 
         // Is the first column of the gene matrix filled with 1s and 0s?
