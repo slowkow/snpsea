@@ -170,17 +170,16 @@ def heatmap_triangle(dataframe, axes):
     D = D.ix[sample_order, sample_order]
 
     # Get the lower triangle of the matrix. 
-    C = np.tril(D)#, -1)
-    # Mask the upper triangle and the diagonal.
+    C = np.tril(D)
+    # Mask the upper triangle.
     C = np.ma.masked_array(C, C == 0)
+    # Set the diagonal to zero.
     for i in range(N):
         C[i, i] = 0
 
     # Transformation matrix for rotating the heatmap.
+    A = np.array([(y, x) for x in range(N, -1, -1) for y in range(N + 1)])
     t = np.array([[0.5, 1], [0.5, -1]])
-
-    B = itertools.product(range(N, -1, -1), range(0, N + 1, 1))
-    A = np.array([(i[1], i[0]) for i in B])
     A = np.dot(A, t)
 
     # -1.0 correlation is blue, 0.0 is white, 1.0 is red.
