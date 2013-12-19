@@ -10,7 +10,7 @@
 #include <iostream>
 #include <iterator>
 #include <limits>
-#include <map>
+#include <unordered_map>
 #include <random>
 #include <set>
 #include <sstream>
