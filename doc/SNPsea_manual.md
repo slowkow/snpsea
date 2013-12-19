@@ -1,25 +1,23 @@
 % SNPsea Reference Manual
 % Kamil Slowikowski
-% December 7, 2013
+% December 15, 2013
 
 \pagebreak
 
 # Introduction
 
-SNPsea is a nonparametric permutation analysis originally conceived to test
-for enrichment of sample-specific expression of genes in loci near
-trait-associated SNPs.
+SNPsea is a nonparametric permutation analysis for identifying pathways and
+tissue types influenced by the alleles discovered through genome-wide
+association studies (GWAS). It was originally conceived to test for enrichment
+of cell type-specific expression of genes in loci near trait-associated SNPs.
 
 The implementation described here is generalized, so you may provide
 a quantitative gene matrix with gene expression (or any other measurements) or
 a binary gene matrix with presence absence (1, 0) values. The columns of the
 matrix might be tissues, cell types, GO annotation codes, or any other types
 of conditions. In general, this analysis is appropriate when you are
-interested in testing for enrichment of sample-specificity of genes linked to
-a given set of trait-associated SNPs.
-
-Genome-wide association analyses have identified disease and trait loci across
-the genome, thereby implicating many nearby linked genes.
+interested in testing for enrichment of condition-specificity of genes linked
+to a given set of trait-associated SNPs.
 
 The following hypothesis is tested by this analysis:
 
@@ -27,8 +25,9 @@ The following hypothesis is tested by this analysis:
 > cell types, then the subset of genes with critical functions in those
 > pathogenic cell types are likely to be within trait-associated loci.
 
-We assume that a gene's specificity to a given condition is a reasonable
-indicator of the gene's importance to the function of that condition.
+We assume that a gene's specificity to a given cell type or condition is
+a reasonable indicator of the gene's importance to the function of that cell
+type.
 
 Please see the following publications for additional information outside the
 scope of this reference manual:
@@ -65,7 +64,11 @@ a summary of the intermediate steps.
 
 # Installation
 
-First, install the dependencies listed below. Then run:
+Download the binary: <https://github.com/slowkow/snpsea/releases>
+
+Or, you can download the source code: <https://github.com/slowkow/snpsea>
+
+After you install the dependencies listed below, run:
 
 ```
     cd snpsea/src
@@ -83,7 +86,7 @@ You may move the generated executable file wherever you like:
 ## Data
 
 Download the compressed archive with data required to perform this analysis
-here:
+here (138M):
 
 > <http://dx.doi.org/10.6084/m9.figshare.871430>
 
@@ -571,7 +574,8 @@ The command line arguments needed to reproduce the analysis.
 
 ### `pvalues.txt`
 
-The p-values representing enrichment of sample-specificity for the given SNPs.
+The p-values representing enrichment of condition-specificity for the given
+SNPs.
 
 ```
     head pvalues.txt | column -t
@@ -638,9 +642,9 @@ SNP will be listed and the other columns will contain `NA`.
 
 ### `snp_pvalues.txt`
 
-Each SNP, sample, gene with greatest specificity to that sample, and p-value
-for the SNP-sample pair, adjusted for the number of genes overlapping the
-given SNP.
+Each SNP, condition, gene with greatest specificity to that sample, and
+p-value for the SNP-sample pair, adjusted for the number of genes overlapping
+the given SNP.
 
 ```
     head snp_pvalues.txt | column -t

@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <meta name="generator" content="pandoc" />
     <meta name="author" content="Kamil Slowikowski" />
+    <meta name="date" content="2013-12-15" />
     <title>SNPsea Reference Manual</title>
     <style type="text/css">code{white-space: pre;}</style>
     <style type="text/css">
@@ -14,8 +15,8 @@
         }
         p { line-height: 150%; }
         pre {
-            margin-left: 4em;
-            margin-right: 4em;
+            margin-left: 1em;
+            margin-right: 1em;
             display: block;
             background-color: whitesmoke;
         }
@@ -32,10 +33,19 @@
         #TOC {
             width: 220px;
             position: fixed;
-            font-weight: bold;
+            line-height: 150%;
         }
         #content {
             padding-left: 240px;
+        }
+        #TOC ul {
+            list-style: none;
+            padding-left: 0em;
+        }
+        #TOC ul ul {
+            list-style: none;
+            padding-left: 1em;
+            padding-bottom: 1em;
         }
     </style>
     <style type="text/css">
@@ -62,9 +72,9 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="header">
 <h1 class="title">SNPsea Reference Manual</h1>
 <h2 class="author">Kamil Slowikowski</h2>
-<h3 class="date">December 7, 2013</h3>
+<h3 class="date">December 15, 2013</h3>
 </div>
-<div id="TOC">Table of Contents
+<div id="TOC">
 <ul>
 <li><a href="#introduction">Introduction</a><ul>
 <li><a href="#contact">Contact</a></li>
@@ -88,14 +98,13 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="content">
 <p></p>
 <h1 id="introduction"><a href="#introduction">Introduction</a></h1>
-<p>SNPsea is a nonparametric permutation analysis originally conceived to test for enrichment of sample-specific expression of genes in loci near trait-associated SNPs.</p>
-<p>The implementation described here is generalized, so you may provide a quantitative gene matrix with gene expression (or any other measurements) or a binary gene matrix with presence absence (1, 0) values. The columns of the matrix might be tissues, cell types, GO annotation codes, or any other types of conditions. In general, this analysis is appropriate when you are interested in testing for enrichment of sample-specificity of genes linked to a given set of trait-associated SNPs.</p>
-<p>Genome-wide association analyses have identified disease and trait loci across the genome, thereby implicating many nearby linked genes.</p>
+<p>SNPsea is a nonparametric permutation analysis for identifying pathways and tissue types influenced by the alleles discovered through genome-wide association studies (GWAS). It was originally conceived to test for enrichment of cell type-specific expression of genes in loci near trait-associated SNPs.</p>
+<p>The implementation described here is generalized, so you may provide a quantitative gene matrix with gene expression (or any other measurements) or a binary gene matrix with presence absence (1, 0) values. The columns of the matrix might be tissues, cell types, GO annotation codes, or any other types of conditions. In general, this analysis is appropriate when you are interested in testing for enrichment of condition-specificity of genes linked to a given set of trait-associated SNPs.</p>
 <p>The following hypothesis is tested by this analysis:</p>
 <blockquote>
 <p>If trait-associated alleles impact a small number of pathogenic tissues or cell types, then the subset of genes with critical functions in those pathogenic cell types are likely to be within trait-associated loci.</p>
 </blockquote>
-<p>We assume that a gene's specificity to a given condition is a reasonable indicator of the gene's importance to the function of that condition.</p>
+<p>We assume that a gene's specificity to a given cell type or condition is a reasonable indicator of the gene's importance to the function of that cell type.</p>
 <p>Please see the following publications for additional information outside the scope of this reference manual:</p>
 <blockquote>
 <p>Slowikowski, K. et al. SNPsea: test trait-associated loci for enrichment of condition-specificity of gene measurements or binary annotations. Manuscript in progress.</p>
@@ -115,7 +124,9 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <p><img src="figures/flowchart.png" alt="flowchart" /><br /></p>
 <p>This flow chart shows the input data required to perform the analysis, and a summary of the intermediate steps.</p>
 <h1 id="installation"><a href="#installation">Installation</a></h1>
-<p>First, install the dependencies listed below. Then run:</p>
+<p>Download the binary: <a href="https://github.com/slowkow/snpsea/releases">https://github.com/slowkow/snpsea/releases</a></p>
+<p>Or, download the source code: <a href="https://github.com/slowkow/snpsea">https://github.com/slowkow/snpsea</a></p>
+<p>After you install the dependencies listed below, run:</p>
 <pre><code>    cd snpsea/src
     make</code></pre>
 <p>You may move the generated executable file wherever you like:</p>
@@ -374,7 +385,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
            --min-observations 50
            --max-iterations 1000000</code></pre>
 <h3 id="pvalues.txt"><a href="#pvalues.txt"><code>pvalues.txt</code></a></h3>
-<p>The p-values representing enrichment of sample-specificity for the given SNPs.</p>
+<p>The p-values representing enrichment of condition-specificity for the given SNPs.</p>
 <pre><code>    head pvalues.txt | column -t
 
     name                      pvalue       nulls_observed  nulls_tested
@@ -415,7 +426,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
     chr2   61068167   61382443   rs13031237  5        5194,5966,84542,339803,339804
     chr3   58553160   58558769   rs13315591  1        11170</code></pre>
 <h3 id="snp_pvalues.txt"><a href="#snp_pvalues.txt"><code>snp_pvalues.txt</code></a></h3>
-<p>Each SNP, sample, gene with greatest specificity to that sample, and p-value for the SNP-sample pair, adjusted for the number of genes overlapping the given SNP.</p>
+<p>Each SNP, condition, gene with greatest specificity to that sample, and p-value for the SNP-sample pair, adjusted for the number of genes overlapping the given SNP.</p>
 <pre><code>    head snp_pvalues.txt | column -t
 
     marker      column                    gene   pvalue
