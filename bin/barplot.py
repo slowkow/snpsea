@@ -2,7 +2,7 @@
 """
 :File:     barplot.py
 :Author:   Kamil Slowikowski
-:Updated:  September 21, 2013
+:Updated:  December 19, 2013
 
 Create a bar plot of p-values for each sample with an adjacent heatmap
 triangle showing all pairwise sample Spearman correlations of expression
