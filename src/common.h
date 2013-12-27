@@ -295,6 +295,7 @@ VectorXd rankdata(const MatrixBase<Derived> & x)
     return indices;
 }
 
+// Check if all values in a matrix are 1s and 0s.
 template<typename Derived>
 static bool is_binary(const MatrixBase<Derived> & x)
 {
@@ -320,26 +321,8 @@ static std::vector<T> make_vector(std::set<T> set)
     return std::vector<T> (set.begin(), set.end());
 }
 
-
-static std::string strip_extension(const std::string & filename) {
-    size_t lastdot = filename.find_last_of(".");
-    if (lastdot == std::string::npos) return filename;
-    return filename.substr(0, lastdot); 
-}
-
-static std::string output_folder(
-    std::string base,
-    std::string user_snpset_file,
-    std::string gene_matrix_file 
-) {
-    std::string path = base + "/" +
-        strip_extension(basename(user_snpset_file.c_str())) + "_" +
-        strip_extension(basename(gene_matrix_file.c_str()));
-    return path;
-}
-
-static std::vector<std::string> split_string(std::string s, char delim)
-{
+// Split a string with a delimiter and return a vector of strings.
+static std::vector<std::string> split_string(std::string s, char delim) {
     std::stringstream stream (s);
     std::string item;
     std::vector<std::string> result;
@@ -348,35 +331,5 @@ static std::vector<std::string> split_string(std::string s, char delim)
     }
     return result;
 }
-
-/*
-static std::vector<ulong> SampleWithoutReplacement(
-    ulong populationSize,
-    ulong sampleSize
-)
-{
-    static std::default_random_engine generator;
-    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
-
-    ulong t = 0; // total input records dealt with
-    ulong m = 0; // number of items selected so far
-    double u;
-
-    std::vector<ulong> samples;
-
-    while (m < sampleSize) {
-        u = distribution(generator);
-
-        if ((populationSize - t) * u < sampleSize - m) {
-            samples.push_back(t);
-            m++;
-        }
-
-        t++;
-    }
-
-    return samples;
-}
-*/
 
 #endif
