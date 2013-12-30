@@ -199,8 +199,11 @@ def heatmap_triangle(dataframe, axes):
     axes.set_xlim(right=0)
 
     # Add a colorbar below the heatmap triangle.
+    #pl.colorbar(caxes, ax=axes, orientation='horizontal', shrink=0.7,
+    #            fraction=0.05, pad=-0.05, ticks=np.linspace(-1, 1, 5))
     pl.colorbar(caxes, ax=axes, orientation='horizontal', shrink=0.7,
-                fraction=0.05, pad=-0.05, ticks=np.linspace(-1, 1, 5))
+                fraction=0.05, pad=-0.05, ticks=np.linspace(-1, 1, 5),
+                use_gridspec=True)
 
     return caxes, D.index
 
