@@ -255,12 +255,18 @@ matplotlib is a python 2D plotting library which produces publication
 quality figures in a variety of hardcopy formats and interactive
 environments across platforms.
 
+**Note:** On a server with no display, please edit your [matplotlibrc] file to
+use the `Agg` backend. Otherwise, you may see an error message like this:
+
+    _tkinter.TclError: no display name and no $DISPLAY environment variable
+
 
 [pip]: http://www.pip-installer.org
 [docopt]: http://docopt.org/
 [numpy]: http://www.numpy.org
 [pandas]: http://pandas.pydata.org
 [matplotlib]: http://matplotlib.org
+[matplotlibrc]: http://matplotlib.org/users/customizing.html
 
 
 
@@ -673,7 +679,10 @@ rs10488631  PB-CD19+Bcells            3663   0.261931
 
 ### View enrichment of tissue-specific gene expression
 
-![](figures/Teslovich2010_Novartis2011_pvalues_barplot_25.pdf)\
+![A horizontal bar plot of negative log10 p-values for a test of 37
+LDL-associated SNPs for enrichment of tissue-specific expression in profiles
+of 79 human tissues.
+](figures/Teslovich2010_Novartis2011_pvalues_barplot_25.pdf)\
 
 Create this visualization with:
 
@@ -684,7 +693,9 @@ python bin/barplot.py --out out
 
 ### View the most specifically expressed gene for each SNP-tissue pair
 
-![](figures/Teslovich2010_Novartis2011_snp_pvalues_heatmap.pdf)\
+![A heatmap exposing the contributions of specifically expressed genes within
+each SNP linkage interval to the specificity scores of each tissue.
+](figures/Teslovich2010_Novartis2011_snp_pvalues_heatmap.pdf)\
 
 Create this visualization with:
 
@@ -695,7 +706,9 @@ python bin/heatmap.py --out out
 
 ### View the type 1 error rate estimates for each tissue
 
-![](figures/type1error_Novartis2004.pdf)\
+![A scatter plot of the observed proportion of p-values under various
+thresholds after repeating the analysis with 10,000 random SNP sets.
+](figures/type1error_Novartis2004.pdf)\
 
 Create this visualization with:
 

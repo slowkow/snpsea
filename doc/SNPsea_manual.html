@@ -570,8 +570,8 @@ code > span.er { color: #ff0000; font-weight: bold; }
     <div class="sixteen columns">
         <header>
         <h1 class="title">SNPsea Reference Manual</h1>
-            <h3 class="author">Kamil Slowikowski</h2>
-            <h4 class="date">December 15, 2013</h3>
+            <h2 class="author">Kamil Slowikowski</h2>
+            <h3 class="date">December 15, 2013</h3>
         </header>
     </div>
     <div class="three columns sidebar">
@@ -698,6 +698,8 @@ TGP2011.bed.gz</code></pre>
 <p>pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language.</p>
 <p><a href="http://matplotlib.org">matplotlib</a></p>
 <p>matplotlib is a python 2D plotting library which produces publication quality figures in a variety of hardcopy formats and interactive environments across platforms.</p>
+<p><strong>Note:</strong> On a server with no display, please edit your <a href="http://matplotlib.org/users/customizing.html">matplotlibrc</a> file to use the <code>Agg</code> backend. Otherwise, you may see an error message like this:</p>
+<pre><code>_tkinter.TclError: no display name and no $DISPLAY environment variable</code></pre>
 <h2 id="r-packages"><a href="#r-packages">R Packages</a></h2>
 <p>Some visualizations use R and ggplot2 instead of Python and matplotlib.</p>
 <p><strong>Instructions:</strong> Start a session in R and run:</p>
@@ -945,13 +947,13 @@ rs10488631  PB-CD8+Tcells             23534  0.634216
 rs10488631  PB-CD19+Bcells            3663   0.261931</code></pre>
 <h2 id="output-visualizations"><a href="#output-visualizations">Output Visualizations</a></h2>
 <h3 id="view-enrichment-of-tissue-specific-gene-expression"><a href="#view-enrichment-of-tissue-specific-gene-expression">View enrichment of tissue-specific gene expression</a></h3>
-<p><img src="figures/Teslovich2010_Novartis2011_pvalues_barplot_25.png" /><br /> Create this visualization with:</p>
+<p><img src="figures/Teslovich2010_Novartis2011_pvalues_barplot_25.png" alt="A horizontal bar plot of negative log10 p-values for a test of 37 LDL-associated SNPs for enrichment of tissue-specific expression in profiles of 79 human tissues." /><br /> Create this visualization with:</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/barplot.py --out out</code></pre>
 <h3 id="view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair"><a href="#view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair">View the most specifically expressed gene for each SNP-tissue pair</a></h3>
-<p><img src="figures/Teslovich2010_Novartis2011_snp_pvalues_heatmap.png" /><br /> Create this visualization with:</p>
+<p><img src="figures/Teslovich2010_Novartis2011_snp_pvalues_heatmap.png" alt="A heatmap exposing the contributions of specifically expressed genes within each SNP linkage interval to the specificity scores of each tissue." /><br /> Create this visualization with:</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/heatmap.py --out out</code></pre>
 <h3 id="view-the-type-1-error-rate-estimates-for-each-tissue"><a href="#view-the-type-1-error-rate-estimates-for-each-tissue">View the type 1 error rate estimates for each tissue</a></h3>
-<p><img src="figures/type1error_Novartis2004.png" /><br /> Create this visualization with:</p>
+<p><img src="figures/type1error_Novartis2004.png" alt="A scatter plot of the observed proportion of p-values under various thresholds after repeating the analysis with 10,000 random SNP sets." /><br /> Create this visualization with:</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">Rscript</span> bin/type1error.R out</code></pre>
     </div>
 </div>
