@@ -1,53 +1,550 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Content-Style-Type" content="text/css" />
-    <meta name="generator" content="pandoc" />
-    <meta name="author" content="Kamil Slowikowski" />
-    <meta name="date" content="2013-12-15" />
-    <title>SNPsea Reference Manual</title>
-    <style type="text/css">code{white-space: pre;}</style>
-    <style type="text/css">
-        body {
-            width: 60em; margin-left: auto; margin-right: auto;
-            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkBAMAAACCzIhnAAAAIVBMVEXm5ubu7u7n5+fs7Ozo6Ojp6env7+/t7e3q6urr6+vw8PDVMakAAAAF0klEQVR4Xu2Xz1PiSBTH+zBUscctB6jxuMvUJsepYUQ8zchQwI1oDMRbiqWNnNYFbcOJQYiBkxuJ0N4sC4T+K/d1R5eZfbX7F1iUaN4nX9/rzvuRJr54uhcz4QlD+MKFvz3hgQksy4kwlhPMiU9PpOkWDFgyAwniJBGY2rjCrmhsuqO77UIsceqsNE9iTgzx6LMjnh0lxlpQG2rBfiMbHOlfg/3RT7zasTB/Wcu3pZEpplNNcEyv6FbZpoWlJQPDHCSPe+Kb8Dexwg3LiVywkmBOjKW7kymyMjXovyW+lGBOso1BxdZ4IkiMEsHnoyr/ymyWscaZiGn8/TCJObltr7aFDxt6LQxaeFeHpZa4qe2PTf4rK27dYU5mYtVWphkE4qmlzmDFngrMf7rH/FnyIE3WP5JHJbGkBHNisz8416Iiu3ImsWl5nTm3TW7yMit6dcxJiQ9Yp+wdwsNK2qZnw++sPb2O2NTT4dYq5hCYC3uq/ruViaIyu2p7Yt3zhAvxWxAY4iBJgUnGulSOVdYutpVkefx4jzkpCA9McHkrf8B0DYZWepe60rruYU5MFjFmOdZJBBGXouo8AQnZb9RGtVFypE9tzMmUmzxKyqXN9Vvbq58ZdJe22q5INf2T8vkMc+LRW/pwDE5VSYFjHyJx4QP5BIFdYE72g+zI1EbJALzMbM+gBmRXyAe8PwRrv4I58aBGmz798hxrKUg0TD5kOfYJArPcHuYkLnXhx47XeyowLw7s6X6xjTlILmnzmhVZwbHA1PtRsmpjTmrBL8FQ49r88yjRSPSrXM9HbE5TmZx3GFXDBuYkRVPKsUwQarTynXLB5Nmgbw+msKXdNOYEIoDqjk3CX7XldgqZ8e66JwPDXEnWvaVBUxRMrR8kj3uLbczJgN/wQQX2vWYmg2TI52Umqz4c3wwq8ClhTnKsm7/ccY6F++jTwy7r6PwrL4Kxe7rj7rgfMCcuxACOJ6rh+AsZ2IwatJVuveut4YM5bHK/MrXnOh9EWpDoNyB/s0Ei6Df6BzKwCubkbdrNn886ZfanZzlfWhcnFpXFtNpene7I0DAnC3C72H44FqsTmbk9cC8l6x5cr3rrPcyJjHTVhhtfTD69bZbZ+ay15bfAjjnpjyEt8l69E0LFJYcajIPssMqnjb6p9RtDDXPSgssumHm3UO9YkPD3qpBUYIt008ecSKcbxzJ7NxLJEAdJuglepskg5HXHiiUPk40EcwLx6uGMWU43qhwlhnpUP9ulUrLYuu7ySMOcyF1RT7cFq7Ca154+3z9K8JtKzdTDuudjTlpCmY7jhJBdRXgPFuum3ZN7mf6Yk+lZU5qs7yQpuFq1V47lzi51zEkYDZMDO19kOa/KNZVNUwaZPL45AjsvY06g5u7cWQHSbv4bK6psCrnOw/z5z8dyDZiDRFafMOJCjRcqDAistZxICeYgiVNxY4LbZSHD9eMeSBAnKcjAyyov8RyEZLg7zneSJ9+xMCc1DkuqM7szmOvzN1DlUF5HJR7OYVgMoBdjTrzY8UdxKUtY9RL3Q4PlzlKOJbMK8xeJJ7zYJPx4UgoZGEgwV5KHyX9LMCcmV4/vgJvwXZoeMqO9/iviAx5+LHt1VsScjJh6fDkWwbd9zjnMF22Qz7Ec1+EmHXMILO5SG8fwMqkGnxp3PuZkCo4jaJ+BHJ+NSzleT+/kSmC8QtsoY05K4PjMom8zIxhsJrSEN8GgVAtgiMOshMAwJzOhqmHV3rxdrC9+T++21UQWPuZKIvwfJIttOe+eJZiDxN1RbfuKWrEJ8IvEEj7mJBscQHuG5WUb8CoiG18QjsOxycOptCcwJ7f0RE1C6MQG3YUJf+XkYMURy3XuwLuBOZk9D8/NuyPg04sCvVR2C3PYZEiLMv3k2KzYOYBNzMIGDyr7o/1hcqTNdcxJlUO/zcIL1Xuu8RxgTs/peq+w3HUsp9gpY/7/55fX88vr+eX1/PJ6fnk9v7yeX17PL38DFk1UbQ8zeRIAAAAASUVORK5CYII=);
-        }
-        p { line-height: 150%; }
-        pre {
-            margin-left: 1em;
-            margin-right: 1em;
-            display: block;
-            background-color: whitesmoke;
-        }
-        img {
-            max-width: 100%; 
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        a { color: #576b60; }
-        a[href ^= "http"]:after {
-            content: "⇗";
-        }
-        #TOC {
-            width: 220px;
-            position: fixed;
-            line-height: 150%;
-        }
-        #content {
-            padding-left: 240px;
-        }
-        #TOC ul {
-            list-style: none;
-            padding-left: 0em;
-        }
-        #TOC ul ul {
-            list-style: none;
-            padding-left: 1em;
-            padding-bottom: 1em;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+        <meta name="author" content="Kamil Slowikowski">
+                <meta name="dcterms.date" content="2013-12-15">
+        <title>SNPsea Reference Manual</title>
+
+	<!-- Mobile Specific Metas
+  ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<style type="text/css">
+/*
+* Skeleton V1.2
+* Copyright 2011, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 6/20/2012
+*/
+
+
+/** base.css **/
+
+/* Table of Content
+==================================================
+	#Reset & Basics
+	#Basic Styles
+	#Site Styles
+	#Typography
+	#Links
+	#Lists
+	#Images
+	#Buttons
+	#Forms
+	#Misc */
+
+/* #Reset & Basics (Inspired by E. Meyers)
+================================================== */
+	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		font-size: 100%;
+		font: inherit;
+		vertical-align: baseline; }
+	article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+		display: block; }
+    nav { 
+        /*position: fixed;*/
+        padding-top: 1em; }
+	body {
+		line-height: 1; }
+	ol, ul {
+		list-style: none; }
+	blockquote, q {
+		quotes: none; }
+	blockquote:before, blockquote:after,
+	q:before, q:after {
+		content: '';
+		content: none; }
+	table {
+		border-collapse: collapse;
+		border-spacing: 0; }
+
+
+/* #Basic Styles
+================================================== */
+	body {
+		/*background: #fff;*/
+		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAXCAMAAABDEo1gAAAALVBMVEXu7u7z8/Pt7e3r6+vv7+/x8fHs7Ozw8PDo6Ojq6urp6eny8vL09PT19fX29vbJGhcbAAAB5klEQVR42k2TW4IkIQgEUUQLofb+x91At2b2x1eFaZJ0i7TWdTQTnastfaa1ob4lQraPlmtvy5z7nGvR7h5vyjMDfjOKF+2lYk1UlnjRiAh0X12SeTR4Lx2D1s48Z9Rjl0ZEZGvL0HloWZyin4mTzOz76Y31R6dwN7LJ3tCd8/LTGV0zl47pnScv3eBiYIa3cdt1+uWn1TGu6wH4S8cIobBaYrtT97r8o+htaj843KFld+EuG0ZE4+WrkufNba6Tr/3QruKH58VAxzImfHIX6qsD+gQrNmRCVlbF06kw+JapeyT0l0m1i+aEmBZvgoB115PPCPO5PnpDR4vpqyXVoZxv872K1Bq1/5eQznKyiu/GDE+SBR5+ROj+6BxYq0b5oKxnivIBAYdekHL8yEc3eXh6eVeOTR9BNdCHZpTMUB/RLo1lmy4LO2UdXvQE3W/Yau/bH/noMZHsvjUqqt7SxHBkR06XyVzMv5ncpPRkiusgGSt9FntmmjrcR1PShDdc0BLD2BLWuBhR1zPHvyKKdjKx0+PjIA1XgrJd/1OF/taCYqHJ7g3Xo6fQqh3cWbHHwukv9LPaCy2sjxnUjjaD+DPy8OvyydcK4v4Gi65uNuiZf5rgINhdfb9/DLF+aS/6sXjtRiB/AetLF9OdGDz6AAAAAElFTkSuQmCC);
+		font: 18px/27px "Droid Sans", sans; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+		color: #222;
+		-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
+		-webkit-text-size-adjust: 100%;
+ }
+
+
+/* #Typography
+================================================== */
+	h1, h2, h3, h4, h5, h6 {
+		color: #333;
+		/*font-family: "Georgia", "Times New Roman", serif;*/
+		font-family: 'Droid Sans', sans;
+		text-decoration: none;
+		/*font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+		font-weight: bold; }
+	h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { font-weight: inherit;
+	    text-decoration: none; }
+    h1 { font-size: 46px; line-height: 52px; margin-bottom: 24px;
+        display: block; border-bottom: 1px solid #bbb; }
+    h1:nth-child(n+3) { margin-top: 2em; }
+	h2 { font-size: 32px; line-height: 42px; margin-bottom: 20px;
+        margin-top: 2em; }
+	h3 { font-size: 23px; line-height: 36px; margin-bottom: 18px;
+        margin-top: 20px; }
+	h4 { font-size: 21px; line-height: 32px; margin-bottom: 16px; }
+	h5 { font-size: 17px; line-height: 26px; margin-bottom: 12px; }
+	h6 { font-size: 14px; line-height: 23px; margin-bottom: 8px; }
+	.subheader { color: #333; }
+    .title { font-size: 46px; line-height: 52px; margin-bottom: 24px;
+        margin-top: 1em; display: block; border-bottom: 1px solid #bbb; }
+
+	p { margin: 0 0 1em 0; }
+	p img { margin: 0; }
+	p.lead { font-size: 21px; line-height: 27px; color: #333;  }
+
+	em { font-style: italic; }
+	strong { font-weight: bold; color: #333; }
+	small { font-size: 80%; }
+
+/*	Blockquotes  */
+    blockquote, blockquote p { font-size: 17px; line-height: 24px; color:
+        #333; font-style: italic; }
+	blockquote { margin: 0 0 20px; padding: 9px 20px 0 19px; border-left: 1px solid #ddd; }
+	blockquote cite { display: block; font-size: 12px; color: #555; }
+	blockquote cite:before { content: "\2014 \0020"; }
+	blockquote cite a, blockquote cite a:visited, blockquote cite a:visited { color: #555; }
+
+	hr { border: solid #ddd; border-width: 1px 0 0; clear: both; margin: 10px 0 30px; height: 0; }
+    pre {
+        padding: 0.5em 1em 0.5em 1em;
+		font: 14px/23px "Droid Sans Mono", monospace; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+        margin-bottom: 1em;
+        display: block;
+        overflow: auto;
+        background-color: #fff; }
+
+
+/* #Links
+================================================== */
+    a[href ^= "http"]:after { content: "⇗"; }
+	a, a:visited { color: #333; text-decoration: underline; outline: 0; }
+	a:hover, a:focus { color: #A60000; }
+	p a, p a:visited { line-height: inherit; }
+
+
+/* #Lists
+================================================== */
+	ul, ol { margin-bottom: 20px; }
+	ul { list-style: none outside; }
+	ol { list-style: decimal; }
+	ol, ul.square, ul.circle, ul.disc { margin-left: 30px; }
+	ul.square { list-style: square outside; }
+	ul.circle { list-style: circle outside; }
+	ul.disc { list-style: disc outside; }
+	ul ul, ul ol,
+	ol ol, ol ul { margin: 4px 0 5px 30px; font-size: 90%;  }
+	ul ul li, ul ol li,
+	ol ol li, ol ul li { margin-bottom: 6px; }
+	li { line-height: 18px; margin-bottom: 12px; }
+	ul.large li { line-height: 21px; }
+	li p { line-height: 21px; }
+
+/* #Images
+================================================== */
+
+	img {
+		max-width: 100%;
+		height: auto; }
+
+/* #Buttons
+================================================== */
+
+	.button,
+	button,
+	input[type="submit"],
+	input[type="reset"],
+	input[type="button"] {
+		background: #eee; /* Old browsers */
+		background: #eee -moz-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(0,0,0,.2) 100%); /* FF3.6+ */
+		background: #eee -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.2)), color-stop(100%,rgba(0,0,0,.2))); /* Chrome,Safari4+ */
+		background: #eee -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* Chrome10+,Safari5.1+ */
+		background: #eee -o-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* Opera11.10+ */
+		background: #eee -ms-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* IE10+ */
+		background: #eee linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* W3C */
+	  border: 1px solid #aaa;
+	  border-top: 1px solid #ccc;
+	  border-left: 1px solid #ccc;
+	  -moz-border-radius: 3px;
+	  -webkit-border-radius: 3px;
+	  border-radius: 3px;
+	  color: #444;
+	  display: inline-block;
+	  font-size: 11px;
+	  font-weight: bold;
+	  text-decoration: none;
+	  text-shadow: 0 1px rgba(255, 255, 255, .75);
+	  cursor: pointer;
+	  margin-bottom: 20px;
+	  line-height: normal;
+	  padding: 8px 10px;
+      font-family: "Droid Sans", sans; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/ }
+
+	.button:hover,
+	button:hover,
+	input[type="submit"]:hover,
+	input[type="reset"]:hover,
+	input[type="button"]:hover {
+		color: #222;
+		background: #ddd; /* Old browsers */
+		background: #ddd -moz-linear-gradient(top, rgba(255,255,255,.3) 0%, rgba(0,0,0,.3) 100%); /* FF3.6+ */
+		background: #ddd -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.3)), color-stop(100%,rgba(0,0,0,.3))); /* Chrome,Safari4+ */
+		background: #ddd -webkit-linear-gradient(top, rgba(255,255,255,.3) 0%,rgba(0,0,0,.3) 100%); /* Chrome10+,Safari5.1+ */
+		background: #ddd -o-linear-gradient(top, rgba(255,255,255,.3) 0%,rgba(0,0,0,.3) 100%); /* Opera11.10+ */
+		background: #ddd -ms-linear-gradient(top, rgba(255,255,255,.3) 0%,rgba(0,0,0,.3) 100%); /* IE10+ */
+		background: #ddd linear-gradient(top, rgba(255,255,255,.3) 0%,rgba(0,0,0,.3) 100%); /* W3C */
+	  border: 1px solid #888;
+	  border-top: 1px solid #aaa;
+	  border-left: 1px solid #aaa; }
+
+	.button:active,
+	button:active,
+	input[type="submit"]:active,
+	input[type="reset"]:active,
+	input[type="button"]:active {
+		border: 1px solid #666;
+		background: #ccc; /* Old browsers */
+		background: #ccc -moz-linear-gradient(top, rgba(255,255,255,.35) 0%, rgba(10,10,10,.4) 100%); /* FF3.6+ */
+		background: #ccc -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.35)), color-stop(100%,rgba(10,10,10,.4))); /* Chrome,Safari4+ */
+		background: #ccc -webkit-linear-gradient(top, rgba(255,255,255,.35) 0%,rgba(10,10,10,.4) 100%); /* Chrome10+,Safari5.1+ */
+		background: #ccc -o-linear-gradient(top, rgba(255,255,255,.35) 0%,rgba(10,10,10,.4) 100%); /* Opera11.10+ */
+		background: #ccc -ms-linear-gradient(top, rgba(255,255,255,.35) 0%,rgba(10,10,10,.4) 100%); /* IE10+ */
+		background: #ccc linear-gradient(top, rgba(255,255,255,.35) 0%,rgba(10,10,10,.4) 100%); /* W3C */ }
+
+	.button.full-width,
+	button.full-width,
+	input[type="submit"].full-width,
+	input[type="reset"].full-width,
+	input[type="button"].full-width {
+		width: 100%;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+		text-align: center; }
+
+	/* Fix for odd Mozilla border & padding issues */
+	button::-moz-focus-inner,
+	input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+	}
+
+/* #Forms
+================================================== */
+
+	form {
+		margin-bottom: 20px; }
+	fieldset {
+		margin-bottom: 20px; }
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	textarea,
+	select {
+		border: 1px solid #ccc;
+		padding: 6px 4px;
+		outline: none;
+		-moz-border-radius: 2px;
+		-webkit-border-radius: 2px;
+		border-radius: 2px;
+      font: 13px "Droid Sans", sans; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/ }
+		color: #333;
+		margin: 0;
+		width: 210px;
+		max-width: 100%;
+		display: block;
+		margin-bottom: 20px;
+		background: #fff; }
+	select {
+		padding: 0; }
+	input[type="text"]:focus,
+	input[type="password"]:focus,
+	input[type="email"]:focus,
+	textarea:focus {
+		border: 1px solid #aaa;
+ 		color: #444;
+ 		-moz-box-shadow: 0 0 3px rgba(0,0,0,.2);
+		-webkit-box-shadow: 0 0 3px rgba(0,0,0,.2);
+		box-shadow:  0 0 3px rgba(0,0,0,.2); }
+	textarea {
+		min-height: 60px; }
+	label,
+	legend {
+		display: block;
+		font-weight: bold;
+		font-size: 13px;  }
+	select {
+		width: 220px; }
+	input[type="checkbox"] {
+		display: inline; }
+	label span,
+	legend span {
+		font-weight: normal;
+		font-size: 13px;
+		color: #444; }
+
+/* #Misc
+================================================== */
+	.remove-bottom { margin-bottom: 0 !important; }
+	.half-bottom { margin-bottom: 10px !important; }
+	.add-bottom { margin-bottom: 20px !important; }
+
+
+/** skeleton.css **/
+
+
+/* Table of Contents
+==================================================
+    #Base 960 Grid
+    #Tablet (Portrait)
+    #Mobile (Portrait)
+    #Mobile (Landscape)
+    #Clearing */
+
+/* #Base 960 Grid
+================================================== */
+
+    .container                                  { position: relative; width: 960px; margin: 0 auto; padding: 0; }
+    .container .column,
+    .container .columns                         { float: left; display: inline; margin-left: 10px; margin-right: 10px; }
+    .row                                        { margin-bottom: 20px; }
+
+    /* Nested Column Classes */
+    .column.alpha, .columns.alpha               { margin-left: 0; }
+    .column.omega, .columns.omega               { margin-right: 0; }
+
+    /* Base Grid */
+    .container .one.column,
+    .container .one.columns                     { width: 40px;  }
+    .container .two.columns                     { width: 100px; }
+    .container .three.columns                   { width: 160px; }
+    .container .four.columns                    { width: 220px; }
+    .container .five.columns                    { width: 280px; }
+    .container .six.columns                     { width: 340px; }
+    .container .seven.columns                   { width: 400px; }
+    .container .eight.columns                   { width: 460px; }
+    .container .nine.columns                    { width: 520px; }
+    .container .ten.columns                     { width: 580px; }
+    .container .eleven.columns                  { width: 640px; }
+    .container .twelve.columns                  { width: 700px; }
+    .container .thirteen.columns                { width: 760px; }
+    .container .fourteen.columns                { width: 820px; }
+    .container .fifteen.columns                 { width: 880px; }
+    .container .sixteen.columns                 { width: 940px; }
+
+    .container .one-third.column                { width: 300px; }
+    .container .two-thirds.column               { width: 620px; }
+
+    /* Offsets */
+    .container .offset-by-one                   { padding-left: 60px;  }
+    .container .offset-by-two                   { padding-left: 120px; }
+    .container .offset-by-three                 { padding-left: 180px; }
+    .container .offset-by-four                  { padding-left: 240px; }
+    .container .offset-by-five                  { padding-left: 300px; }
+    .container .offset-by-six                   { padding-left: 360px; }
+    .container .offset-by-seven                 { padding-left: 420px; }
+    .container .offset-by-eight                 { padding-left: 480px; }
+    .container .offset-by-nine                  { padding-left: 540px; }
+    .container .offset-by-ten                   { padding-left: 600px; }
+    .container .offset-by-eleven                { padding-left: 660px; }
+    .container .offset-by-twelve                { padding-left: 720px; }
+    .container .offset-by-thirteen              { padding-left: 780px; }
+    .container .offset-by-fourteen              { padding-left: 840px; }
+    .container .offset-by-fifteen               { padding-left: 900px; }
+
+
+
+/* #Tablet (Portrait)
+================================================== */
+
+    /* Note: Design for a width of 768px */
+
+    @media only screen and (min-width: 768px) and (max-width: 959px) {
+        .container                                  { width: 768px; }
+        .container .column,
+        .container .columns                         { margin-left: 10px; margin-right: 10px;  }
+        .column.alpha, .columns.alpha               { margin-left: 0; margin-right: 10px; }
+        .column.omega, .columns.omega               { margin-right: 0; margin-left: 10px; }
+        .alpha.omega                                { margin-left: 0; margin-right: 0; }
+
+        .container .one.column,
+        .container .one.columns                     { width: 28px; }
+        .container .two.columns                     { width: 76px; }
+        .container .three.columns                   { width: 124px; }
+        .container .four.columns                    { width: 172px; }
+        .container .five.columns                    { width: 220px; }
+        .container .six.columns                     { width: 268px; }
+        .container .seven.columns                   { width: 316px; }
+        .container .eight.columns                   { width: 364px; }
+        .container .nine.columns                    { width: 412px; }
+        .container .ten.columns                     { width: 460px; }
+        .container .eleven.columns                  { width: 508px; }
+        .container .twelve.columns                  { width: 556px; }
+        .container .thirteen.columns                { width: 604px; }
+        .container .fourteen.columns                { width: 652px; }
+        .container .fifteen.columns                 { width: 700px; }
+        .container .sixteen.columns                 { width: 748px; }
+
+        .container .one-third.column                { width: 236px; }
+        .container .two-thirds.column               { width: 492px; }
+
+        /* Offsets */
+        .container .offset-by-one                   { padding-left: 48px; }
+        .container .offset-by-two                   { padding-left: 96px; }
+        .container .offset-by-three                 { padding-left: 144px; }
+        .container .offset-by-four                  { padding-left: 192px; }
+        .container .offset-by-five                  { padding-left: 240px; }
+        .container .offset-by-six                   { padding-left: 288px; }
+        .container .offset-by-seven                 { padding-left: 336px; }
+        .container .offset-by-eight                 { padding-left: 384px; }
+        .container .offset-by-nine                  { padding-left: 432px; }
+        .container .offset-by-ten                   { padding-left: 480px; }
+        .container .offset-by-eleven                { padding-left: 528px; }
+        .container .offset-by-twelve                { padding-left: 576px; }
+        .container .offset-by-thirteen              { padding-left: 624px; }
+        .container .offset-by-fourteen              { padding-left: 672px; }
+        .container .offset-by-fifteen               { padding-left: 720px; }
+    }
+
+
+/*  #Mobile (Portrait)
+================================================== */
+
+    /* Note: Design for a width of 320px */
+
+    @media only screen and (max-width: 767px) {
+        .container { width: 300px; }
+        .container .columns,
+        .container .column { margin: 0; }
+
+        .container .one.column,
+        .container .one.columns,
+        .container .two.columns,
+        .container .three.columns,
+        .container .four.columns,
+        .container .five.columns,
+        .container .six.columns,
+        .container .seven.columns,
+        .container .eight.columns,
+        .container .nine.columns,
+        .container .ten.columns,
+        .container .eleven.columns,
+        .container .twelve.columns,
+        .container .thirteen.columns,
+        .container .fourteen.columns,
+        .container .fifteen.columns,
+        .container .sixteen.columns,
+        .container .one-third.column,
+        .container .two-thirds.column  { width: 300px; }
+
+        /* Offsets */
+        .container .offset-by-one,
+        .container .offset-by-two,
+        .container .offset-by-three,
+        .container .offset-by-four,
+        .container .offset-by-five,
+        .container .offset-by-six,
+        .container .offset-by-seven,
+        .container .offset-by-eight,
+        .container .offset-by-nine,
+        .container .offset-by-ten,
+        .container .offset-by-eleven,
+        .container .offset-by-twelve,
+        .container .offset-by-thirteen,
+        .container .offset-by-fourteen,
+        .container .offset-by-fifteen { padding-left: 0; }
+
+    }
+
+
+/* #Mobile (Landscape)
+================================================== */
+
+    /* Note: Design for a width of 480px */
+
+    @media only screen and (min-width: 480px) and (max-width: 767px) {
+        .container { width: 420px; }
+        .container .columns,
+        .container .column { margin: 0; }
+
+        .container .one.column,
+        .container .one.columns,
+        .container .two.columns,
+        .container .three.columns,
+        .container .four.columns,
+        .container .five.columns,
+        .container .six.columns,
+        .container .seven.columns,
+        .container .eight.columns,
+        .container .nine.columns,
+        .container .ten.columns,
+        .container .eleven.columns,
+        .container .twelve.columns,
+        .container .thirteen.columns,
+        .container .fourteen.columns,
+        .container .fifteen.columns,
+        .container .sixteen.columns,
+        .container .one-third.column,
+        .container .two-thirds.column { width: 420px; }
+    }
+
+    @media only screen and (min-width: 768px) {
+        nav { position: fixed; }
+    }
+
+/* #Clearing
+================================================== */
+
+    /* Self Clearing Goodness */
+    .container:after { content: "\0020"; display: block; height: 0; clear: both; visibility: hidden; }
+
+    /* Use clearfix class on parent to clear nested columns,
+    or wrap each row of columns in a <div class="row"> */
+    .clearfix:before,
+    .clearfix:after,
+    .row:before,
+    .row:after {
+      content: '\0020';
+      display: block;
+      overflow: hidden;
+      visibility: hidden;
+      width: 0;
+      height: 0; }
+    .row:after,
+    .clearfix:after {
+      clear: both; }
+    .row,
+    .clearfix {
+      zoom: 1; }
+
+    /* You can also use a <br class="clear" /> to clear columns */
+    .clear {
+      clear: both;
+      display: block;
+      overflow: hidden;
+      visibility: hidden;
+      width: 0;
+      height: 0;
+    }
+
+</style>
     <style type="text/css">
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
@@ -69,12 +566,17 @@ code > span.er { color: #ff0000; font-weight: bold; }
     </style>
 </head>
 <body>
-<div id="header">
-<h1 class="title">SNPsea Reference Manual</h1>
-<h2 class="author">Kamil Slowikowski</h2>
-<h3 class="date">December 15, 2013</h3>
-</div>
-<div id="TOC">
+<div class="container">
+    <div class="sixteen columns">
+        <header>
+        <h1 class="title">SNPsea Reference Manual</h1>
+            <h3 class="author">Kamil Slowikowski</h2>
+            <h4 class="date">December 15, 2013</h3>
+        </header>
+    </div>
+    <div class="three columns sidebar">
+    <nav id="TOC">
+    <h3>Contents</h3>
 <ul>
 <li><a href="#introduction">Introduction</a><ul>
 <li><a href="#contact">Contact</a></li>
@@ -94,8 +596,10 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <li><a href="#output-visualizations">Output Visualizations</a></li>
 </ul></li>
 </ul>
-</div>
-<div id="content">
+    </nav>
+    &nbsp;
+    </div>
+    <div class="twelve columns offset-by-one content">
 <p></p>
 <h1 id="introduction"><a href="#introduction">Introduction</a></h1>
 <p>SNPsea is a nonparametric permutation analysis for identifying pathways and tissue types influenced by the alleles discovered through genome-wide association studies (GWAS). It was originally conceived to test for enrichment of cell type-specific expression of genes in loci near trait-associated SNPs.</p>
@@ -125,25 +629,23 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <p>This flow chart shows the input data required to perform the analysis, and a summary of the intermediate steps.</p>
 <h1 id="installation"><a href="#installation">Installation</a></h1>
 <p>Download the binary: <a href="https://github.com/slowkow/snpsea/releases">https://github.com/slowkow/snpsea/releases</a></p>
-<p>Or, download the source code: <a href="https://github.com/slowkow/snpsea">https://github.com/slowkow/snpsea</a></p>
+<p>Or, you can download the source code: <a href="https://github.com/slowkow/snpsea">https://github.com/slowkow/snpsea</a></p>
 <p>After you install the dependencies listed below, run:</p>
-<pre><code>    cd snpsea/src
-    make</code></pre>
+<pre><code>cd snpsea/src
+make</code></pre>
 <p>You may move the generated executable file wherever you like:</p>
-<pre><code>    mv snpsea/bin/snpsea ~/bin/</code></pre>
+<pre><code>mv snpsea/bin/snpsea ~/bin/</code></pre>
 <h2 id="data"><a href="#data">Data</a></h2>
-<p>Download the compressed archive with data required to perform this analysis here:</p>
-<blockquote>
+<p>Download the compressed archive with data required to perform this analysis here (138M):</p>
 <p><a href="http://dx.doi.org/10.6084/m9.figshare.871430">http://dx.doi.org/10.6084/m9.figshare.871430</a></p>
-</blockquote>
 <p>Contents:</p>
-<pre><code>    GO2013.gct.gz
-    ImmGen2012.gct.gz
-    LDL_Teslovich2010.txt
-    Lango2010.txt.gz
-    NCBIgenes2013.bed.gz
-    NovartisGeneAtlas2004.gct.gz
-    TGP2011.bed.gz</code></pre>
+<pre><code>GO2013.gct.gz
+ImmGen2012.gct.gz
+LDL_Teslovich2010.txt
+Lango2010.txt.gz
+NCBIgenes2013.bed.gz
+NovartisGeneAtlas2004.gct.gz
+TGP2011.bed.gz</code></pre>
 <h3 id="go2013.gct.gz"><a href="#go2013.gct.gz"><code>GO2013.gct.gz</code></a></h3>
 <p>A GCT formatted gene matrix with 1s and 0s indicating presence or absence of 19,111 genes in 1,751 Gene Ontology annotations.</p>
 <h3 id="immgen2012.gct.gz"><a href="#immgen2012.gct.gz"><code>ImmGen2012.gct.gz</code></a></h3>
@@ -177,17 +679,17 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <p><a href="http://www.open-mpi.org">OpenMPI</a></p>
 <p>MPI is a standardized API typically used for parallel and/or distributed computing. Open MPI is an open source, freely available implementation.</p>
 <p><strong>Instructions:</strong> Install on Ubuntu with:</p>
-<pre><code>    sudo apt-get install libopenmpi-dev</code></pre>
+<pre><code>sudo apt-get install libopenmpi-dev</code></pre>
 <p><a href="http://www.gnu.org/software/gsl">GSL - GNU Scientific Library</a></p>
 <p>The GNU Scientific Library (GSL) is a numerical library for C and C++ programmers.</p>
 <p><strong>Instructions:</strong> Install on Ubuntu with:</p>
-<pre><code>    sudo apt-get install libgsl0-dev</code></pre>
+<pre><code>sudo apt-get install libgsl0-dev</code></pre>
 <p><a href="http://gcc.gnu.org">GCC, the GNU Compiler</a></p>
 <p>I use <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> features in my C++ code, so you must use a compiler that supports them. I compiled successfully with versions 4.6.3 and 4.8.1.</p>
 <h2 id="python-packages"><a href="#python-packages">Python Packages</a></h2>
 <p>To plot visualizations of the results, you will need Python 2.7 and the packages listed below. Note: the packages available on the Ubuntu repositories may be outdated and might fail to work.</p>
 <p><strong>Instructions:</strong> Install with <a href="http://www.pip-installer.org">pip</a>:</p>
-<pre><code>    pip install numpy pandas matplotlib</code></pre>
+<pre><code>pip install numpy pandas matplotlib</code></pre>
 <p><a href="http://www.numpy.org">numpy</a></p>
 <p>NumPy is the fundamental package for scientific computing with Python.</p>
 <p><a href="http://pandas.pydata.org">pandas</a></p>
@@ -197,7 +699,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <h2 id="r-packages"><a href="#r-packages">R Packages</a></h2>
 <p>Some visualizations use R and ggplot2 instead of Python and matplotlib.</p>
 <p><strong>Instructions:</strong> Start a session in R and run:</p>
-<pre class="sourceCode R"><code class="sourceCode r">    <span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;data.table&quot;</span>, <span class="st">&quot;reshape2&quot;</span>, <span class="st">&quot;gap&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>))</code></pre>
+<pre class="sourceCode R"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;data.table&quot;</span>, <span class="st">&quot;reshape2&quot;</span>, <span class="st">&quot;gap&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>))</code></pre>
 <p><a href="http://cran.r-project.org/web/packages/data.table">data.table</a></p>
 <p>Extension of data.frame for fast indexing, fast ordered joins, fast assignment, fast grouping and list columns.</p>
 <p><a href="http://cran.r-project.org/web/packages/reshape2">reshape2</a></p>
@@ -209,246 +711,247 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <h1 id="usage"><a href="#usage">Usage</a></h1>
 <h2 id="example"><a href="#example">Example</a></h2>
 <p>Here is a <a href="http://www.gnu.org/software/bash/manual/bashref.html">Bash</a> script with a usage example:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="ot">options=(</span>
-        <span class="kw">--snps</span> LDL_Teslovich2010.txt
-        <span class="kw">--gene-matrix</span> NovartisGeneAtlas2004.gct.gz
-        <span class="kw">--gene-intervals</span> NCBIgenes2013.bed.gz
-        <span class="kw">--snp-intervals</span> TGP2011.bed.gz
-        <span class="kw">--null-snps</span> Lango2010.txt.gz
-        <span class="kw">--out</span> out
-        <span class="kw">--slop</span> 250e3
-        <span class="kw">--threads</span> 4
-        <span class="kw">--null-snpsets</span> 1e3
-        <span class="kw">--min-observations</span> 50
-        <span class="kw">--max-iterations</span> 1e6
-    )
-    <span class="kw">snpsea</span> <span class="ot">${options[*]}</span> <span class="kw">&gt;</span> log.txt</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="ot">options=(</span>
+    <span class="kw">--snps</span> LDL_Teslovich2010.txt
+    <span class="kw">--gene-matrix</span> NovartisGeneAtlas2004.gct.gz
+    <span class="kw">--gene-intervals</span> NCBIgenes2013.bed.gz
+    <span class="kw">--snp-intervals</span> TGP2011.bed.gz
+    <span class="kw">--null-snps</span> Lango2010.txt.gz
+    <span class="kw">--out</span> out
+    <span class="kw">--slop</span> 250e3
+    <span class="kw">--threads</span> 4
+    <span class="kw">--null-snpsets</span> 1e3
+    <span class="kw">--min-observations</span> 50
+    <span class="kw">--max-iterations</span> 1e6
+)
+<span class="kw">snpsea</span> <span class="ot">${options[*]}</span> <span class="kw">&gt;</span> log.txt</code></pre>
 <p>This will run the analysis on SNPs associated with LDL cholesterol and test for tissue-specific expression of the nearby genes across 79 human tissues in the Novartis 2011 gene expression matrix. Additionally, 1000 null random matched SNP sets will be tested and their results will also be recorded. Each tissue will be tested up to 1 million times, or testing will stop for a tissue if 50 matched SNP sets are observed to achieve a higher specificity score than the user's SNPs.</p>
 <h2 id="options"><a href="#options">Options</a></h2>
 <p>All input files may be optionally compressed with <a href="http://www.gzip.org/"><code>gzip</code></a>.</p>
 <h3 id="required"><a href="#required">Required</a></h3>
 <pre><code>
-    --snps ARG               Text file with SNP identifiers in the first
-                             column. Instead of a file name, you may use
-                             &#39;randomN&#39; with an integer N for a random SNP list
-                             of length N.
+--snps ARG               Text file with SNP identifiers in the first
+                         column. Instead of a file name, you may use
+                         &#39;randomN&#39; with an integer N for a random SNP list
+                         of length N.
 
-    --gene-matrix ARG        Gene matrix file in GCT format. The Name column
-                             must contain the same gene identifiers as in
-                             --gene-intervals.
+--gene-matrix ARG        Gene matrix file in GCT format. The Name column
+                         must contain the same gene identifiers as in
+                         --gene-intervals.
 
-    --gene-intervals ARG     BED file with gene intervals. The fourth column
-                             must contain the same gene identifiers as in
-                             --gene-matrix.
+--gene-intervals ARG     BED file with gene intervals. The fourth column
+                         must contain the same gene identifiers as in
+                         --gene-matrix.
 
-    --snp-intervals ARG      BED file with all known SNP intervals. The fourth
-                             column must contain the same SNP identifiers as
-                             in --snps and --null-snps.
+--snp-intervals ARG      BED file with all known SNP intervals. The fourth
+                         column must contain the same SNP identifiers as
+                         in --snps and --null-snps.
 
-    --null-snps ARG          Text file with names of SNPs to sample when
-                             generating null matched or random SNP sets.
-                             These SNPs must be a subset of --snp-intervals.
+--null-snps ARG          Text file with names of SNPs to sample when
+                         generating null matched or random SNP sets.
+                         These SNPs must be a subset of --snp-intervals.
 
-    --out ARG                Create output files in this directory. It will be
-                             created if it does not already exist.</code></pre>
+--out ARG                Create output files in this directory. It will be
+                         created if it does not already exist.</code></pre>
 <h3 id="optional"><a href="#optional">Optional</a></h3>
-<pre><code>    --condition ARG          Text file with a list of columns in --gene-matrix
-                             to condition on before calculating p-values. Each
-                             column in --gene-matrix is projected onto each
-                             column listed in this file and its projection is
-                             subtracted.
+<pre><code>--condition ARG          Text file with a list of columns in --gene-matrix
+                         to condition on before calculating p-values. Each
+                         column in --gene-matrix is projected onto each
+                         column listed in this file and its projection is
+                         subtracted.
 
-    --slop ARG               If a SNP interval overlaps no gene intervals,
-                             extend the SNP interval this many nucleotides
-                             further and try again.
-                             [default: 250000]
+--slop ARG               If a SNP interval overlaps no gene intervals,
+                         extend the SNP interval this many nucleotides
+                         further and try again.
+                         [default: 250000]
 
-    --threads ARG            Number of threads to use.
-                             [default: 1]
+--threads ARG            Number of threads to use.
+                         [default: 1]
 
-    --null-snpsets ARG       Test this many null matched SNP sets, so you can
-                             compare your results to a distribution of null
-                             results.
-                             [default: 10]
+--null-snpsets ARG       Test this many null matched SNP sets, so you can
+                         compare your results to a distribution of null
+                         results.
+                         [default: 10]
 
-    --min-observations ARG   Stop testing a column in --gene-matrix after
-                             observing this many null SNP sets with 
-                             specificity scores greater or equal to those
-                             obtained with the SNP set in --snps. Increase
-                             this value to obtain more accurate p-values.
-                             [default: 25]
+--min-observations ARG   Stop testing a column in --gene-matrix after
+                         observing this many null SNP sets with 
+                         specificity scores greater or equal to those
+                         obtained with the SNP set in --snps. Increase
+                         this value to obtain more accurate p-values.
+                         [default: 25]
 
-    --max-iterations ARG     Maximum number of null SNP sets tested for each
-                             column in --gene-matrix. Increase this value to
-                             resolve smaller p-values.
-                             [default: 1000]</code></pre>
+--max-iterations ARG     Maximum number of null SNP sets tested for each
+                         column in --gene-matrix. Increase this value to
+                         resolve smaller p-values.
+                         [default: 1000]</code></pre>
 <h2 id="input-file-formats"><a href="#input-file-formats">Input File Formats</a></h2>
 <h3 id="snps-arg"><a href="#snps-arg"><code>--snps ARG</code></a></h3>
 <p>You must provide one or more comma-separated text files. SNP identifiers must be listed one per line. Only the first column is used.</p>
-<pre><code>    head LDL_Teslovich2010.txt
+<pre><code>head LDL_Teslovich2010.txt
 
-    rs11136341  chr8   145043543
-    rs3757354   chr6   16127407
-    rs12027135  chr1   25775733
-    rs217386    chr7   44600695
-    rs1169288   chr12  121416650
-    rs7225700   chr17  45391804
-    rs2479409   chr1   55504650
-    rs247616    chr16  56989590
-    rs2954022   chr8   126482621
-    rs1564348   chr6   160578860</code></pre>
+rs11136341  chr8   145043543
+rs3757354   chr6   16127407
+rs12027135  chr1   25775733
+rs217386    chr7   44600695
+rs1169288   chr12  121416650
+rs7225700   chr17  45391804
+rs2479409   chr1   55504650
+rs247616    chr16  56989590
+rs2954022   chr8   126482621
+rs1564348   chr6   160578860</code></pre>
 <p>Instead of providing a file with SNPs, you may use &quot;randomN&quot; like this:</p>
-<pre><code>    --snps random20</code></pre>
+<pre><code>--snps random20</code></pre>
 <p>to sample 20 random SNPs from the <strong><code>--snp-intervals</code></strong> file.</p>
 <h3 id="gene-matrix-file"><a href="#gene-matrix-file"><code>--gene-matrix FILE</code></a></h3>
 <p>You must provide a single gene matrix that must be in <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> format.</p>
-<pre><code>    zcat NovartisGeneAtlas2004.gct.gz | cut -f1-4 | head
+<pre><code>zcat NovartisGeneAtlas2004.gct.gz | cut -f1-4 | head
 
-    #1.2
-    17581  79
-    Name   Description  Colorectal_Adenocarcinoma  Whole_Blood
-    1      A1BG         115.5                      209.5
-    2      A2M          85                         328.5
-    9      NAT1         499                        1578
-    10     NAT2         115                        114
-    12     SERPINA3     419.5                      387.5
-    13     AADAC        125                        252.5
-    14     AAMP         2023                       942.5</code></pre>
+#1.2
+17581  79
+Name   Description  Colorectal_Adenocarcinoma  Whole_Blood
+1      A1BG         115.5                      209.5
+2      A2M          85                         328.5
+9      NAT1         499                        1578
+10     NAT2         115                        114
+12     SERPINA3     419.5                      387.5
+13     AADAC        125                        252.5
+14     AAMP         2023                       942.5</code></pre>
 <h3 id="condition-file-optional"><a href="#condition-file-optional"><code>--condition FILE</code> (Optional)</a></h3>
 <p>You may provide column names present in the <strong><code>--gene-matrix</code></strong> file, one per line. The matrix will be conditioned on these columns before the analysis is performed to help you identify secondary signals independent of these columns. Binary (0, 1) matrices will not be conditioned.</p>
-<pre><code>    head conditions.txt
+<pre><code>head conditions.txt
 
-    Whole_Blood</code></pre>
+Whole_Blood</code></pre>
 <h3 id="gene-intervals-file"><a href="#gene-intervals-file"><code>--gene-intervals FILE</code></a></h3>
 <p>You must provide gene intervals in BED format with a fourth column that contains the same gene identifiers as those present in the Name column of the <strong><code>--gene-matrix</code></strong> GCT file. Only the first four columns are used.</p>
-<pre><code>    zcat NCBIgenes2013.bed.gz | head
+<pre><code>zcat NCBIgenes2013.bed.gz | head
 
-    chr1  10003485   10045555   64802      NMNAT1
-    chr1  100111430  100160096  54873      PALMD
-    chr1  100163795  100164756  100129320  HMGB3P10
-    chr1  100174205  100232185  391059     FRRS1
-    chr1  10027438   10027515   100847055  MIR5697
-    chr1  100308165  100308317  100270894  RPL39P9
-    chr1  100315632  100389578  178        AGL
-    chr1  100433941  100435837  730081     LOC730081
-    chr1  100435344  100492534  23443      SLC35A3
-    chr1  100503669  100548932  64645      HIAT1</code></pre>
+chr1  10003485   10045555   64802      NMNAT1
+chr1  100111430  100160096  54873      PALMD
+chr1  100163795  100164756  100129320  HMGB3P10
+chr1  100174205  100232185  391059     FRRS1
+chr1  10027438   10027515   100847055  MIR5697
+chr1  100308165  100308317  100270894  RPL39P9
+chr1  100315632  100389578  178        AGL
+chr1  100433941  100435837  730081     LOC730081
+chr1  100435344  100492534  23443      SLC35A3
+chr1  100503669  100548932  64645      HIAT1</code></pre>
 <h3 id="snp-intervals-file"><a href="#snp-intervals-file"><code>--snp-intervals FILE</code></a></h3>
 <p>SNP linkage intervals must be specified in BED format and include a fourth column with the SNP identifiers. The linkage intervals assigned to the trait-associated SNPs you provide with <strong><code>--snps</code></strong> are taken from this file.</p>
-<pre><code>    zcat TGP2011.bed.gz | head
+<pre><code>zcat TGP2011.bed.gz | head
 
-    chr1    0   254996  rs113759966
-    chr1    0   254996  rs114420996
-    chr1    0   254996  rs114608975
-    chr1    0   254996  rs115209712
-    chr1    0   254996  rs116400033
-    chr1    0   254996  rs116504101
-    chr1    0   254996  rs12184306
-    chr1    0   254996  rs12184307
-    chr1    0   254996  rs138808727
-    chr1    0   254996  rs139113303</code></pre>
+chr1    0   254996  rs113759966
+chr1    0   254996  rs114420996
+chr1    0   254996  rs114608975
+chr1    0   254996  rs115209712
+chr1    0   254996  rs116400033
+chr1    0   254996  rs116504101
+chr1    0   254996  rs12184306
+chr1    0   254996  rs12184307
+chr1    0   254996  rs138808727
+chr1    0   254996  rs139113303</code></pre>
 <h3 id="null-snps-file"><a href="#null-snps-file"><code>--null-snps FILE</code></a></h3>
 <p>The null SNPs file must have one SNP identifier per line. Only the first column is used. The identifiers must be a subset of the identifiers in <strong><code>--snp-intervals</code></strong>.</p>
-<pre><code>    zcat Lango2010.txt.gz | head
+<pre><code>zcat Lango2010.txt.gz | head
 
-    rs58108140  chr1    10583
-    rs180734498 chr1    13302
-    rs140337953 chr1    30923
-    rs141149254 chr1    54490
-    rs2462492   chr1    54676
-    rs10399749  chr1    55299
-    rs189727433 chr1    57952
-    rs149755937 chr1    59040
-    rs77573425  chr1    61989
-    rs116440577 chr1    63671</code></pre>
+rs58108140  chr1    10583
+rs180734498 chr1    13302
+rs140337953 chr1    30923
+rs141149254 chr1    54490
+rs2462492   chr1    54676
+rs10399749  chr1    55299
+rs189727433 chr1    57952
+rs149755937 chr1    59040
+rs77573425  chr1    61989
+rs116440577 chr1    63671</code></pre>
 <h2 id="output-files"><a href="#output-files">Output Files</a></h2>
 <p>The usage example shown above produces the following output files:</p>
-<pre><code>    out/
-        args.txt
-        pvalues.txt
-        null_pvalues.txt
-        snp_genes.txt
-        snp_pvalues.txt</code></pre>
+<pre><code>out/
+    args.txt
+    pvalues.txt
+    null_pvalues.txt
+    snp_genes.txt
+    snp_pvalues.txt</code></pre>
 <h3 id="args.txt"><a href="#args.txt"><code>args.txt</code></a></h3>
 <p>The command line arguments needed to reproduce the analysis.</p>
-<pre><code>    cat args.txt
+<pre><code>cat args.txt
 
-    snpsea --snps LDL_Teslovich2010.txt
-           --gene-matrix NovartisGeneAtlas2004.gct.gz
-           --gene-intervals NCBIgenes2013.bed.gz
-           --snp-intervals TGP2011.bed.gz
-           --null-snps Lango2010.txt.gz
-           --out out
-           --slop 250000
-           --threads 4
-           --null-snpsets 1000
-           --min-observations 50
-           --max-iterations 1000000</code></pre>
+snpsea --snps LDL_Teslovich2010.txt
+       --gene-matrix NovartisGeneAtlas2004.gct.gz
+       --gene-intervals NCBIgenes2013.bed.gz
+       --snp-intervals TGP2011.bed.gz
+       --null-snps Lango2010.txt.gz
+       --out out
+       --slop 250000
+       --threads 4
+       --null-snpsets 1000
+       --min-observations 50
+       --max-iterations 1000000</code></pre>
 <h3 id="pvalues.txt"><a href="#pvalues.txt"><code>pvalues.txt</code></a></h3>
 <p>The p-values representing enrichment of condition-specificity for the given SNPs.</p>
-<pre><code>    head pvalues.txt | column -t
+<pre><code>head pvalues.txt | column -t
 
-    name                      pvalue       nulls_observed  nulls_tested
-    ColorectalAdenocarcinoma  0.87         87              100
-    WholeBlood                0.00606299   77              12700
-    BM-CD33+Myeloid           0.054        81              1500
-    PB-CD14+Monocytes         0.316667     95              300
-    PB-BDCA4+Dentritic_Cells  0.164286     115             700
-    PB-CD56+NKCells           0.000104993  86              819100</code></pre>
+name                      pvalue       nulls_observed  nulls_tested
+ColorectalAdenocarcinoma  0.87         87              100
+WholeBlood                0.00606299   77              12700
+BM-CD33+Myeloid           0.054        81              1500
+PB-CD14+Monocytes         0.316667     95              300
+PB-BDCA4+Dentritic_Cells  0.164286     115             700
+PB-CD56+NKCells           0.000104993  86              819100</code></pre>
 <h3 id="null_pvalues.txt"><a href="#null_pvalues.txt"><code>null_pvalues.txt</code></a></h3>
 <p>If the argument for <strong><code>--snps</code></strong> is the name of a file, the p-values for null matched SNP sets. You can compare these null results to the results for your trait-associated SNPs.</p>
 <p>If the argument for <strong><code>--snps</code></strong> is &quot;randomN&quot; where N is some integer, like &quot;random20&quot; the p-values for random unmatched SNP sets, each with N SNPs.</p>
 <p>The fifth column is the replicate index. The number of replicates performed is specified with <strong><code>--null-snpsets INT</code></strong>.</p>
-<pre><code>    head null_pvalues.txt | column -t
+<pre><code>head null_pvalues.txt | column -t
 
-    ColorectalAdenocarcinoma  0.056     84   1500  0
-    WholeBlood                0.236667  71   300   0
-    BM-CD33+Myeloid           0.55      55   100   0
-    PB-CD14+Monocytes         0.59      59   100   0
-    PB-BDCA4+Dentritic_Cells  0.59      59   100   0
-    PB-CD56+NKCells           0.71      71   100   0
-    PB-CD4+Tcells             0.383333  115  300   0
-    PB-CD8+Tcells             0.128571  90   700   0
-    PB-CD19+Bcells            0.168571  118  700   0
-    BM-CD105+Endothelial      0.386667  116  300   0</code></pre>
+ColorectalAdenocarcinoma  0.056     84   1500  0
+WholeBlood                0.236667  71   300   0
+BM-CD33+Myeloid           0.55      55   100   0
+PB-CD14+Monocytes         0.59      59   100   0
+PB-BDCA4+Dentritic_Cells  0.59      59   100   0
+PB-CD56+NKCells           0.71      71   100   0
+PB-CD4+Tcells             0.383333  115  300   0
+PB-CD8+Tcells             0.128571  90   700   0
+PB-CD19+Bcells            0.168571  118  700   0
+BM-CD105+Endothelial      0.386667  116  300   0</code></pre>
 <h3 id="snp_genes.txt"><a href="#snp_genes.txt"><code>snp_genes.txt</code></a></h3>
 <p>Each SNP's linkage interval and overlapping genes. If a SNP is not found in the reference file specified with <strong><code>--snp-intervals</code></strong>, then the name of the SNP will be listed and the other columns will contain <code>NA</code>.</p>
-<pre><code>    head snp_genes.txt | column -t
+<pre><code>head snp_genes.txt | column -t
 
-    chrom  start      end        name        n_genes  genes
-    chr7   128560761  128773770  rs10488631  2        3663,23534
-    chr2   100637056  100895271  rs10865035  3        3899,150577,164832
-    chr11  118475098  118746223  rs10892279  2        1656,23187
-    NA     NA         NA         rs99999999  NA       NA
-    chr21  43817297   43851877   rs11203203  1        53347
-    chr1   117256697  117293763  rs11586238  4        914,965,3321,5738
-    chr1   161389417  161637888  rs12746613  5        2212,2213,2215,3310,9103
-    chr2   61068167   61382443   rs13031237  5        5194,5966,84542,339803,339804
-    chr3   58553160   58558769   rs13315591  1        11170</code></pre>
+chrom  start      end        name        n_genes  genes
+chr7   128560761  128773770  rs10488631  2        3663,23534
+chr2   100637056  100895271  rs10865035  3        3899,150577,164832
+chr11  118475098  118746223  rs10892279  2        1656,23187
+NA     NA         NA         rs99999999  NA       NA
+chr21  43817297   43851877   rs11203203  1        53347
+chr1   117256697  117293763  rs11586238  4        914,965,3321,5738
+chr1   161389417  161637888  rs12746613  5        2212,2213,2215,3310,9103
+chr2   61068167   61382443   rs13031237  5        5194,5966,84542,339803,339804
+chr3   58553160   58558769   rs13315591  1        11170</code></pre>
 <h3 id="snp_pvalues.txt"><a href="#snp_pvalues.txt"><code>snp_pvalues.txt</code></a></h3>
 <p>Each SNP, condition, gene with greatest specificity to that sample, and p-value for the SNP-sample pair, adjusted for the number of genes overlapping the given SNP.</p>
-<pre><code>    head snp_pvalues.txt | column -t
+<pre><code>head snp_pvalues.txt | column -t
 
-    marker      column                    gene   pvalue
-    rs10488631  ColorectalAdenocarcinoma  3663   0.270409
-    rs10488631  WholeBlood                3663   0.302693
-    rs10488631  BM-CD33+Myeloid           3663   0.0569547
-    rs10488631  PB-CD14+Monocytes         3663   0.0960891
-    rs10488631  PB-BDCA4+Dentritic_Cells  3663   0.240571
-    rs10488631  PB-CD56+NKCells           23534  0.58674
-    rs10488631  PB-CD4+Tcells             3663   0.683486
-    rs10488631  PB-CD8+Tcells             23534  0.634216
-    rs10488631  PB-CD19+Bcells            3663   0.261931</code></pre>
+marker      column                    gene   pvalue
+rs10488631  ColorectalAdenocarcinoma  3663   0.270409
+rs10488631  WholeBlood                3663   0.302693
+rs10488631  BM-CD33+Myeloid           3663   0.0569547
+rs10488631  PB-CD14+Monocytes         3663   0.0960891
+rs10488631  PB-BDCA4+Dentritic_Cells  3663   0.240571
+rs10488631  PB-CD56+NKCells           23534  0.58674
+rs10488631  PB-CD4+Tcells             3663   0.683486
+rs10488631  PB-CD8+Tcells             23534  0.634216
+rs10488631  PB-CD19+Bcells            3663   0.261931</code></pre>
 <h2 id="output-visualizations"><a href="#output-visualizations">Output Visualizations</a></h2>
 <h3 id="view-enrichment-of-tissue-specific-gene-expression"><a href="#view-enrichment-of-tissue-specific-gene-expression">View enrichment of tissue-specific gene expression</a></h3>
 <p><img src="figures/Teslovich2010_Novartis2011_pvalues_barplot_25.png" /><br /> Create this visualization with:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">python</span> bin/barplot.py --out out</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/barplot.py --out out</code></pre>
 <h3 id="view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair"><a href="#view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair">View the most specifically expressed gene for each SNP-tissue pair</a></h3>
 <p><img src="figures/Teslovich2010_Novartis2011_snp_pvalues_heatmap.png" /><br /> Create this visualization with:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">python</span> bin/heatmap.py --out out</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/heatmap.py --out out</code></pre>
 <h3 id="view-the-type-1-error-rate-estimates-for-each-tissue"><a href="#view-the-type-1-error-rate-estimates-for-each-tissue">View the type 1 error rate estimates for each tissue</a></h3>
 <p><img src="figures/type1error_Novartis2004.png" /><br /> Create this visualization with:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">Rscript</span> bin/type1error.R out</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">Rscript</span> bin/type1error.R out</code></pre>
+    </div>
 </div>
 </body>
 </html>

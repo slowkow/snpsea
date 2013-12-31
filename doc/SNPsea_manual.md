@@ -71,14 +71,14 @@ Or, you can download the source code: <https://github.com/slowkow/snpsea>
 After you install the dependencies listed below, run:
 
 ```
-    cd snpsea/src
-    make
+cd snpsea/src
+make
 ```
 
 You may move the generated executable file wherever you like:
 
 ```
-    mv snpsea/bin/snpsea ~/bin/
+mv snpsea/bin/snpsea ~/bin/
 ```
 
 
@@ -88,18 +88,18 @@ You may move the generated executable file wherever you like:
 Download the compressed archive with data required to perform this analysis
 here (138M):
 
-> <http://dx.doi.org/10.6084/m9.figshare.871430>
+<http://dx.doi.org/10.6084/m9.figshare.871430>
 
 Contents:
 
 ```
-    GO2013.gct.gz
-    ImmGen2012.gct.gz
-    LDL_Teslovich2010.txt
-    Lango2010.txt.gz
-    NCBIgenes2013.bed.gz
-    NovartisGeneAtlas2004.gct.gz
-    TGP2011.bed.gz
+GO2013.gct.gz
+ImmGen2012.gct.gz
+LDL_Teslovich2010.txt
+Lango2010.txt.gz
+NCBIgenes2013.bed.gz
+NovartisGeneAtlas2004.gct.gz
+TGP2011.bed.gz
 ```
 
 
@@ -194,7 +194,7 @@ computing. Open MPI is an open source, freely available implementation.
 **Instructions:** Install on Ubuntu with:
 
 ```
-    sudo apt-get install libopenmpi-dev
+sudo apt-get install libopenmpi-dev
 ```
 
 
@@ -206,7 +206,7 @@ programmers.
 **Instructions:** Install on Ubuntu with:
 
 ```
-    sudo apt-get install libgsl0-dev
+sudo apt-get install libgsl0-dev
 ```
 
 [GCC, the GNU Compiler][gcc]
@@ -232,8 +232,12 @@ may be outdated and might fail to work.
 **Instructions:** Install with [pip]:
 
 ```
-    pip install numpy pandas matplotlib
+pip install docopt numpy pandas matplotlib
 ```
+
+[docopt]
+
+Command-line interface description language.
 
 [numpy]
 
@@ -253,6 +257,7 @@ environments across platforms.
 
 
 [pip]: http://www.pip-installer.org
+[docopt]: http://docopt.org/
 [numpy]: http://www.numpy.org
 [pandas]: http://pandas.pydata.org
 [matplotlib]: http://matplotlib.org
@@ -266,7 +271,7 @@ Some visualizations use R and ggplot2 instead of Python and matplotlib.
 **Instructions:** Start a session in R and run:
 
 ```R
-    install.packages(c("data.table", "reshape2", "gap", "ggplot2"))
+install.packages(c("data.table", "reshape2", "gap", "ggplot2"))
 ```
 
 [data.table]
@@ -301,20 +306,20 @@ An implementation of the Grammar of Graphics.
 Here is a [Bash] script with a usage example:
 
 ```bash
-    options=(
-        --snps LDL_Teslovich2010.txt
-        --gene-matrix NovartisGeneAtlas2004.gct.gz
-        --gene-intervals NCBIgenes2013.bed.gz
-        --snp-intervals TGP2011.bed.gz
-        --null-snps Lango2010.txt.gz
-        --out out
-        --slop 250e3
-        --threads 4
-        --null-snpsets 1e3
-        --min-observations 50
-        --max-iterations 1e6
-    )
-    snpsea ${options[*]} > log.txt
+options=(
+    --snps LDL_Teslovich2010.txt
+    --gene-matrix NovartisGeneAtlas2004.gct.gz
+    --gene-intervals NCBIgenes2013.bed.gz
+    --snp-intervals TGP2011.bed.gz
+    --null-snps Lango2010.txt.gz
+    --out out
+    --slop 250e3
+    --threads 4
+    --null-snpsets 1e3
+    --min-observations 50
+    --max-iterations 1e6
+)
+snpsea ${options[*]} > log.txt
 ```
 
 This will run the analysis on SNPs associated with LDL cholesterol and
@@ -339,29 +344,29 @@ All input files may be optionally compressed with [`gzip`][gzip].
 
 ```
 
-    --snps ARG               Text file with SNP identifiers in the first
-                             column. Instead of a file name, you may use
-                             'randomN' with an integer N for a random SNP list
-                             of length N.
+--snps ARG               Text file with SNP identifiers in the first
+                         column. Instead of a file name, you may use
+                         'randomN' with an integer N for a random SNP list
+                         of length N.
 
-    --gene-matrix ARG        Gene matrix file in GCT format. The Name column
-                             must contain the same gene identifiers as in
-                             --gene-intervals.
+--gene-matrix ARG        Gene matrix file in GCT format. The Name column
+                         must contain the same gene identifiers as in
+                         --gene-intervals.
 
-    --gene-intervals ARG     BED file with gene intervals. The fourth column
-                             must contain the same gene identifiers as in
-                             --gene-matrix.
+--gene-intervals ARG     BED file with gene intervals. The fourth column
+                         must contain the same gene identifiers as in
+                         --gene-matrix.
 
-    --snp-intervals ARG      BED file with all known SNP intervals. The fourth
-                             column must contain the same SNP identifiers as
-                             in --snps and --null-snps.
+--snp-intervals ARG      BED file with all known SNP intervals. The fourth
+                         column must contain the same SNP identifiers as
+                         in --snps and --null-snps.
 
-    --null-snps ARG          Text file with names of SNPs to sample when
-                             generating null matched or random SNP sets.
-                             These SNPs must be a subset of --snp-intervals.
+--null-snps ARG          Text file with names of SNPs to sample when
+                         generating null matched or random SNP sets.
+                         These SNPs must be a subset of --snp-intervals.
 
-    --out ARG                Create output files in this directory. It will be
-                             created if it does not already exist.
+--out ARG                Create output files in this directory. It will be
+                         created if it does not already exist.
 ```
 
 
@@ -369,36 +374,36 @@ All input files may be optionally compressed with [`gzip`][gzip].
 ### Optional
 
 ```
-    --condition ARG          Text file with a list of columns in --gene-matrix
-                             to condition on before calculating p-values. Each
-                             column in --gene-matrix is projected onto each
-                             column listed in this file and its projection is
-                             subtracted.
+--condition ARG          Text file with a list of columns in --gene-matrix
+                         to condition on before calculating p-values. Each
+                         column in --gene-matrix is projected onto each
+                         column listed in this file and its projection is
+                         subtracted.
 
-    --slop ARG               If a SNP interval overlaps no gene intervals,
-                             extend the SNP interval this many nucleotides
-                             further and try again.
-                             [default: 250000]
+--slop ARG               If a SNP interval overlaps no gene intervals,
+                         extend the SNP interval this many nucleotides
+                         further and try again.
+                         [default: 250000]
 
-    --threads ARG            Number of threads to use.
-                             [default: 1]
+--threads ARG            Number of threads to use.
+                         [default: 1]
 
-    --null-snpsets ARG       Test this many null matched SNP sets, so you can
-                             compare your results to a distribution of null
-                             results.
-                             [default: 10]
+--null-snpsets ARG       Test this many null matched SNP sets, so you can
+                         compare your results to a distribution of null
+                         results.
+                         [default: 10]
 
-    --min-observations ARG   Stop testing a column in --gene-matrix after
-                             observing this many null SNP sets with 
-                             specificity scores greater or equal to those
-                             obtained with the SNP set in --snps. Increase
-                             this value to obtain more accurate p-values.
-                             [default: 25]
+--min-observations ARG   Stop testing a column in --gene-matrix after
+                         observing this many null SNP sets with 
+                         specificity scores greater or equal to those
+                         obtained with the SNP set in --snps. Increase
+                         this value to obtain more accurate p-values.
+                         [default: 25]
 
-    --max-iterations ARG     Maximum number of null SNP sets tested for each
-                             column in --gene-matrix. Increase this value to
-                             resolve smaller p-values.
-                             [default: 1000]
+--max-iterations ARG     Maximum number of null SNP sets tested for each
+                         column in --gene-matrix. Increase this value to
+                         resolve smaller p-values.
+                         [default: 1000]
 ```
 
 
@@ -411,24 +416,24 @@ You must provide one or more comma-separated text files. SNP identifiers must
 be listed one per line. Only the first column is used.
 
 ```
-    head LDL_Teslovich2010.txt
+head LDL_Teslovich2010.txt
 
-    rs11136341  chr8   145043543
-    rs3757354   chr6   16127407
-    rs12027135  chr1   25775733
-    rs217386    chr7   44600695
-    rs1169288   chr12  121416650
-    rs7225700   chr17  45391804
-    rs2479409   chr1   55504650
-    rs247616    chr16  56989590
-    rs2954022   chr8   126482621
-    rs1564348   chr6   160578860
+rs11136341  chr8   145043543
+rs3757354   chr6   16127407
+rs12027135  chr1   25775733
+rs217386    chr7   44600695
+rs1169288   chr12  121416650
+rs7225700   chr17  45391804
+rs2479409   chr1   55504650
+rs247616    chr16  56989590
+rs2954022   chr8   126482621
+rs1564348   chr6   160578860
 ```
 
 Instead of providing a file with SNPs, you may use "randomN" like this:
 
 ```
-    --snps random20
+--snps random20
 ```
 
 to sample 20 random SNPs from the **`--snp-intervals`** file.
@@ -442,18 +447,18 @@ You must provide a single gene matrix that must be in [GCT][gct] format.
 
 
 ```
-    zcat NovartisGeneAtlas2004.gct.gz | cut -f1-4 | head
+zcat NovartisGeneAtlas2004.gct.gz | cut -f1-4 | head
 
-    #1.2
-    17581  79
-    Name   Description  Colorectal_Adenocarcinoma  Whole_Blood
-    1      A1BG         115.5                      209.5
-    2      A2M          85                         328.5
-    9      NAT1         499                        1578
-    10     NAT2         115                        114
-    12     SERPINA3     419.5                      387.5
-    13     AADAC        125                        252.5
-    14     AAMP         2023                       942.5
+#1.2
+17581  79
+Name   Description  Colorectal_Adenocarcinoma  Whole_Blood
+1      A1BG         115.5                      209.5
+2      A2M          85                         328.5
+9      NAT1         499                        1578
+10     NAT2         115                        114
+12     SERPINA3     419.5                      387.5
+13     AADAC        125                        252.5
+14     AAMP         2023                       942.5
 ```
 
 
@@ -465,9 +470,9 @@ performed to help you identify secondary signals independent of these columns.
 Binary (0, 1) matrices will not be conditioned.
 
 ```
-    head conditions.txt
+head conditions.txt
 
-    Whole_Blood
+Whole_Blood
 ```
 
 
@@ -478,18 +483,18 @@ contains the same gene identifiers as those present in the Name column of the
 **`--gene-matrix`** GCT file. Only the first four columns are used.
 
 ```
-    zcat NCBIgenes2013.bed.gz | head
+zcat NCBIgenes2013.bed.gz | head
 
-    chr1  10003485   10045555   64802      NMNAT1
-    chr1  100111430  100160096  54873      PALMD
-    chr1  100163795  100164756  100129320  HMGB3P10
-    chr1  100174205  100232185  391059     FRRS1
-    chr1  10027438   10027515   100847055  MIR5697
-    chr1  100308165  100308317  100270894  RPL39P9
-    chr1  100315632  100389578  178        AGL
-    chr1  100433941  100435837  730081     LOC730081
-    chr1  100435344  100492534  23443      SLC35A3
-    chr1  100503669  100548932  64645      HIAT1
+chr1  10003485   10045555   64802      NMNAT1
+chr1  100111430  100160096  54873      PALMD
+chr1  100163795  100164756  100129320  HMGB3P10
+chr1  100174205  100232185  391059     FRRS1
+chr1  10027438   10027515   100847055  MIR5697
+chr1  100308165  100308317  100270894  RPL39P9
+chr1  100315632  100389578  178        AGL
+chr1  100433941  100435837  730081     LOC730081
+chr1  100435344  100492534  23443      SLC35A3
+chr1  100503669  100548932  64645      HIAT1
 ```
 
 
@@ -500,18 +505,18 @@ column with the SNP identifiers. The linkage intervals assigned to the
 trait-associated SNPs you provide with **`--snps`** are taken from this file.
 
 ```
-    zcat TGP2011.bed.gz | head
+zcat TGP2011.bed.gz | head
 
-    chr1	0	254996	rs113759966
-    chr1	0	254996	rs114420996
-    chr1	0	254996	rs114608975
-    chr1	0	254996	rs115209712
-    chr1	0	254996	rs116400033
-    chr1	0	254996	rs116504101
-    chr1	0	254996	rs12184306
-    chr1	0	254996	rs12184307
-    chr1	0	254996	rs138808727
-    chr1	0	254996	rs139113303
+chr1	0	254996	rs113759966
+chr1	0	254996	rs114420996
+chr1	0	254996	rs114608975
+chr1	0	254996	rs115209712
+chr1	0	254996	rs116400033
+chr1	0	254996	rs116504101
+chr1	0	254996	rs12184306
+chr1	0	254996	rs12184307
+chr1	0	254996	rs138808727
+chr1	0	254996	rs139113303
 ```
 
 ### `--null-snps FILE`
@@ -521,18 +526,18 @@ column is used. The identifiers must be a subset of the identifiers in
 **`--snp-intervals`**.
 
 ```
-    zcat Lango2010.txt.gz | head
+zcat Lango2010.txt.gz | head
 
-    rs58108140	chr1	10583
-    rs180734498	chr1	13302
-    rs140337953	chr1	30923
-    rs141149254	chr1	54490
-    rs2462492	chr1	54676
-    rs10399749	chr1	55299
-    rs189727433	chr1	57952
-    rs149755937	chr1	59040
-    rs77573425	chr1	61989
-    rs116440577	chr1	63671
+rs58108140	chr1	10583
+rs180734498	chr1	13302
+rs140337953	chr1	30923
+rs141149254	chr1	54490
+rs2462492	chr1	54676
+rs10399749	chr1	55299
+rs189727433	chr1	57952
+rs149755937	chr1	59040
+rs77573425	chr1	61989
+rs116440577	chr1	63671
 ```
 
 
@@ -542,12 +547,12 @@ column is used. The identifiers must be a subset of the identifiers in
 The usage example shown above produces the following output files:
 
 ```
-    out/
-        args.txt
-        pvalues.txt
-        null_pvalues.txt
-        snp_genes.txt
-        snp_pvalues.txt
+out/
+    args.txt
+    pvalues.txt
+    null_pvalues.txt
+    snp_genes.txt
+    snp_pvalues.txt
 ```
 
 
@@ -556,19 +561,19 @@ The usage example shown above produces the following output files:
 The command line arguments needed to reproduce the analysis.
 
 ```
-    cat args.txt
+cat args.txt
 
-    snpsea --snps LDL_Teslovich2010.txt
-           --gene-matrix NovartisGeneAtlas2004.gct.gz
-           --gene-intervals NCBIgenes2013.bed.gz
-           --snp-intervals TGP2011.bed.gz
-           --null-snps Lango2010.txt.gz
-           --out out
-           --slop 250000
-           --threads 4
-           --null-snpsets 1000
-           --min-observations 50
-           --max-iterations 1000000
+snpsea --snps LDL_Teslovich2010.txt
+       --gene-matrix NovartisGeneAtlas2004.gct.gz
+       --gene-intervals NCBIgenes2013.bed.gz
+       --snp-intervals TGP2011.bed.gz
+       --null-snps Lango2010.txt.gz
+       --out out
+       --slop 250000
+       --threads 4
+       --null-snpsets 1000
+       --min-observations 50
+       --max-iterations 1000000
 ```
 
 
@@ -578,15 +583,15 @@ The p-values representing enrichment of condition-specificity for the given
 SNPs.
 
 ```
-    head pvalues.txt | column -t
+head pvalues.txt | column -t
 
-    name                      pvalue       nulls_observed  nulls_tested
-    ColorectalAdenocarcinoma  0.87         87              100
-    WholeBlood                0.00606299   77              12700
-    BM-CD33+Myeloid           0.054        81              1500
-    PB-CD14+Monocytes         0.316667     95              300
-    PB-BDCA4+Dentritic_Cells  0.164286     115             700
-    PB-CD56+NKCells           0.000104993  86              819100
+name                      pvalue       nulls_observed  nulls_tested
+ColorectalAdenocarcinoma  0.87         87              100
+WholeBlood                0.00606299   77              12700
+BM-CD33+Myeloid           0.054        81              1500
+PB-CD14+Monocytes         0.316667     95              300
+PB-BDCA4+Dentritic_Cells  0.164286     115             700
+PB-CD56+NKCells           0.000104993  86              819100
 ```
 
 
@@ -603,18 +608,18 @@ The fifth column is the replicate index. The number of replicates performed is
 specified with **`--null-snpsets INT`**.
 
 ```
-    head null_pvalues.txt | column -t
+head null_pvalues.txt | column -t
 
-    ColorectalAdenocarcinoma  0.056     84   1500  0
-    WholeBlood                0.236667  71   300   0
-    BM-CD33+Myeloid           0.55      55   100   0
-    PB-CD14+Monocytes         0.59      59   100   0
-    PB-BDCA4+Dentritic_Cells  0.59      59   100   0
-    PB-CD56+NKCells           0.71      71   100   0
-    PB-CD4+Tcells             0.383333  115  300   0
-    PB-CD8+Tcells             0.128571  90   700   0
-    PB-CD19+Bcells            0.168571  118  700   0
-    BM-CD105+Endothelial      0.386667  116  300   0
+ColorectalAdenocarcinoma  0.056     84   1500  0
+WholeBlood                0.236667  71   300   0
+BM-CD33+Myeloid           0.55      55   100   0
+PB-CD14+Monocytes         0.59      59   100   0
+PB-BDCA4+Dentritic_Cells  0.59      59   100   0
+PB-CD56+NKCells           0.71      71   100   0
+PB-CD4+Tcells             0.383333  115  300   0
+PB-CD8+Tcells             0.128571  90   700   0
+PB-CD19+Bcells            0.168571  118  700   0
+BM-CD105+Endothelial      0.386667  116  300   0
 ```
 
 
@@ -625,18 +630,18 @@ the reference file specified with **`--snp-intervals`**, then the name of the
 SNP will be listed and the other columns will contain `NA`.
 
 ```
-    head snp_genes.txt | column -t
+head snp_genes.txt | column -t
 
-    chrom  start      end        name        n_genes  genes
-    chr7   128560761  128773770  rs10488631  2        3663,23534
-    chr2   100637056  100895271  rs10865035  3        3899,150577,164832
-    chr11  118475098  118746223  rs10892279  2        1656,23187
-    NA     NA         NA         rs99999999  NA       NA
-    chr21  43817297   43851877   rs11203203  1        53347
-    chr1   117256697  117293763  rs11586238  4        914,965,3321,5738
-    chr1   161389417  161637888  rs12746613  5        2212,2213,2215,3310,9103
-    chr2   61068167   61382443   rs13031237  5        5194,5966,84542,339803,339804
-    chr3   58553160   58558769   rs13315591  1        11170
+chrom  start      end        name        n_genes  genes
+chr7   128560761  128773770  rs10488631  2        3663,23534
+chr2   100637056  100895271  rs10865035  3        3899,150577,164832
+chr11  118475098  118746223  rs10892279  2        1656,23187
+NA     NA         NA         rs99999999  NA       NA
+chr21  43817297   43851877   rs11203203  1        53347
+chr1   117256697  117293763  rs11586238  4        914,965,3321,5738
+chr1   161389417  161637888  rs12746613  5        2212,2213,2215,3310,9103
+chr2   61068167   61382443   rs13031237  5        5194,5966,84542,339803,339804
+chr3   58553160   58558769   rs13315591  1        11170
 ```
 
 
@@ -647,18 +652,18 @@ p-value for the SNP-sample pair, adjusted for the number of genes overlapping
 the given SNP.
 
 ```
-    head snp_pvalues.txt | column -t
+head snp_pvalues.txt | column -t
 
-    marker      column                    gene   pvalue
-    rs10488631  ColorectalAdenocarcinoma  3663   0.270409
-    rs10488631  WholeBlood                3663   0.302693
-    rs10488631  BM-CD33+Myeloid           3663   0.0569547
-    rs10488631  PB-CD14+Monocytes         3663   0.0960891
-    rs10488631  PB-BDCA4+Dentritic_Cells  3663   0.240571
-    rs10488631  PB-CD56+NKCells           23534  0.58674
-    rs10488631  PB-CD4+Tcells             3663   0.683486
-    rs10488631  PB-CD8+Tcells             23534  0.634216
-    rs10488631  PB-CD19+Bcells            3663   0.261931
+marker      column                    gene   pvalue
+rs10488631  ColorectalAdenocarcinoma  3663   0.270409
+rs10488631  WholeBlood                3663   0.302693
+rs10488631  BM-CD33+Myeloid           3663   0.0569547
+rs10488631  PB-CD14+Monocytes         3663   0.0960891
+rs10488631  PB-BDCA4+Dentritic_Cells  3663   0.240571
+rs10488631  PB-CD56+NKCells           23534  0.58674
+rs10488631  PB-CD4+Tcells             3663   0.683486
+rs10488631  PB-CD8+Tcells             23534  0.634216
+rs10488631  PB-CD19+Bcells            3663   0.261931
 ```
 
 
@@ -673,7 +678,7 @@ the given SNP.
 Create this visualization with:
 
 ```bash
-    python bin/barplot.py --out out
+python bin/barplot.py --out out
 ```
 
 
@@ -684,7 +689,7 @@ Create this visualization with:
 Create this visualization with:
 
 ```bash
-    python bin/heatmap.py --out out
+python bin/heatmap.py --out out
 ```
 
 
@@ -695,5 +700,5 @@ Create this visualization with:
 Create this visualization with:
 
 ```bash
-    Rscript bin/type1error.R out
+Rscript bin/type1error.R out
 ```
