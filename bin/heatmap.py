@@ -135,7 +135,7 @@ def heatmap(f_sample_pvalues, f_matrix, f_pvalues,
     ax.set_yticks(np.arange(n_samples))
 
     # Labels. If the locus is represented by joined SNPs, print line by line.
-    xlabels = [x.replace(':', '\n') for x in list(pvalues.index)]
+    xlabels = [x.replace(',', '\n') for x in list(pvalues.index)]
     ax.set_xticklabels(xlabels, rotation=0, ha='left')
     ax.set_yticklabels(labels)
     ax.set_title(title)
