@@ -4,7 +4,7 @@
 #ifndef _SNPSEA_H
 #define _SNPSEA_H
 
-#define SNPSEA_VERSION "v1.0.1"
+#define SNPSEA_VERSION "v1.0.2"
 
 #include <Eigen/Dense>
 #include "IntervalTree.h"

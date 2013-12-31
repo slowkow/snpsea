@@ -1,6 +1,6 @@
 % SNPsea Reference Manual
 % Kamil Slowikowski
-% December 15, 2013
+% December 31, 2013
 
 \pagebreak
 
