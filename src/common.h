@@ -11,6 +11,7 @@
 #include <iterator>
 #include <limits>
 #include <unordered_map>
+#include <map>
 #include <random>
 #include <set>
 #include <sstream>

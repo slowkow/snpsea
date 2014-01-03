@@ -183,7 +183,7 @@ class snpsea
 
         // Put genesets into bins, where the key to a bin is the size of the
         // contained genesets in that bin.
-        std::unordered_map<ulong, std::vector<std::vector<ulong> > >
+        std::map<ulong, std::vector<std::vector<ulong> > >
         _geneset_bins;
 
         // Is the first column of the gene matrix filled with 1s and 0s?

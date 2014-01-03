@@ -9,7 +9,7 @@ using namespace ez;
 void Usage(ezOptionParser & opt)
 {
     std::string usage;
-    opt.getUsage(usage);
+    opt.getUsage(usage); //, 80, ez::ezOptionParser::Layout::INTERLEAVE);
     std::cout << usage;
 };
 
@@ -46,12 +46,15 @@ int main(int argc, const char * argv[])
         " <slowikow@broadinstitute.org>\n"
         "This program is free and without warranty under the GPLv3 license.\n\n";
 
+    // Don't put extra spaces between options.
+    opt.doublespace = 0;
+
     opt.add(
         "", // Default.
         0, // Required?
         0, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Display usage instructions.", // Help description.
+        "Display usage instructions.", // Help description.
         "-h",    // Flag token.
         "--help" // Flag token.
     );
@@ -61,9 +64,18 @@ int main(int argc, const char * argv[])
         0, // Required?
         0, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Display version and exit.\n", // Help description.
+        "Display version and exit.\n", // Help description.
         "-v",       // Flag token.
         "--version" // Flag token.
+    );
+
+    opt.add(
+        "", // Default.
+        0, // Required?
+        1, // Number of args expected.
+        0, // Delimiter if expecting multiple args.
+        "Text file with SNPsea arguments.",
+        "--args" // Flag token.
     );
 
     opt.add(
@@ -71,7 +83,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Text file with SNP identifiers in the first column."
+        "Text file with SNP identifiers in the first column."
         " Instead of a file name, you may use 'randomN' with an integer N for"
         " a random SNP list of length N.",
         "--snps" // Flag token.
@@ -82,7 +94,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Gene matrix file in GCT format. The Name column must contain the"
+        "Gene matrix file in GCT format. The Name column must contain the"
         " same gene identifiers as in --gene-intervals.",
         "--gene-matrix" // Flag token.
     );
@@ -92,7 +104,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* BED file with gene intervals. The fourth column must contain the"
+        "BED file with gene intervals. The fourth column must contain the"
         " same gene identifiers as in --gene-matrix.",
         "--gene-intervals" // Flag token.
     );
@@ -102,7 +114,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* BED file with all known SNP intervals. The fourth column must"
+        "BED file with all known SNP intervals. The fourth column must"
         " contain the same SNP identifiers as in --snps and --null-snps.",
         "--snp-intervals" // Flag token.
     );
@@ -112,7 +124,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Text file with SNP identifiers to sample when generating null"
+        "Text file with SNP identifiers to sample when generating null"
         " matched or random SNP sets. These SNPs must be a subset of"
         " --snp-intervals.",
         "--null-snps" // Flag token.
@@ -123,7 +135,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Create output files in this directory.", // Help description.
+        "Create output files in this directory.", // Help description.
         "--out" // Flag token.
     );
 
@@ -132,7 +144,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Text file with a list of columns in --gene-matrix to condition on"
+        "Text file with a list of columns in --gene-matrix to condition on"
         " before calculating p-values. Each column in --gene-matrix is"
         " projected onto each column listed in this file and its projection"
         " is subtracted.",
@@ -145,7 +157,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* If a SNP overlaps no gene intervals, extend the SNP interval this"
+        "If a SNP overlaps no gene intervals, extend the SNP interval this"
         " many nucleotides further and try again.\n[default: 250000]",
         "--slop", // Flag token.
         vU8
@@ -157,7 +169,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Number of threads to use. [default: 1]",
+        "Number of threads to use. [default: 1]",
         "--threads", // Flag token.
         gt1
     );
@@ -168,7 +180,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Test this many null matched SNP sets, so you can compare"
+        "Test this many null matched SNP sets, so you can compare"
         " your results to a distribution of null results.\n[default: 10]",
         "--null-snpsets", // Flag token.
         gt0
@@ -179,7 +191,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Stop testing a column in --gene-matrix after observing this many"
+        "Stop testing a column in --gene-matrix after observing this many"
         " null SNP sets with specificity scores greater or equal to those"
         " obtained with the SNP set in --snps. Increase this value to obtain"
         " more accurate p-values.\n[default: 25]",
@@ -192,7 +204,7 @@ int main(int argc, const char * argv[])
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "* Maximum number of null SNP sets tested against each column in"
+        "Maximum number of null SNP sets tested against each column in"
         " --gene-matrix. Increase this value to resolve smaller p-values."
         "\n[default: 1000]",
         "--max-iterations", // Flag token.
@@ -210,6 +222,19 @@ int main(int argc, const char * argv[])
     if (opt.isSet("-v")) {
         std::cout << SNPSEA_VERSION << std::endl;
         return 1;
+    }
+
+    // Import options from one or more files that use # as comment char.
+    if (opt.isSet("--args")) {
+        std::vector< std::vector<std::string> > files;
+        opt.get("--args")->getMultiStrings(files);
+
+        for(int j = 0; j < files.size(); j++) {
+            if (! opt.importFile(files[j][0].c_str(), '#')) {
+                std::cerr << "ERROR: Failed to open file "
+                          << files[j][0] << std::endl;
+            }
+        }
     }
 
     std::vector<std::string> badOptions;
@@ -279,7 +304,7 @@ int main(int argc, const char * argv[])
     int
     threads,
     slop;
-    
+
     long
     null_snpset_replicates,
     min_observations,
@@ -297,6 +322,7 @@ int main(int argc, const char * argv[])
     opt.get("--slop")->getDouble(slop_d);
     opt.get("--max-iterations")->getDouble(max_iterations_d);
 
+    // Convert to proper types.
     slop = slop_d;
     max_iterations = max_iterations_d;
 
@@ -314,7 +340,8 @@ int main(int argc, const char * argv[])
     }
 
     // Export all of the options used.
-    //opt.exportFile(out_folder + "/args.txt", true);
+    std::string argsfile = out_folder + "/args.txt";
+    opt.exportFile(argsfile.c_str(), true);
 
     // Run the analysis.
     snpsea(

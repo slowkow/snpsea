@@ -126,26 +126,6 @@ snpsea::snpsea(
         n_random_snps = _user_snp_names.size();
     }
 
-    mkpath(out_folder);
-
-    std::ofstream args (out_folder + "/args.txt");
-    write_args(
-        user_snpset_file,
-        gene_matrix_file,
-        gene_intervals_file,
-        snp_intervals_file,
-        null_snps_file,
-        condition_file,
-        out_folder,
-        slop,
-        threads,
-        null_snpset_replicates,
-        min_observations,
-        max_iterations,
-        args
-    );
-    args.close();
-
     // Overlap the user's SNP intervals with the gene intervals. Record
     // the SNPs that are not present in the --snp-intervals file. Also
     // record the gene sets and their sizes.
@@ -174,7 +154,7 @@ snpsea::snpsea(
     }
 
     std::cout << timestamp()
-              << " # On each iteration, we'll test "
+              << " # On each iteration, we will test "
               << _user_geneset_sizes.size()
               << " gene sets from these bins:" << std::endl;
     // Report how many genesets exist of each size.
@@ -189,9 +169,9 @@ snpsea::snpsea(
                       << " # " << setw(3) << n_items
                       << " gene sets with size ";
             if (item.first == MAX_GENES) {
-                std::cout << ">= "<< setw(2) << item.first;
+                std::cout << ">= " << setw(2) << item.first;
             } else {
-                std::cout << setw(2) << item.first;
+                std::cout << "   " << setw(2) << item.first;
             }
             std::cout << " from a pool of size " << item.second.size()
                       << std::endl;
@@ -199,16 +179,16 @@ snpsea::snpsea(
     }
 
     std::cout << timestamp()
-              << " # Computing up to "
-              << scientific << double(max_iterations)
+              << " # We will compute up to "
+              << setprecision(0) << scientific << double(max_iterations)
               << " iterations for each column with "
-              << fixed << threads << " threads ...\n"
+              << fixed << threads << " threads.\n"
               << std::flush;
 
     if (null_snpset_replicates > 0) {
         std::cout << timestamp()
                   << " # Computing " 
-                  << scientific << null_snpset_replicates
+                  << setprecision(0) << scientific << null_snpset_replicates
                   << " null SNP sets ...\n"
                   << std::flush;
 
@@ -281,22 +261,22 @@ void snpsea::write_args(
     std::ostream & stream
 )
 {
-    stream << "snpsea --snps " << user_snpset_file << "\n"
-           << "       --gene-matrix " << gene_matrix_file << "\n"
-           << "       --gene-intervals " << gene_intervals_file << "\n"
-           << "       --snp-intervals " << snp_intervals_file << "\n"
-           << "       --null-snps " << null_snps_file << "\n";
+    stream << "snpsea --snps             " << user_snpset_file << "\n"
+           << "       --gene-matrix      " << gene_matrix_file << "\n"
+           << "       --gene-intervals   " << gene_intervals_file << "\n"
+           << "       --snp-intervals    " << snp_intervals_file << "\n"
+           << "       --null-snps        " << null_snps_file << "\n";
 
     if (condition_file.length() > 0) {
-        stream << "       --condition " << condition_file << "\n";
+        stream << "       --condition        " << condition_file << "\n";
     }
 
-    stream << "       --out " << out_folder << "\n"
-           << "       --slop " << slop << "\n"
-           << "       --threads " << threads << "\n"
-           << "       --null-snpsets " << null_snpset_replicates << "\n"
+    stream << "       --out              " << out_folder << "\n"
+           << "       --slop             " << slop << "\n"
+           << "       --threads          " << threads << "\n"
+           << "       --null-snpsets     " << null_snpset_replicates << "\n"
            << "       --min-observations " << min_observations << "\n"
-           << "       --max-iterations " << max_iterations << "\n\n";
+           << "       --max-iterations   " << max_iterations << "\n\n";
 }
 
 // Read an optionally gzipped text file and store the first column in a set of
