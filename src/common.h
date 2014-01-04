@@ -63,16 +63,17 @@ static int cpu_count()
 }
 
 // Return a string with the current time like "Mon Jun 24 12:50:48 2013".
-static std::string timestamp(std::string fmt="%c") {
-  time_t rawtime;
-  struct tm * timeinfo;
-  char buffer [80];
+static std::string timestamp(std::string fmt = "%c")
+{
+    time_t rawtime;
+    struct tm * timeinfo;
+    char buffer [80];
 
-  time(&rawtime);
-  timeinfo = localtime(&rawtime);
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
 
-  strftime(buffer, 80, fmt.c_str(), timeinfo);
-  return std::string(buffer);
+    strftime(buffer, 80, fmt.c_str(), timeinfo);
+    return std::string(buffer);
 }
 
 struct genomic_interval {
@@ -85,10 +86,12 @@ struct genomic_interval {
 class ComposeStream : public std::ostream
 {
     struct ComposeBuffer : public std::streambuf {
-        void addBuffer(std::streambuf* buf) {
+        void addBuffer(std::streambuf * buf)
+        {
             bufs.push_back(buf);
         }
-        virtual int overflow(int c) {
+        virtual int overflow(int c)
+        {
             std::for_each(
                 bufs.begin(),
                 bufs.end(),
@@ -97,49 +100,54 @@ class ComposeStream : public std::ostream
             return c;
         }
 
-        private:
-            std::vector<std::streambuf*>    bufs;
+    private:
+        std::vector<std::streambuf *>    bufs;
 
-    };  
+    };
     ComposeBuffer myBuffer;
-    public: 
-        ComposeStream() : std::ostream(NULL) {
-            std::ostream::rdbuf(&myBuffer);
-        }   
-        void linkStream(std::ostream& out) {
-            out.flush();
-            myBuffer.addBuffer(out.rdbuf());
-        }
+public:
+    ComposeStream() : std::ostream(NULL)
+    {
+        std::ostream::rdbuf(&myBuffer);
+    }
+    void linkStream(std::ostream & out)
+    {
+        out.flush();
+        myBuffer.addBuffer(out.rdbuf());
+    }
 };
 
 // This class is useful for reading tab-delimited tables of text.
 class Row
 {
-    public:
-        std::string const & operator[](std::size_t index) const {
-            return m_data[index];
+public:
+    std::string const & operator[](std::size_t index) const
+    {
+        return m_data[index];
+    }
+    std::size_t size() const
+    {
+        return m_data.size();
+    }
+    void readNextRow(std::istream & str)
+    {
+        std::string line, cell;
+
+        std::getline(str, line);
+
+        std::stringstream lineStream(line);
+
+        m_data.clear();
+
+        while (std::getline(lineStream, cell, '\t')) {
+            // Remove spaces within each tab-delimited cell.
+            cell.erase(std::remove(cell.begin(), cell.end(), ' '),
+                       cell.end());
+            m_data.push_back(cell);
         }
-        std::size_t size() const {
-            return m_data.size();
-        }
-        void readNextRow(std::istream & str) {
-            std::string line, cell;
-
-            std::getline(str, line);
-
-            std::stringstream lineStream(line);
-
-            m_data.clear();
-
-            while (std::getline(lineStream, cell, '\t')) {
-                // Remove spaces within each tab-delimited cell.
-                cell.erase(std::remove(cell.begin(), cell.end(), ' '),
-                           cell.end());
-                m_data.push_back(cell);
-            }
-        }
-    private:
-        std::vector<std::string> m_data;
+    }
+private:
+    std::vector<std::string> m_data;
 };
 
 static std::istream & operator>>(std::istream & str, Row & data)
@@ -151,14 +159,15 @@ static std::istream & operator>>(std::istream & str, Row & data)
 // Simplified BED format that only uses the first 4 columns.
 class BEDRow
 {
-    public:
-        std::string name;
-        genomic_interval i;
-        void readNextRow(std::istream & stream) {
-            stream >> i.chrom >> i.start >> i.end >> name;
-            // Skip until the end of the line.
-            stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
+public:
+    std::string name;
+    genomic_interval i;
+    void readNextRow(std::istream & stream)
+    {
+        stream >> i.chrom >> i.start >> i.end >> name;
+        // Skip until the end of the line.
+        stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
 };
 
 static std::istream & operator>>(std::istream & stream, BEDRow & a)
@@ -220,13 +229,13 @@ static void assert_file_exists(const std::string & path)
 // Remove columns of the matrix. The unsafe version assumes that, the indices
 // are sorted in ascending order.
 static void unsafeRemoveColumns(
-    const std::vector<size_t> &idxs,
+    const std::vector<size_t> & idxs,
     MatrixXd & m
 )
 {
     size_t k = 1;
     for (std::vector<size_t>::const_reverse_iterator it = idxs.rbegin();
-            it != idxs.rend(); it++, k++) {
+         it != idxs.rend(); it++, k++) {
         const size_t nC = m.cols() - *it - k;
         if (nC > 0) {
             m.derived().block(0, *it, m.rows(), nC) =
@@ -323,8 +332,9 @@ static std::vector<T> make_vector(std::set<T> set)
 }
 
 // Split a string with a delimiter and return a vector of strings.
-static std::vector<std::string> split_string(std::string s, char delim) {
-    std::stringstream stream (s);
+static std::vector<std::string> split_string(std::string s, char delim)
+{
+    std::stringstream stream(s);
     std::string item;
     std::vector<std::string> result;
     while (std::getline(stream, item, delim)) {

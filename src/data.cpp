@@ -25,11 +25,9 @@ snpsea::snpsea(
     int threads,
     ulong null_snpset_replicates,
     ulong min_observations,
-    ulong max_iterations 
+    ulong max_iterations
 )
 {
-    std::cout << "# SNPsea " << SNPSEA_VERSION << "\n\n";
-
     write_args(
         user_snpset_file,
         gene_matrix_file,
@@ -126,6 +124,24 @@ snpsea::snpsea(
         n_random_snps = _user_snp_names.size();
     }
 
+    std::ofstream args(out_folder + "/args.txt");
+    write_args(
+        user_snpset_file,
+        gene_matrix_file,
+        gene_intervals_file,
+        snp_intervals_file,
+        null_snps_file,
+        condition_file,
+        out_folder,
+        slop,
+        threads,
+        null_snpset_replicates,
+        min_observations,
+        max_iterations,
+        args
+    );
+    args.close();
+
     // Overlap the user's SNP intervals with the gene intervals. Record
     // the SNPs that are not present in the --snp-intervals file. Also
     // record the gene sets and their sizes.
@@ -160,10 +176,10 @@ snpsea::snpsea(
     // Report how many genesets exist of each size.
     for (auto item : _geneset_bins) {
         int n_items = std::count(
-            _user_geneset_sizes.begin(),
-            _user_geneset_sizes.end(),
-            item.first
-        );
+                          _user_geneset_sizes.begin(),
+                          _user_geneset_sizes.end(),
+                          item.first
+                      );
         if (n_items > 0) {
             std::cout << timestamp()
                       << " # " << setw(3) << n_items
@@ -187,13 +203,13 @@ snpsea::snpsea(
 
     if (null_snpset_replicates > 0) {
         std::cout << timestamp()
-                  << " # Computing " 
+                  << " # Computing "
                   << setprecision(0) << scientific << null_snpset_replicates
                   << " null SNP sets ...\n"
                   << std::flush;
 
         for (ulong replicate = 0;
-                replicate < null_snpset_replicates; replicate++) {
+             replicate < null_snpset_replicates; replicate++) {
             // The user specified something like "random20" so let's
             // generate a totally random list of SNPs without matching.
             if (n_random_snps > 0) {
@@ -261,22 +277,21 @@ void snpsea::write_args(
     std::ostream & stream
 )
 {
-    stream << "snpsea --snps             " << user_snpset_file << "\n"
-           << "       --gene-matrix      " << gene_matrix_file << "\n"
-           << "       --gene-intervals   " << gene_intervals_file << "\n"
-           << "       --snp-intervals    " << snp_intervals_file << "\n"
-           << "       --null-snps        " << null_snps_file << "\n";
-
+    stream << "# SNPsea " << SNPSEA_VERSION << "\n"
+           << "--snps             " << user_snpset_file << "\n"
+           << "--gene-matrix      " << gene_matrix_file << "\n"
+           << "--gene-intervals   " << gene_intervals_file << "\n"
+           << "--snp-intervals    " << snp_intervals_file << "\n"
+           << "--null-snps        " << null_snps_file << "\n";
     if (condition_file.length() > 0) {
-        stream << "       --condition        " << condition_file << "\n";
+        stream << "--condition        " << condition_file << "\n";
     }
-
-    stream << "       --out              " << out_folder << "\n"
-           << "       --slop             " << slop << "\n"
-           << "       --threads          " << threads << "\n"
-           << "       --null-snpsets     " << null_snpset_replicates << "\n"
-           << "       --min-observations " << min_observations << "\n"
-           << "       --max-iterations   " << max_iterations << "\n\n";
+    stream << "--out              " << out_folder << "\n"
+           << "--slop             " << slop << "\n"
+           << "--threads          " << threads << "\n"
+           << "--null-snpsets     " << null_snpset_replicates << "\n"
+           << "--min-observations " << min_observations << "\n"
+           << "--max-iterations   " << max_iterations << "\n\n";
 }
 
 // Read an optionally gzipped text file and store the first column in a set of
@@ -359,7 +374,7 @@ void snpsea::random_snps(
         distribution(0, null_snps.size() - 1);
 
         auto r = distribution(generator);
-        
+
         // Sanity check. The SNP name must be in our map.
         if (_snp_intervals.count(null_snps[r]) == 0) {
             continue;
@@ -603,9 +618,9 @@ void snpsea::merge_user_snps(
 
             std::vector<ulong> genes_b = genesets[b];
             std::sort(genes_b.begin(), genes_b.end());
-            
+
             // Find the union of the two gene sets.
-            std::vector<ulong> genes_ab (genes_a.size() + genes_b.size());
+            std::vector<ulong> genes_ab(genes_a.size() + genes_b.size());
             std::vector<ulong>::iterator it;
             it = std::set_union(genes_a.begin(), genes_a.end(),
                                 genes_b.begin(), genes_b.end(),
@@ -772,10 +787,10 @@ void snpsea::condition(
 )
 {
     std::vector<std::string>
-    new_col_names (_col_names.begin(), _col_names.end());
+    new_col_names(_col_names.begin(), _col_names.end());
 
     std::vector<size_t> idxs;
-   
+
     for (const auto & col_name : col_names) {
         auto it = std::find(_col_names.begin(), _col_names.end(), col_name);
         size_t col_index = it - _col_names.begin();
@@ -787,7 +802,7 @@ void snpsea::condition(
         for (size_t col = 0; col < _col_names.size(); col++) {
             auto a = matrix.col(col);
             auto projection = a.dot(b) / b.dot(b) * b;
-            
+
             matrix.col(col) -= projection;
         }
     }
@@ -915,7 +930,7 @@ void snpsea::report_pvalues(
     std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";
 
     // Open the file.
-    ofstream stream (filename);
+    ofstream stream(filename);
     // Write the header.
     stream << "marker\tcolumn\tgene\tpvalue\n";
     // Iterate through each SNP's gene set.
@@ -1014,10 +1029,11 @@ void snpsea::calculate_pvalues(
 
                 // Each thread will complete some fraction of this loop.
                 #pragma omp for
-                for (long i = 0; i < count; i++) {
+                for (long i = 0; i < count; i++)
+                {
                     // Call the appropriate scoring function.
                     if ((*this.*score_function)(col, matched_genesets())
-                            >= user_score) {
+                    >= user_score) {
                         thread_observed += 1;
                     }
                 }
