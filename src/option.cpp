@@ -151,7 +151,7 @@ int main(int argc, const char * argv[])
         "--condition" // Flag token.
     );
 
-    ezOptionValidator* vU8 = new ezOptionValidator(ezOptionValidator::U8);
+    ezOptionValidator * vU8 = new ezOptionValidator(ezOptionValidator::U8);
     opt.add(
         "250000", // Default.
         0, // Required?
@@ -229,7 +229,7 @@ int main(int argc, const char * argv[])
         std::vector< std::vector<std::string> > files;
         opt.get("--args")->getMultiStrings(files);
 
-        for(int j = 0; j < files.size(); j++) {
+        for (int j = 0; j < files.size(); j++) {
             if (! opt.importFile(files[j][0].c_str(), '#')) {
                 std::cerr << "ERROR: Failed to open file "
                           << files[j][0] << std::endl;
@@ -327,21 +327,21 @@ int main(int argc, const char * argv[])
     max_iterations = max_iterations_d;
 
     if (max_iterations <= 0) {
-        std::cerr << "ERROR: Invalid option: --max-iterations " 
+        std::cerr << "ERROR: Invalid option: --max-iterations "
                   << max_iterations << std::endl
                   << "This option may not exceed 1e18.\n";
         exit(EXIT_FAILURE);
     }
 
     if (min_observations >= max_iterations || min_observations <= 0) {
-        std::cerr << "ERROR: Invalid option: --min-observations " 
+        std::cerr << "ERROR: Invalid option: --min-observations "
                   << min_observations << std::endl;
         exit(EXIT_FAILURE);
     }
 
     // Export all of the options used.
-    std::string argsfile = out_folder + "/args.txt";
-    opt.exportFile(argsfile.c_str(), true);
+    //std::string argsfile = out_folder + "/args.txt";
+    //opt.exportFile(argsfile.c_str(), true);
 
     // Run the analysis.
     snpsea(
