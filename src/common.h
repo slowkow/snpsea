@@ -143,6 +143,13 @@ public:
             // Remove spaces within each tab-delimited cell.
             cell.erase(std::remove(cell.begin(), cell.end(), ' '),
                        cell.end());
+            // Delete all occurrences of '^M' (aka '\r').
+            cell.erase(std::remove(cell.begin(), cell.end(), '\r'),
+                       cell.end());
+            // Skip lines that start with a '#'.
+            if (cell[0] == '#') {
+                continue;
+            }
             m_data.push_back(cell);
         }
     }
@@ -226,7 +233,7 @@ static void assert_file_exists(const std::string & path)
 // These two functions are inspired by:
 //      http://reference.mrpt.org/svn/eigen__plugins_8h_source.html#l00448
 
-// Remove columns of the matrix. The unsafe version assumes that, the indices
+// Remove columns of the matrix. The unsafe version assumes that the indices
 // are sorted in ascending order.
 static void unsafeRemoveColumns(
     const std::vector<size_t> & idxs,
