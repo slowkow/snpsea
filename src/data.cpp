@@ -443,6 +443,9 @@ void snpsea::read_bed_interval_tree(
         index[row_names.at(i)] = i;
     }
 
+    // Keep track of the genes that do have intervals.
+    std::set<std::string> bed_genes;
+
     ulong skipped_genes = 0;
     BEDRow row;
     while (stream >> row) {
@@ -455,15 +458,31 @@ void snpsea::read_bed_interval_tree(
             intervals[row.i.chrom].push_back(
                 interval(row.i.start, row.i.end, index[row.name])
             );
+            bed_genes.insert(row.name);
         } else {
             skipped_genes++;
         }
     }
 
+    // The set of genes present in the matrix and absent from the bed file.
+    std::set<std::string> missing_genes;
+    set_difference(
+            row_names_set.begin(), row_names_set.end(),
+            bed_genes.begin(), bed_genes.end(),
+            std::inserter(missing_genes, missing_genes.begin())
+    );
+    nrows = row_names.size() - missing_genes.size();
+
     std::cout << timestamp()
               << " # Skipped loading " << skipped_genes
               << " gene intervals because they are absent from the"
               << " --gene-matrix file."
+              << std::endl;
+
+    std::cout << timestamp()
+              << " # " << missing_genes.size()
+              << " genes from the --gene-matrix file are absent from the"
+              << " --gene-intervals file."
               << std::endl;
 
     // Loop through the chromosomes.
