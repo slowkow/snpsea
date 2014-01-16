@@ -222,7 +222,7 @@ def flatten(lists):
 def find_gene_matrix(filename):
     with open(filename) as f:
         for line in f:
-            m = re.search('--gene-matrix\s([^\n]+)', line)
+            m = re.search('--gene-matrix\s+([^\n]+)', line)
             if m:
                 return m.groups()[0].rstrip()
     return None
