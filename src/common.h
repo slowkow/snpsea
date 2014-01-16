@@ -146,10 +146,6 @@ public:
             // Delete all occurrences of '^M' (aka '\r').
             cell.erase(std::remove(cell.begin(), cell.end(), '\r'),
                        cell.end());
-            // Skip lines that start with a '#'.
-            if (cell[0] == '#') {
-                continue;
-            }
             m_data.push_back(cell);
         }
     }
