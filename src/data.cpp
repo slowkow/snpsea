@@ -65,6 +65,7 @@ snpsea::snpsea(
     read_bed_interval_tree(
         gene_intervals_file,
         _row_names,
+        _nrows,
         _gene_interval_tree
     );
 
@@ -83,7 +84,7 @@ snpsea::snpsea(
         std::cout << timestamp() << " # Expression is binary." << std::endl;
         // Cache these values ahead of time.
         _binary_sums = _gene_matrix.colwise().sum();
-        _binary_probs = _binary_sums / _gene_matrix.rows();
+        _binary_probs = _binary_sums / _nrows;
         _binary_gene_matrix = true;
     } else {
         _binary_gene_matrix = false;
@@ -101,7 +102,7 @@ snpsea::snpsea(
         // to the column. A large value means the gene is non-specific.
         for (int i = 0; i < _gene_matrix.cols(); i++) {
             _gene_matrix.col(i) =
-                rankdata(_gene_matrix.col(i)) / _gene_matrix.rows();
+                rankdata(_gene_matrix.col(i)) / _nrows;
         }
     }
 
@@ -418,6 +419,7 @@ void snpsea::read_bed_intervals(
 void snpsea::read_bed_interval_tree(
     std::string filename,
     const std::vector<std::string> & row_names,
+    unsigned int & nrows,
     std::unordered_map<std::string, IntervalTree<ulong> > & tree
 )
 {
@@ -889,13 +891,21 @@ double snpsea::score_binary(
     double p = _binary_probs(col);
     double score = 0.0;
     for (auto geneset : genesets) {
-        int k = 0;
+        unsigned int k = 0;
         for (auto gene_id : geneset) {
             if (_gene_matrix(gene_id, col) > 0) {
                 k++;
             }
         }
-        score += -log10(gsl_ran_binomial_pdf(k, p, n));
+        // Use the hypergeometric distribution to calculate a probability.
+        unsigned int n1 = n;
+        unsigned int n2 = _nrows - n;
+        unsigned int t = geneset.size();
+        // k  = number of 1s in this geneset
+        // n1 = number of 1s in this column
+        // n2 = number of 0s in this column
+        // t  = number of genes in this geneset
+        score += -log10(gsl_ran_hypergeometric_pdf(k, n1, n2, t));
     }
     return std::isfinite(score) ? score : 0.0;
 }

@@ -74,6 +74,7 @@ public:
     void read_bed_interval_tree(
         std::string filename,
         const std::vector<std::string> & row_names,
+        unsigned int & nrows,
         std::unordered_map<std::string, IntervalTree<ulong> > & tree
     );
 
@@ -161,16 +162,18 @@ private:
 
     // For a binary gene matrix, pre-calculate the column sums and those
     // sums divided by the number of rows.
-    VectorXd _binary_sums;
-
-    // For a continuous gene matrix, store the column scores for the
-    // user's SNPs.
-    VectorXd _binary_probs;
+    VectorXd
+    _binary_sums,
+    _binary_probs;
 
     // The row and column names of the provided GCT gene matrix file.
     std::vector<std::string>
     _row_names,
     _col_names;
+    // The number of genes in the GCT gene matrix file that have intervals in
+    // the --gene-intervals BED file.
+    unsigned int
+    _nrows;
 
     // The genesets for the user's SNPs.
     std::unordered_map<std::string, std::vector<ulong> >
