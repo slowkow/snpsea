@@ -618,9 +618,6 @@ void snpsea::merge_user_snps(
 
     std::set<std::string> merged_snps;
 
-    std::cout << timestamp()
-              << " # Merging SNPs with shared genes ...\n";
-
     int count_merged = 0;
 
     // Brute force, check all pairs of SNPs.
@@ -673,7 +670,7 @@ void snpsea::merge_user_snps(
     genesets = new_genesets;
     geneset_sizes = new_geneset_sizes;
 
-    std::cout << timestamp() << " # done. Merged "
+    std::cout << timestamp() << " # Merged "
               << merged_snps.size() << " SNPs into "
               << count_merged << " loci.\n" << std::flush;
 }
