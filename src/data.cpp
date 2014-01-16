@@ -307,7 +307,10 @@ void snpsea::read_names(std::string filename, std::set<std::string> & names)
     names.clear();
     Row row;
     while (str >> row) {
-        names.insert(row[0]);
+        // Skip lines that start with '#'.
+        if (row[0][0] != '#') {
+            names.insert(row[0]);
+        }
     }
     std::cout << timestamp() << " # \"" + filename + "\" has "
               << names.size() << " items." << std::endl;
