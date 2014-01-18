@@ -696,13 +696,11 @@ TGP2011.bed.gz</code></pre>
 <p>Linkage intervals for a filtered set of 22,518,294 SNPs from the <a href="http://www.1000genomes.org/">1000 Genomes Project</a> Phase 1 (May 21, 2011). SNP genotypes were obtained from the <a href="http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3/">BEAGLE</a> release v3 website and processed to create linkage intervals for each SNP. The linkage intervals were extended to the nearest <a href="http://hapmap.ncbi.nlm.nih.gov/downloads/">HapMap</a> recombination hotspot with &gt;3 cM/Mb recombination rate.</p>
 <h2 id="c-libraries"><a href="#c-libraries">C++ Libraries</a></h2>
 <p>To compile SNPsea, you will need a modern C++ compiler that supports <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> and the libraries listed below.</p>
-<p><strong>Instructions:</strong> Install on Ubuntu with:</p>
-<pre><code>sudo apt-get install libopenmpi-dev libgsl0-dev</code></pre>
+<p>See: <a href="#installation">Installation</a></p>
 <p><a href="http://eigen.tuxfamily.org">Eigen</a></p>
 <blockquote>
 <p>Eigen is a C++ template library for linear algebra: matrices, vectors, numerical solvers, and related algorithms.</p>
 </blockquote>
-<p><strong>Note:</strong> Eigen is downloaded upon executing <code>make</code> in the <code>src/</code> folder.</p>
 <p><a href="http://www.open-mpi.org">OpenMPI</a></p>
 <blockquote>
 <p>MPI is a standardized API typically used for parallel and/or distributed computing. Open MPI is an open source, freely available implementation.</p>
@@ -712,6 +710,9 @@ TGP2011.bed.gz</code></pre>
 <p>The GNU Scientific Library (GSL) is a numerical library for C and C++ programmers.</p>
 </blockquote>
 <p><a href="http://gcc.gnu.org">GCC, the GNU Compiler</a></p>
+<blockquote>
+<p>The GNU Compiler Collection is a compiler system produced by the GNU Project supporting various programming languages.</p>
+</blockquote>
 <p>I use <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> features in my C++ code, so you must use a compiler that supports them. I compiled successfully with versions 4.6.3 (the default version for Ubuntu 12.04) and 4.8.1.</p>
 <h2 id="python-packages"><a href="#python-packages">Python Packages</a></h2>
 <p>To plot visualizations of the results, you will need Python 2.7 and the packages listed below.</p>
