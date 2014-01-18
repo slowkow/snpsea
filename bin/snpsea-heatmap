@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 """
-:File:     snpsea-heatmap
-:Author:   Kamil Slowikowski
-:Updated:  July 25, 2013
+snpsea-heatmap
 
 Create a heatmap of samples and SNPs from the snp_pvalues.txt file produced by
 snpsea to reveal the SNPs and genes that contribute to statistically
@@ -18,6 +16,9 @@ Options:
     --title STR     Title for the figure.
     --out DIR       Directory with output files created by snpsea.
     --alpha NUM     Significance threshold [default: 0.05].
+
+Author:
+    Kamil Slowikowski <slowikowk@broadinstitute.org>
 """
 
 
