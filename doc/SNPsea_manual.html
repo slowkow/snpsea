@@ -7,6 +7,11 @@
                 <meta name="dcterms.date" content="2013-12-31">
         <title>SNPsea Reference Manual</title>
 
+	<!-- Google WebFonts
+  ================================================== -->
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+
 	<!-- Mobile Specific Metas
   ================================================== -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -75,7 +80,7 @@
 	body {
 		/*background: #fff;*/
 		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAXCAMAAABDEo1gAAAALVBMVEXu7u7z8/Pt7e3r6+vv7+/x8fHs7Ozw8PDo6Ojq6urp6eny8vL09PT19fX29vbJGhcbAAAB5klEQVR42k2TW4IkIQgEUUQLofb+x91At2b2x1eFaZJ0i7TWdTQTnastfaa1ob4lQraPlmtvy5z7nGvR7h5vyjMDfjOKF+2lYk1UlnjRiAh0X12SeTR4Lx2D1s48Z9Rjl0ZEZGvL0HloWZyin4mTzOz76Y31R6dwN7LJ3tCd8/LTGV0zl47pnScv3eBiYIa3cdt1+uWn1TGu6wH4S8cIobBaYrtT97r8o+htaj843KFld+EuG0ZE4+WrkufNba6Tr/3QruKH58VAxzImfHIX6qsD+gQrNmRCVlbF06kw+JapeyT0l0m1i+aEmBZvgoB115PPCPO5PnpDR4vpqyXVoZxv872K1Bq1/5eQznKyiu/GDE+SBR5+ROj+6BxYq0b5oKxnivIBAYdekHL8yEc3eXh6eVeOTR9BNdCHZpTMUB/RLo1lmy4LO2UdXvQE3W/Yau/bH/noMZHsvjUqqt7SxHBkR06XyVzMv5ncpPRkiusgGSt9FntmmjrcR1PShDdc0BLD2BLWuBhR1zPHvyKKdjKx0+PjIA1XgrJd/1OF/taCYqHJ7g3Xo6fQqh3cWbHHwukv9LPaCy2sjxnUjjaD+DPy8OvyydcK4v4Gi65uNuiZf5rgINhdfb9/DLF+aS/6sXjtRiB/AetLF9OdGDz6AAAAAElFTkSuQmCC);
-		font: 18px/27px "Droid Sans", sans; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+		font: 18px/27px "Droid Sans", sans-serif; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 		color: #222;
 		-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
 		-webkit-text-size-adjust: 100%;
@@ -87,7 +92,7 @@
 	h1, h2, h3, h4, h5, h6 {
 		color: #333;
 		/*font-family: "Georgia", "Times New Roman", serif;*/
-		font-family: 'Droid Sans', sans;
+		font-family: 'Droid Sans', sans-serif;
 		text-decoration: none;
 		/*font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 		font-weight: bold; }
@@ -126,7 +131,7 @@
 	hr { border: solid #ddd; border-width: 1px 0 0; clear: both; margin: 10px 0 30px; height: 0; }
     pre {
         padding: 0.5em 1em 0.5em 1em;
-		font: 14px/23px "Droid Sans Mono", monospace; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+		font: 17px/23px "Ubuntu Mono", monospace; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
         margin-bottom: 1em;
         display: block;
         overflow: auto;
@@ -196,7 +201,7 @@
 	  margin-bottom: 20px;
 	  line-height: normal;
 	  padding: 8px 10px;
-      font-family: "Droid Sans", sans; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/ }
+      font-family: "Droid Sans", sans-serif; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/ }
 
 	.button:hover,
 	button:hover,
@@ -264,7 +269,7 @@
 		-moz-border-radius: 2px;
 		-webkit-border-radius: 2px;
 		border-radius: 2px;
-      font: 13px "Droid Sans", sans; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/ }
+      font: 13px "Droid Sans", sans-serif; /*"HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/ }
 		color: #333;
 		margin: 0;
 		width: 210px;
@@ -628,13 +633,30 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <p><img src="figures/flowchart.png" alt="flowchart" /><br /></p>
 <p>This flow chart shows the input data required to perform the analysis, and a summary of the intermediate steps.</p>
 <h1 id="installation"><a href="#installation">Installation</a></h1>
-<p>Download the binary: <a href="https://github.com/slowkow/snpsea/releases">https://github.com/slowkow/snpsea/releases</a></p>
-<p>Or, you can download the source code: <a href="https://github.com/slowkow/snpsea">https://github.com/slowkow/snpsea</a></p>
-<p>After you install the dependencies listed below, run:</p>
-<pre><code>cd snpsea/src
-make</code></pre>
-<p>You may move the generated executable file wherever you like:</p>
-<pre><code>mv snpsea/bin/snpsea ~/bin/</code></pre>
+<p><strong>Linux 64-bit</strong></p>
+<p>Download the binary and run it: <a href="https://github.com/slowkow/snpsea/releases">https://github.com/slowkow/snpsea/releases</a></p>
+<p><strong>All other platforms</strong></p>
+<p>Download the source code: <a href="https://github.com/slowkow/snpsea">https://github.com/slowkow/snpsea</a></p>
+<p>After unzipping the source code, run:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># Ubuntu</span>
+<span class="kw">sudo</span> apt-get install build-essential libopenmpi-dev libgsl0-dev
+
+<span class="co"># Mac</span>
+<span class="co"># Install MacPorts: http://www.macports.org</span>
+<span class="co"># Then do this:</span>
+<span class="kw">sudo</span> port selfupdate
+<span class="kw">sudo</span> port install gcc48 openmpi gsl
+
+<span class="co"># Broad Institute</span>
+<span class="co"># You can add this to your .my.bashrc or .my.cshrc</span>
+<span class="kw">use</span> .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
+
+<span class="co"># Compile the code.</span>
+<span class="kw">cd</span> snpsea/src
+<span class="kw">make</span>
+
+<span class="co"># Move the generated executable wherever you like.</span>
+<span class="kw">mv</span> ../bin/snpsea ~/bin/</code></pre>
 <h2 id="data"><a href="#data">Data</a></h2>
 <p>Download the compressed archive with data required to perform this analysis here (138M):</p>
 <p><a href="http://dx.doi.org/10.6084/m9.figshare.871430">http://dx.doi.org/10.6084/m9.figshare.871430</a></p>
@@ -673,31 +695,45 @@ TGP2011.bed.gz</code></pre>
 <h3 id="tgp2011.bed.gz"><a href="#tgp2011.bed.gz"><code>TGP2011.bed.gz</code></a></h3>
 <p>Linkage intervals for a filtered set of 22,518,294 SNPs from the <a href="http://www.1000genomes.org/">1000 Genomes Project</a> Phase 1 (May 21, 2011). SNP genotypes were obtained from the <a href="http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3/">BEAGLE</a> release v3 website and processed to create linkage intervals for each SNP. The linkage intervals were extended to the nearest <a href="http://hapmap.ncbi.nlm.nih.gov/downloads/">HapMap</a> recombination hotspot with &gt;3 cM/Mb recombination rate.</p>
 <h2 id="c-libraries"><a href="#c-libraries">C++ Libraries</a></h2>
+<p>To compile SNPsea, you will need a modern C++ compiler that supports <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> and the libraries listed below.</p>
+<p><strong>Instructions:</strong> Install on Ubuntu with:</p>
+<pre><code>sudo apt-get install libopenmpi-dev libgsl0-dev</code></pre>
 <p><a href="http://eigen.tuxfamily.org">Eigen</a></p>
+<blockquote>
 <p>Eigen is a C++ template library for linear algebra: matrices, vectors, numerical solvers, and related algorithms.</p>
-<p><strong>Instructions:</strong> Download the latest version and unpack it. Ensure the SNPsea Makefile points to the folder that contains eigen.</p>
+</blockquote>
+<p><strong>Note:</strong> Eigen is downloaded upon executing <code>make</code> in the <code>src/</code> folder.</p>
 <p><a href="http://www.open-mpi.org">OpenMPI</a></p>
+<blockquote>
 <p>MPI is a standardized API typically used for parallel and/or distributed computing. Open MPI is an open source, freely available implementation.</p>
-<p><strong>Instructions:</strong> Install on Ubuntu with:</p>
-<pre><code>sudo apt-get install libopenmpi-dev</code></pre>
+</blockquote>
 <p><a href="http://www.gnu.org/software/gsl">GSL - GNU Scientific Library</a></p>
+<blockquote>
 <p>The GNU Scientific Library (GSL) is a numerical library for C and C++ programmers.</p>
-<p><strong>Instructions:</strong> Install on Ubuntu with:</p>
-<pre><code>sudo apt-get install libgsl0-dev</code></pre>
+</blockquote>
 <p><a href="http://gcc.gnu.org">GCC, the GNU Compiler</a></p>
-<p>I use <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> features in my C++ code, so you must use a compiler that supports them. I compiled successfully with versions 4.6.3 and 4.8.1.</p>
+<p>I use <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> features in my C++ code, so you must use a compiler that supports them. I compiled successfully with versions 4.6.3 (the default version for Ubuntu 12.04) and 4.8.1.</p>
 <h2 id="python-packages"><a href="#python-packages">Python Packages</a></h2>
-<p>To plot visualizations of the results, you will need Python 2.7 and the packages listed below. Note: the packages available on the Ubuntu repositories may be outdated and might fail to work.</p>
+<p>To plot visualizations of the results, you will need Python 2.7 and the packages listed below.</p>
 <p><strong>Instructions:</strong> Install with <a href="http://www.pip-installer.org">pip</a>:</p>
 <pre><code>pip install docopt numpy pandas matplotlib</code></pre>
+<p><strong>Note:</strong> The packages available on the Ubuntu repositories may be outdated and might fail to work. So, avoid using <code>apt-get</code> for these dependencies.</p>
 <p><a href="http://docopt.org/">docopt</a></p>
+<blockquote>
 <p>Command-line interface description language.</p>
+</blockquote>
 <p><a href="http://www.numpy.org">numpy</a></p>
+<blockquote>
 <p>NumPy is the fundamental package for scientific computing with Python.</p>
+</blockquote>
 <p><a href="http://pandas.pydata.org">pandas</a></p>
+<blockquote>
 <p>pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language.</p>
+</blockquote>
 <p><a href="http://matplotlib.org">matplotlib</a></p>
+<blockquote>
 <p>matplotlib is a python 2D plotting library which produces publication quality figures in a variety of hardcopy formats and interactive environments across platforms.</p>
+</blockquote>
 <p><strong>Note:</strong> On a server with no display, please edit your <a href="http://matplotlib.org/users/customizing.html">matplotlibrc</a> file to use the <code>Agg</code> backend. Otherwise, you may see an error message like this:</p>
 <pre><code>_tkinter.TclError: no display name and no $DISPLAY environment variable</code></pre>
 <h2 id="r-packages"><a href="#r-packages">R Packages</a></h2>
@@ -705,13 +741,21 @@ TGP2011.bed.gz</code></pre>
 <p><strong>Instructions:</strong> Start a session in R and run:</p>
 <pre class="sourceCode R"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;data.table&quot;</span>, <span class="st">&quot;reshape2&quot;</span>, <span class="st">&quot;gap&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>))</code></pre>
 <p><a href="http://cran.r-project.org/web/packages/data.table">data.table</a></p>
+<blockquote>
 <p>Extension of data.frame for fast indexing, fast ordered joins, fast assignment, fast grouping and list columns.</p>
+</blockquote>
 <p><a href="http://cran.r-project.org/web/packages/reshape2">reshape2</a></p>
+<blockquote>
 <p>Flexibly reshape data: a reboot of the reshape package.</p>
+</blockquote>
 <p><a href="http://cran.r-project.org/web/packages/gap">gap</a></p>
+<blockquote>
 <p>Genetic analysis package.</p>
+</blockquote>
 <p><a href="http://cran.r-project.org/web/packages/ggplot2">ggplot2</a></p>
+<blockquote>
 <p>An implementation of the Grammar of Graphics.</p>
+</blockquote>
 <h1 id="usage"><a href="#usage">Usage</a></h1>
 <h2 id="example"><a href="#example">Example</a></h2>
 <p>Here is a <a href="http://www.gnu.org/software/bash/manual/bashref.html">Bash</a> script with a usage example:</p>
@@ -728,7 +772,7 @@ TGP2011.bed.gz</code></pre>
     <span class="kw">--min-observations</span> 50
     <span class="kw">--max-iterations</span> 1e6
 )
-<span class="kw">snpsea</span> <span class="ot">${options[*]}</span> <span class="kw">&gt;</span> log.txt</code></pre>
+<span class="kw">snpsea</span> <span class="ot">${options[*]}</span> <span class="kw">&amp;&gt;</span> log.txt</code></pre>
 <p>This will run the analysis on SNPs associated with LDL cholesterol and test for tissue-specific expression of the nearby genes across 79 human tissues in the Novartis 2011 gene expression matrix. Additionally, 1000 null random matched SNP sets will be tested and their results will also be recorded. Each tissue will be tested up to 1 million times, or testing will stop for a tissue if 50 matched SNP sets are observed to achieve a higher specificity score than the user's SNPs.</p>
 <h2 id="options"><a href="#options">Options</a></h2>
 <p>All input files may be optionally compressed with <a href="http://www.gzip.org/"><code>gzip</code></a>.</p>
@@ -806,7 +850,7 @@ rs1564348   chr6   160578860</code></pre>
 <p>Instead of providing a file with SNPs, you may use &quot;randomN&quot; like this:</p>
 <pre><code>--snps random20</code></pre>
 <p>to sample 20 random SNPs from the <strong><code>--snp-intervals</code></strong> file.</p>
-<h3 id="gene-matrix-file"><a href="#gene-matrix-file"><code>--gene-matrix FILE</code></a></h3>
+<h3 id="gene-matrix-arg"><a href="#gene-matrix-arg"><code>--gene-matrix ARG</code></a></h3>
 <p>You must provide a single gene matrix that must be in <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> format.</p>
 <pre><code>zcat NovartisGeneAtlas2004.gct.gz | cut -f1-4 | head
 
@@ -820,12 +864,12 @@ Name   Description  Colorectal_Adenocarcinoma  Whole_Blood
 12     SERPINA3     419.5                      387.5
 13     AADAC        125                        252.5
 14     AAMP         2023                       942.5</code></pre>
-<h3 id="condition-file-optional"><a href="#condition-file-optional"><code>--condition FILE</code> (Optional)</a></h3>
+<h3 id="condition-arg-optional"><a href="#condition-arg-optional"><code>--condition ARG</code> (Optional)</a></h3>
 <p>You may provide column names present in the <strong><code>--gene-matrix</code></strong> file, one per line. The matrix will be conditioned on these columns before the analysis is performed to help you identify secondary signals independent of these columns. Binary (0, 1) matrices will not be conditioned.</p>
 <pre><code>head conditions.txt
 
 Whole_Blood</code></pre>
-<h3 id="gene-intervals-file"><a href="#gene-intervals-file"><code>--gene-intervals FILE</code></a></h3>
+<h3 id="gene-intervals-arg"><a href="#gene-intervals-arg"><code>--gene-intervals ARG</code></a></h3>
 <p>You must provide gene intervals in BED format with a fourth column that contains the same gene identifiers as those present in the Name column of the <strong><code>--gene-matrix</code></strong> GCT file. Only the first four columns are used.</p>
 <pre><code>zcat NCBIgenes2013.bed.gz | head
 
@@ -839,7 +883,7 @@ chr1  100315632  100389578  178        AGL
 chr1  100433941  100435837  730081     LOC730081
 chr1  100435344  100492534  23443      SLC35A3
 chr1  100503669  100548932  64645      HIAT1</code></pre>
-<h3 id="snp-intervals-file"><a href="#snp-intervals-file"><code>--snp-intervals FILE</code></a></h3>
+<h3 id="snp-intervals-arg"><a href="#snp-intervals-arg"><code>--snp-intervals ARG</code></a></h3>
 <p>SNP linkage intervals must be specified in BED format and include a fourth column with the SNP identifiers. The linkage intervals assigned to the trait-associated SNPs you provide with <strong><code>--snps</code></strong> are taken from this file.</p>
 <pre><code>zcat TGP2011.bed.gz | head
 
@@ -853,7 +897,7 @@ chr1    0   254996  rs12184306
 chr1    0   254996  rs12184307
 chr1    0   254996  rs138808727
 chr1    0   254996  rs139113303</code></pre>
-<h3 id="null-snps-file"><a href="#null-snps-file"><code>--null-snps FILE</code></a></h3>
+<h3 id="null-snps-arg"><a href="#null-snps-arg"><code>--null-snps ARG</code></a></h3>
 <p>The null SNPs file must have one SNP identifier per line. Only the first column is used. The identifiers must be a subset of the identifiers in <strong><code>--snp-intervals</code></strong>.</p>
 <pre><code>zcat Lango2010.txt.gz | head
 
@@ -879,17 +923,20 @@ rs116440577 chr1    63671</code></pre>
 <p>The command line arguments needed to reproduce the analysis.</p>
 <pre><code>cat args.txt
 
-snpsea --snps LDL_Teslovich2010.txt
-       --gene-matrix NovartisGeneAtlas2004.gct.gz
-       --gene-intervals NCBIgenes2013.bed.gz
-       --snp-intervals TGP2011.bed.gz
-       --null-snps Lango2010.txt.gz
-       --out out
-       --slop 250000
-       --threads 4
-       --null-snpsets 1000
-       --min-observations 50
-       --max-iterations 1000000</code></pre>
+# SNPsea v1.0.2
+--snps             LDL_Teslovich2010.txt
+--gene-matrix      NovartisGeneAtlas2004.gct.gz
+--gene-intervals   NCBIgenes2013.bed.gz
+--snp-intervals    TGP2011.bed.gz
+--null-snps        Lango2010.txt.gz
+--out              out
+--slop             250000
+--threads          4
+--null-snpsets     1000
+--min-observations 50
+--max-iterations   1000000</code></pre>
+<p>Repeat the analysis:</p>
+<pre><code>snpsea --args args.txt</code></pre>
 <h3 id="pvalues.txt"><a href="#pvalues.txt"><code>pvalues.txt</code></a></h3>
 <p>The p-values representing enrichment of condition-specificity for the given SNPs.</p>
 <pre><code>head pvalues.txt | column -t
@@ -948,13 +995,13 @@ rs10488631  PB-CD19+Bcells            3663   0.261931</code></pre>
 <h2 id="output-visualizations"><a href="#output-visualizations">Output Visualizations</a></h2>
 <h3 id="view-enrichment-of-tissue-specific-gene-expression"><a href="#view-enrichment-of-tissue-specific-gene-expression">View enrichment of tissue-specific gene expression</a></h3>
 <p><img src="figures/Teslovich2010_Novartis2011_pvalues_barplot_25.png" alt="A horizontal bar plot of negative log10 p-values for a test of 37 LDL-associated SNPs for enrichment of tissue-specific expression in profiles of 79 human tissues." /><br /> Create this visualization with:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/barplot.py --out out</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/snpsea-barplot --out out</code></pre>
 <h3 id="view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair"><a href="#view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair">View the most specifically expressed gene for each SNP-tissue pair</a></h3>
 <p><img src="figures/Teslovich2010_Novartis2011_snp_pvalues_heatmap.png" alt="A heatmap exposing the contributions of specifically expressed genes within each SNP linkage interval to the specificity scores of each tissue." /><br /> Create this visualization with:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/heatmap.py --out out</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/snpsea-heatmap --out out</code></pre>
 <h3 id="view-the-type-1-error-rate-estimates-for-each-tissue"><a href="#view-the-type-1-error-rate-estimates-for-each-tissue">View the type 1 error rate estimates for each tissue</a></h3>
 <p><img src="figures/type1error_Novartis2004.png" alt="A scatter plot of the observed proportion of p-values under various thresholds after repeating the analysis with 10,000 random SNP sets." /><br /> Create this visualization with:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">Rscript</span> bin/type1error.R out</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">Rscript</span> bin/snpsea-type1error out</code></pre>
     </div>
 </div>
 </body>
