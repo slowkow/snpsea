@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 """
-:File:     snpsea-barplot
-:Author:   Kamil Slowikowski
-:Updated:  December 19, 2013
+snpsea-barplot
 
-Create a bar plot of p-values for each sample with an adjacent heatmap
-triangle showing all pairwise sample Spearman correlations of expression
-profiles.
+Create a bar plot of p-values for each condition in --gene-matrix with an
+adjacent heatmap triangle showing all pairwise sample Pearson correlations of
+expression profiles.
 
 Usage:
     snpsea-barplot --out DIR [--top INT --title STRING --width INT --fontsize INT]
@@ -18,6 +16,9 @@ Options:
     --title STRING     Title printed at the top of the figure.
     --width INT        Width of the figure [default: 12].
     --fontsize INT     Font size of y-axis labels [default: 12].
+
+Author:
+    Kamil Slowikowski <slowikow@broadinstitute.org>
 """
 
 

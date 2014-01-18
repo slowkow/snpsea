@@ -1,15 +1,32 @@
 #!/usr/bin/env Rscript
-# type1error.R
-# Kamil Slowikowski
-# November 26, 2013
 
+usage <- "snpsea-type1error
+
+Given a null_pvalues.txt file with results for many replicates of null SNP
+sets, create a scatter plot that shows the proportion of p-values at various
+thresholds. This allows us to determine if SNPsea is well-calibrated and
+produces the expected number of type 1 errors (false positives).
+
+Usage:
+    snpsea-type1error <out>
+
+Author:
+    Kamil Slowikowski <slowikow@broadinstitute.org>
+"
+
+# Read the command line arguments.
+args <- commandArgs(TRUE)
+if (length(args) != 1) {
+    cat(usage)
+    quit()
+}
+base <- args[1]
+
+# Load libraries.
 library(data.table)
 library(reshape2)
 library(ggplot2)
 library(gap)
-
-args <- commandArgs(TRUE)
-base <- args[1]
 
 # Read the null pvalues.
 header <- c("name", "pvalue", "nulls_observed", "nulls_tested", "replicate")
