@@ -1001,7 +1001,7 @@ rs10488631  PB-CD19+Bcells            3663   0.261931</code></pre>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/snpsea-heatmap --out out</code></pre>
 <h3 id="view-the-type-1-error-rate-estimates-for-each-tissue"><a href="#view-the-type-1-error-rate-estimates-for-each-tissue">View the type 1 error rate estimates for each tissue</a></h3>
 <p><img src="figures/type1error_Novartis2004.png" alt="A scatter plot of the observed proportion of p-values under various thresholds after repeating the analysis with 10,000 random SNP sets." /><br /> Create this visualization with:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">Rscript</span> bin/snpsea-type1error out</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">Rscript</span> bin/type1error.R out</code></pre>
     </div>
 </div>
 </body>

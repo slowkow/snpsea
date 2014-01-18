@@ -732,5 +732,5 @@ thresholds after repeating the analysis with 10,000 random SNP sets.
 Create this visualization with:
 
 ```bash
-Rscript bin/snpsea-type1error out
+Rscript bin/type1error.R out
 ```
