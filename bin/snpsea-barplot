@@ -120,7 +120,7 @@ def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5), fontsize=12,
                                 linewidth=0,
                                 #fontsize=fontsize,
                                 grid=False,
-                                color='blue')
+                                color='#777777')
 
     # Vertical grid lines.
     ax.grid(b=True, which='major', axis='both', alpha=0.5)
