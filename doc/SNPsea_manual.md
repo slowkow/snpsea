@@ -195,18 +195,12 @@ hotspot with >3 cM/Mb recombination rate.
 To compile SNPsea, you will need a modern C++ compiler that supports
 [`c++0x`][cxx0x] and the libraries listed below.
 
-**Instructions:** Install on Ubuntu with:
-
-```
-sudo apt-get install libopenmpi-dev libgsl0-dev
-```
+See: [Installation]
 
 [Eigen]
 
 > Eigen is a C++ template library for linear algebra: matrices, vectors,
 > numerical solvers, and related algorithms.
-
-**Note:** Eigen is downloaded upon executing `make` in the `src/` folder.
 
 [OpenMPI]
 
@@ -219,6 +213,9 @@ sudo apt-get install libopenmpi-dev libgsl0-dev
 > programmers.
 
 [GCC, the GNU Compiler][gcc]
+
+> The GNU Compiler Collection is a compiler system produced by the GNU Project
+> supporting various programming languages.
 
 I use [`c++0x`][cxx0x] features in my C++ code, so you must use a compiler
 that supports them. I compiled successfully with versions 4.6.3 (the default
