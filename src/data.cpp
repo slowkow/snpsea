@@ -1,4 +1,4 @@
-// Copyright (c) 2013 Kamil Slowikowski
+// Copyright (c) 2013-2014 Kamil Slowikowski
 // See LICENSE for GPLv3 license.
 
 #include "snpsea.h"

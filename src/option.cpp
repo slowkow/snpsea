@@ -1,4 +1,4 @@
-// Copyright (c) 2013 Kamil Slowikowski
+// Copyright (c) 2013-2014 Kamil Slowikowski
 // See LICENSE for GPLv3 license.
 
 #include "ezOptionParser.h"
@@ -42,7 +42,7 @@ int main(int argc, const char * argv[])
         "           --min-observations 25         \\\n"
         "           --max-iterations 1e6\n\n";
     opt.footer =
-        "SNPsea " SNPSEA_VERSION " Copyright (C) 2013 Kamil Slowikowski"
+        "SNPsea " SNPSEA_VERSION " Copyright (C) 2013-2014 Kamil Slowikowski"
         " <slowikow@broadinstitute.org>\n"
         "This program is free and without warranty under the GPLv3 license.\n\n";
 
