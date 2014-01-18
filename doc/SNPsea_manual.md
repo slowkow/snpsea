@@ -64,21 +64,36 @@ a summary of the intermediate steps.
 
 # Installation
 
-Download the binary: <https://github.com/slowkow/snpsea/releases>
+**Linux 64-bit**
 
-Or, you can download the source code: <https://github.com/slowkow/snpsea>
+Download the binary and run it: <https://github.com/slowkow/snpsea/releases>
 
-After you install the dependencies listed below, run:
+**All other platforms**
 
-```
+Download the source code: <https://github.com/slowkow/snpsea>
+
+After unzipping the source code, run:
+
+```bash
+# Ubuntu
+sudo apt-get install build-essential libopenmpi-dev libgsl0-dev
+
+# Mac
+# Install MacPorts: http://www.macports.org
+# Then do this:
+sudo port selfupdate
+sudo port install gcc48 openmpi gsl
+
+# Broad Institute
+# You can add this to your .my.bashrc or .my.cshrc
+use .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
+
+# Compile the code.
 cd snpsea/src
 make
-```
 
-You may move the generated executable file wherever you like:
-
-```
-mv snpsea/bin/snpsea ~/bin/
+# Move the generated executable wherever you like.
+mv ../bin/snpsea ~/bin/
 ```
 
 
@@ -177,42 +192,37 @@ hotspot with >3 cM/Mb recombination rate.
 
 ## C++ Libraries
 
+To compile SNPsea, you will need a modern C++ compiler that supports
+[`c++0x`][cxx0x] and the libraries listed below.
+
+**Instructions:** Install on Ubuntu with:
+
+```
+sudo apt-get install libopenmpi-dev libgsl0-dev
+```
+
 [Eigen]
 
-Eigen is a C++ template library for linear algebra: matrices, vectors,
-numerical solvers, and related algorithms.
+> Eigen is a C++ template library for linear algebra: matrices, vectors,
+> numerical solvers, and related algorithms.
 
-**Instructions:** Download the latest version and unpack it. Ensure the
-SNPsea Makefile points to the folder that contains eigen.
-
+**Note:** Eigen is downloaded upon executing `make` in the `src/` folder.
 
 [OpenMPI]
 
-MPI is a standardized API typically used for parallel and/or distributed
-computing. Open MPI is an open source, freely available implementation.
-
-**Instructions:** Install on Ubuntu with:
-
-```
-sudo apt-get install libopenmpi-dev
-```
-
+> MPI is a standardized API typically used for parallel and/or distributed
+> computing. Open MPI is an open source, freely available implementation.
 
 [GSL - GNU Scientific Library][gsl]
 
-The GNU Scientific Library (GSL) is a numerical library for C and C++
-programmers.
-
-**Instructions:** Install on Ubuntu with:
-
-```
-sudo apt-get install libgsl0-dev
-```
+> The GNU Scientific Library (GSL) is a numerical library for C and C++
+> programmers.
 
 [GCC, the GNU Compiler][gcc]
 
 I use [`c++0x`][cxx0x] features in my C++ code, so you must use a compiler
-that supports them. I compiled successfully with versions 4.6.3 and 4.8.1.
+that supports them. I compiled successfully with versions 4.6.3 (the default
+version for Ubuntu 12.04) and 4.8.1.
 
 
 [Eigen]: http://eigen.tuxfamily.org
@@ -226,8 +236,7 @@ that supports them. I compiled successfully with versions 4.6.3 and 4.8.1.
 ## Python Packages
 
 To plot visualizations of the results, you will need Python 2.7 and the
-packages listed below. Note: the packages available on the Ubuntu repositories
-may be outdated and might fail to work.
+packages listed below.
 
 **Instructions:** Install with [pip]:
 
@@ -235,25 +244,28 @@ may be outdated and might fail to work.
 pip install docopt numpy pandas matplotlib
 ```
 
+**Note:** The packages available on the Ubuntu repositories may be outdated
+and might fail to work. So, avoid using `apt-get` for these dependencies.
+
 [docopt]
 
-Command-line interface description language.
+> Command-line interface description language.
 
 [numpy]
 
-NumPy is the fundamental package for scientific computing with Python.
+> NumPy is the fundamental package for scientific computing with Python.
 
 [pandas]
 
-pandas is an open source, BSD-licensed library providing high-performance,
-easy-to-use data structures and data analysis tools for the Python
-programming language.
+> pandas is an open source, BSD-licensed library providing high-performance,
+> easy-to-use data structures and data analysis tools for the Python
+> programming language.
 
 [matplotlib]
 
-matplotlib is a python 2D plotting library which produces publication
-quality figures in a variety of hardcopy formats and interactive
-environments across platforms.
+> matplotlib is a python 2D plotting library which produces publication
+> quality figures in a variety of hardcopy formats and interactive
+> environments across platforms.
 
 **Note:** On a server with no display, please edit your [matplotlibrc] file to
 use the `Agg` backend. Otherwise, you may see an error message like this:
@@ -282,20 +294,20 @@ install.packages(c("data.table", "reshape2", "gap", "ggplot2"))
 
 [data.table]
 
-Extension of data.frame for fast indexing, fast ordered joins, fast
-assignment, fast grouping and list columns.
+> Extension of data.frame for fast indexing, fast ordered joins, fast
+> assignment, fast grouping and list columns.
 
 [reshape2]
 
-Flexibly reshape data: a reboot of the reshape package. 
+> Flexibly reshape data: a reboot of the reshape package. 
 
 [gap]
 
-Genetic analysis package.
+> Genetic analysis package.
 
 [ggplot2]
 
-An implementation of the Grammar of Graphics.
+> An implementation of the Grammar of Graphics.
 
 
 [data.table]: http://cran.r-project.org/web/packages/data.table
@@ -325,7 +337,7 @@ options=(
     --min-observations 50
     --max-iterations 1e6
 )
-snpsea ${options[*]} > log.txt
+snpsea ${options[*]} &> log.txt
 ```
 
 This will run the analysis on SNPs associated with LDL cholesterol and
@@ -445,7 +457,7 @@ Instead of providing a file with SNPs, you may use "randomN" like this:
 to sample 20 random SNPs from the **`--snp-intervals`** file.
 
 
-### `--gene-matrix FILE`
+### `--gene-matrix ARG`
 
 You must provide a single gene matrix that must be in [GCT][gct] format.
 
@@ -468,7 +480,7 @@ Name   Description  Colorectal_Adenocarcinoma  Whole_Blood
 ```
 
 
-### `--condition FILE` (Optional)
+### `--condition ARG` (Optional)
 
 You may provide column names present in the **`--gene-matrix`** file, one per
 line. The matrix will be conditioned on these columns before the analysis is
@@ -482,7 +494,7 @@ Whole_Blood
 ```
 
 
-### `--gene-intervals FILE`
+### `--gene-intervals ARG`
 
 You must provide gene intervals in BED format with a fourth column that
 contains the same gene identifiers as those present in the Name column of the
@@ -504,7 +516,7 @@ chr1  100503669  100548932  64645      HIAT1
 ```
 
 
-### `--snp-intervals FILE`
+### `--snp-intervals ARG`
 
 SNP linkage intervals must be specified in BED format and include a fourth
 column with the SNP identifiers. The linkage intervals assigned to the
@@ -525,7 +537,7 @@ chr1	0	254996	rs138808727
 chr1	0	254996	rs139113303
 ```
 
-### `--null-snps FILE`
+### `--null-snps ARG`
 
 The null SNPs file must have one SNP identifier per line. Only the first
 column is used. The identifiers must be a subset of the identifiers in
@@ -569,17 +581,24 @@ The command line arguments needed to reproduce the analysis.
 ```
 cat args.txt
 
-snpsea --snps LDL_Teslovich2010.txt
-       --gene-matrix NovartisGeneAtlas2004.gct.gz
-       --gene-intervals NCBIgenes2013.bed.gz
-       --snp-intervals TGP2011.bed.gz
-       --null-snps Lango2010.txt.gz
-       --out out
-       --slop 250000
-       --threads 4
-       --null-snpsets 1000
-       --min-observations 50
-       --max-iterations 1000000
+# SNPsea v1.0.2
+--snps             LDL_Teslovich2010.txt
+--gene-matrix      NovartisGeneAtlas2004.gct.gz
+--gene-intervals   NCBIgenes2013.bed.gz
+--snp-intervals    TGP2011.bed.gz
+--null-snps        Lango2010.txt.gz
+--out              out
+--slop             250000
+--threads          4
+--null-snpsets     1000
+--min-observations 50
+--max-iterations   1000000
+```
+
+Repeat the analysis:
+
+```
+snpsea --args args.txt
 ```
 
 
