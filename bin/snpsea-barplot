@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-:File:     barplot.py
+:File:     snpsea-barplot
 :Author:   Kamil Slowikowski
 :Updated:  December 19, 2013
 
@@ -9,7 +9,7 @@ triangle showing all pairwise sample Spearman correlations of expression
 profiles.
 
 Usage:
-    barplot.py --out DIR [--top INT --title STRING --width INT --fontsize INT]
+    snpsea-barplot --out DIR [--top INT --title STRING --width INT --fontsize INT]
 
 Options:
     -h, --help         Show this message and exit.
