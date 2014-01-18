@@ -1083,9 +1083,14 @@ void snpsea::calculate_pvalues(
             }
         }
 
-        double pvalue = double(nulls_observed) / double(nulls_tested);
-
-        if (nulls_observed == 0) pvalue = 1.0 / double(nulls_tested);
+        // Exact Monte Carlo p-value. See page 6.
+        //
+        //     Phipson, B. & Smyth, G. K. Permutation P-values should never be
+        //     zero: calculating exact P-values when permutations are randomly
+        //     drawn. Statistical Applications in Genetics and Molecular
+        //     Biology 9, (2010).
+        double pvalue = (double(nulls_observed) + 1.0)
+                        / (double(nulls_tested) + 1.0);
 
         stream << _col_names.at(col) << '\t' << pvalue << '\t'
                << nulls_observed << '\t' << nulls_tested;
