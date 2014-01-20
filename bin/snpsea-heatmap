@@ -9,13 +9,14 @@ annotated with the given SNP's most specifically expressed gene's name (NCBI
 symbol).
 
 Usage:
-    snpsea-heatmap --out DIR [--alpha NUM --title STR]
+    snpsea-heatmap <out> [--gene-matrix FILE --alpha NUM --title STR]
 
 Options:
-    -h, --help      Show this message and exit.
-    --title STR     Title for the figure.
-    --out DIR       Directory with output files created by snpsea.
-    --alpha NUM     Significance threshold [default: 0.05].
+    -h, --help          Show this message and exit.
+    <out>               Directory with output files created by snpsea.
+    --gene-matrix FILE  Override the --gene-matrix argument in args.txt.
+    --title STR         Title for the figure.
+    --alpha NUM         Significance threshold [default: 0.05].
 
 Author:
     Kamil Slowikowski <slowikowk@broadinstitute.org>
@@ -37,7 +38,7 @@ def main():
 
     out = lambda x: os.path.join(args['--out'], x)
     
-    matrix = find_gene_matrix(out('args.txt'))
+    matrix = args['--gene-matrix'] or find_gene_matrix(out('args.txt'))
 
     heatmap(out('pvalues.txt'),
             matrix,
