@@ -10,7 +10,7 @@ produces the expected number of type 1 errors (false positives).
 Usage:
     snpsea-type1error <out>
 
-    <out> is the directory with SNPsea output files.
+    <out> is the directory with snpsea output files.
 
 Author:
     Kamil Slowikowski <slowikow@broadinstitute.org>
