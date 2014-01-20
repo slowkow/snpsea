@@ -4,9 +4,8 @@ snpsea-heatmap
 
 Create a heatmap of samples and SNPs from the snp_pvalues.txt file produced by
 snpsea to reveal the SNPs and genes that contribute to statistically
-significant sample specificity scores. Each of the heatmap's cells are
-annotated with the given SNP's most specifically expressed gene's name (NCBI
-symbol).
+significant condition-specificity scores. Each of the heatmap's cells are
+annotated with the given SNP's most specific gene's name (NCBI symbol).
 
 Usage:
     snpsea-heatmap <out> [--gene-matrix FILE --alpha NUM --title STR]
@@ -36,7 +35,7 @@ def main():
     args = docopt(__doc__)
     import os
 
-    out = lambda x: os.path.join(args['--out'], x)
+    out = lambda x: os.path.join(args['<out>'], x)
     
     matrix = args['--gene-matrix'] or find_gene_matrix(out('args.txt'))
 
@@ -105,16 +104,18 @@ def heatmap(f_sample_pvalues, f_matrix, f_pvalues,
     pvalues = pvalues[idx]
    
     # Sort the SNPs by their max contribution to the significant samples.
-    contribs = pvalues.apply(lambda r: np.log(r.replace(0, 1)).min(), axis=1)
+    contribs = pvalues.apply(lambda r: np.log(r.replace(0, 1)).sum(), axis=1)
     idx = np.argsort(contribs)
     symbols = symbols.ix[idx]
     pvalues = pvalues.ix[idx]
 
-    cell_size = 1.8
+    cell_size = 1.9
     n_snps = pvalues.shape[0]
     n_samples = len(samples)
 
-    fig = pl.figure(figsize=(n_snps * cell_size, 0.6 * n_samples * cell_size))
+    # Golden rectangle.
+    figsize = (n_snps * cell_size, 0.618 * n_samples * cell_size)
+    fig = pl.figure(figsize=figsize)
 
     # Transform the pvalues for plotting.
     log10_pvalues = -np.log10(pvalues.T)
@@ -133,12 +134,12 @@ def heatmap(f_sample_pvalues, f_matrix, f_pvalues,
     # Ticks.
     ax.tick_params(length=0)
     ax.xaxis.tick_bottom()
-    ax.set_xticks(np.arange(n_snps) - 0.45)
+    ax.set_xticks(np.arange(n_snps))
     ax.set_yticks(np.arange(n_samples))
 
     # Labels. If the locus is represented by joined SNPs, print line by line.
     xlabels = [x.replace(',', '\n') for x in list(pvalues.index)]
-    ax.set_xticklabels(xlabels, rotation=0, ha='left')
+    ax.set_xticklabels(xlabels, rotation=0)
     ax.set_yticklabels(labels)
     ax.set_title(title)
 
