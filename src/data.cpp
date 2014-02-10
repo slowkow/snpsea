@@ -309,14 +309,34 @@ void snpsea::read_names(std::string filename, std::set<std::string> & names)
     }
     names.clear();
     Row row;
+    bool found_snp = false;
+    unsigned int snp_col = 0;
     while (str >> row) {
         // Skip lines that start with '#'.
-        if (row[0][0] != '#') {
-            names.insert(row[0]);
+        if (row[0][0] == '#') {
+            continue;
+        }
+        if (!found_snp) {
+            for (unsigned int i = 0; i < row.size(); i++) {
+                if (row[i] == "SNP" || row[i] == "snp" || row[i] == "name") {
+                    found_snp = true;
+                    snp_col = i;
+                    break;
+                }
+            }
+            if (!found_snp) {
+                names.insert(row[snp_col]);
+            }
+        } else {
+            names.insert(row[snp_col]);
         }
     }
-    std::cout << timestamp() << " # \"" + filename + "\" has "
-              << names.size() << " items." << std::endl;
+    if (names.size() == 0) {
+        std::cerr << "ERROR: No SNPs found in " + filename << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    _log << timestamp() << " # \"" + filename + "\" has "
+         << names.size() << " items." << std::endl;
 }
 
 // Given the name of a SNP, look up its interval and find overlapping genes.
