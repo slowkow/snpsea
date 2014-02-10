@@ -192,6 +192,10 @@ private:
     // Is the first column of the gene matrix filled with 1s and 0s?
     bool
     _binary_gene_matrix;
+    
+    // Log file.
+    std::ofstream
+    _log;
 };
 
 #endif
