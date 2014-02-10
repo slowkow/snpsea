@@ -1,0 +1,2990 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding utf8-plain
+\fontencoding global
+\font_roman palatino
+\font_sans helvet
+\font_typewriter courier
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing onehalf
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\bullet 0 0 10 -1
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+SNPsea: an algorithm to identify cell types, tissues, and pathways affected
+ by risk loci
+\end_layout
+
+\begin_layout Author
+Kamil Slowikowski, Xinli Hu, Soumya Raychaudhuri
+\end_layout
+
+\begin_layout Date
+February 4, 2014
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Supplementary Notes
+\end_layout
+
+\begin_layout Subsection
+Algorithm Details
+\end_layout
+
+\begin_layout Standard
+For a given set of SNPs associated to a single trait, SNPsea tests whether
+ implicated genes, in aggregate, are enriched for specificity to an annotation
+ or condition in a user-provided matrix of genes and annotations/conditions.
+ The algorithm consists of three steps:
+\end_layout
+
+\begin_layout Enumerate
+We use linkage disequilibrium (LD) properties from reference genomes to
+ identify the genes implicated by each SNP.
+\end_layout
+
+\begin_layout Enumerate
+We look up the implicated genes in a user-provided matrix and calculate
+ a specificity score for each annotation/condition based on the values of
+ these genes.
+\end_layout
+
+\begin_layout Enumerate
+We compare the specificity scores to scores obtained with random sets of
+ matched SNP sets and use those scores to calculate an empirical p-value
+ reflecting statistical significance.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Assigning genes to each SNP
+\end_layout
+
+\begin_layout Standard
+Accurate analyses must address the critical issue that SNPs rarely implicate
+ a single gene, but instead implicate a region of the genome in LD with
+ 0 to 20 genes that may plausibly influence the given trait (Figure 1
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:FigS1"
+
+\end_inset
+
+).
+ We determine genes implicated by each SNP using a previously described
+ strategy (Figure 2
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:FigS2"
+
+\end_inset
+
+) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rossin_proteins_2011"
+
+\end_inset
+
+.
+ We define a linkage interval by identifying the furthest neighboring SNPs
+ within a 1 Mb window with 
+\begin_inset Formula $R^{2}>0.5$
+\end_inset
+
+ using data from reference genomes 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "consortium_integrated_2012"
+
+\end_inset
+
+.
+ Each interval is then extended to the nearest recombination hotspots with
+ recombination rate >3 cM/Mb 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "myers_fine-scale_2005"
+
+\end_inset
+
+.
+ To address the case when no genes overlap this interval, we provide an
+ option to extend the interval further (by default 250 Kb) up- and downstream.
+ After each SNP has been assigned to an interval and a set of genes, we
+ merge SNPs with shared genes into a single locus, thereby avoiding multiple-cou
+nting of a gene due to proximate user-provided SNPs.
+\end_layout
+
+\begin_layout Standard
+Many SNP linkage intervals overlap more than one gene, as shown 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:FigS1"
+
+\end_inset
+
+.
+ We assume that one gene in each associated locus is causal and driving
+ the signal of association.
+ However, due to the LD structure of the genome, we expect to see many genes
+ hitchhike along with the causal gene.
+ The hitchhikers will be implicated by our linkage intervals due to poorly
+ mapped regions in the genome, or due to regions with high LD that span
+ long stretches across the chromosome.
+ We tested this assumption by comparing the results of two methods using
+ SNPs associated with red blood cell count (see 
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "sub:A-single-trait-associated"
+
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Enumerate
+The 
+\family typewriter
+'--score single'
+\family default
+ method (recommended) assumes that a single gene in the associated SNP's
+ linkage interval is causal for the associated phenotype.
+ We choose the single gene that is most likely to be affecting the phenotype
+ by assuming that a gene's specificity to a cell type or tissue is a good
+ substitute for the gene's importance to the function of that cell type.
+\end_layout
+
+\begin_layout Enumerate
+The 
+\family typewriter
+'--score total'
+\family default
+ method assumes that all genes in the associated SNP's linkage interval
+ are causal for the associated phenotype.
+ We account for all of these genes when calculating scores.
+\end_layout
+
+\begin_layout Subsubsection*
+Calculating specificity
+\end_layout
+
+\begin_layout Standard
+SNPsea accepts matrices with continuous or binary values in each cell, and
+ a different algorithm is used to the specificity score for the two types
+ of matrix.
+ Before running SNPsea, a matrix with continuous values must already be
+ normalized so that columns are comparable.
+ 
+\emph on
+It is not appropriate to use this method on a 
+\begin_inset Quotes eld
+\end_inset
+
+raw
+\begin_inset Quotes erd
+\end_inset
+
+ matrix of expression values
+\emph default
+, because the values across conditions (cell types, tissues, experiments)
+ will not be directly comparable.
+\end_layout
+
+\begin_layout Paragraph*
+Calculating specificity for a gene expression matrix
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+A=\text{gene expression matrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We row-normalize a gene expression matrix 
+\begin_inset Formula $A$
+\end_inset
+
+ with 
+\begin_inset Formula $m$
+\end_inset
+
+ genes and 
+\begin_inset Formula $n$
+\end_inset
+
+ conditions by the L2 norm.
+ This results in a new matrix 
+\begin_inset Formula $A'$
+\end_inset
+
+ where each value is between 0 and 1 and represents specificity of gene
+ 
+\begin_inset Formula $i$
+\end_inset
+
+ in condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ A value of 1 indicates complete specificity to condition 
+\begin_inset Formula $j$
+\end_inset
+
+ and 0 indicates complete absence in condition 
+\begin_inset Formula $j$
+\end_inset
+
+ as described previously 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "hu_integrating_2011"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+A'_{i,j}=\dfrac{A_{i,j}}{\sqrt{A_{i,1}^{2}+A_{i,2}^{2}+\cdots+A_{i,n}^{2}}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next, we rank each column by ascending percentile (lower rank indicates
+ higher specificity) to produce a new matrix 
+\begin_inset Formula $A''$
+\end_inset
+
+.
+ Each value is between 0 and 1 and represents a nonparametric rank of specificit
+y to condition 
+\begin_inset Formula $j$
+\end_inset
+
+ for gene 
+\begin_inset Formula $i$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+A''_{i,j}=\dfrac{\text{Rank}(A'_{i,j})}{m}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In each locus-condition pair, we choose the single gene with the highest
+ specificity to that condition.
+ To correct for testing multiple genes 
+\begin_inset Formula $g_{k}$
+\end_inset
+
+ in each SNP locus' set of genes 
+\begin_inset Formula $k$
+\end_inset
+
+, we create a new matrix 
+\begin_inset Formula $P$
+\end_inset
+
+ of probabilities.
+ It consists of one row for each SNP locus 
+\begin_inset Formula $k$
+\end_inset
+
+ and one column for each condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ The probabilities are corrected for testing of multiple genes present within
+ each single SNP locus, because we are choosing the single gene with the
+ greatest specificity among 
+\begin_inset Formula $g_{k}$
+\end_inset
+
+ genes in each locus.
+ This formula accounts for the single gene 
+\family typewriter
+'--score single'
+\family default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{k,j}=1-(1-\text{Min}(A''_{k,j}))^{g_{k}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We also provide the option to use all genes in each SNP locus.
+ This formula accounts for all genes 
+\family typewriter
+'--score total'
+\family default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{k,j}=-\sum_{i\in k}\text{log}_{10}A''_{i,j}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Calculating specificity for a binary presence/absence matrix
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+A=\text{binary (1/0) presence/absence matrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We treat a matrix of genes and conditions 
+\begin_inset Formula $A$
+\end_inset
+
+ with binary values as a presence-absence matrix and do not transform it
+ into 
+\begin_inset Formula $A'$
+\end_inset
+
+ or 
+\begin_inset Formula $A''$
+\end_inset
+
+.
+ Instead, we create a matrix 
+\begin_inset Formula $P$
+\end_inset
+
+ of hypergeometric probabilities where 
+\begin_inset Formula $m_{j}$
+\end_inset
+
+ is the total number of genes present in condition 
+\begin_inset Formula $j$
+\end_inset
+
+, 
+\begin_inset Formula $g_{k}$
+\end_inset
+
+ is the number of genes in locus 
+\begin_inset Formula $k$
+\end_inset
+
+, and 
+\begin_inset Formula $g_{k,j}$
+\end_inset
+
+ is the number of genes from locus 
+\begin_inset Formula $k$
+\end_inset
+
+ present in condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ Recall that 
+\begin_inset Formula $m$
+\end_inset
+
+ is the total number of genes in the original gene matrix 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ This formula accounts for the presence or absence of 
+\emph on
+any
+\emph default
+ (1 or more) genes in condition 
+\begin_inset Formula $j$
+\end_inset
+
+ 
+\family typewriter
+'--score single'
+\family default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{k,j}=\begin{cases}
+1-\dfrac{{m-m_{j} \choose g_{k}}}{{m \choose g_{k}}} & g_{k,j}>0\\
+1 & g_{k,j}=0
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We also provide the option to account for the number of genes in each SNP
+ locus.
+ This formula accounts for the number of genes 
+\family typewriter
+'--score total'
+\family default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{k,j}=\dfrac{{m_{j} \choose g_{k,j}}{m-m_{j} \choose g_{k}-g_{k,j}}}{{m \choose g_{k}}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, now that we have a matrix 
+\begin_inset Formula $P$
+\end_inset
+
+ of probabilities, we can calculate a specificity score 
+\begin_inset Formula $S_{j}$
+\end_inset
+
+ for each condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ This formula aggregates the contributions of genes across all of the risk
+ loci:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{j}=-\sum_{k}\text{log}_{10}P_{k,j}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Testing significance 
+\end_layout
+
+\begin_layout Standard
+For each condition, we use a Monte Carlo sampling approach to calculate
+ an empirical p-value that represents the probability of observing the condition
+'s specificity score 
+\begin_inset Formula $S_{j}$
+\end_inset
+
+ by chance.
+ The specificity scores 
+\begin_inset Formula $S$
+\end_inset
+
+ are obtained for a large number of random SNP sets where each SNP in the
+ random set is matched to each SNP in the user's set on the number of linked
+ genes.
+ The random SNP sets are sampled from a list of LD-pruned SNPs that is a
+ subset of the SNPs from the 1000 Genomes Project 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "lango_allen_hundreds_2010"
+
+\end_inset
+
+.
+ The exact Monte Carlo p-value 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "phipson_permutation_2010"
+
+\end_inset
+
+ for each condition 
+\begin_inset Formula $j$
+\end_inset
+
+ is calculated as shown below, where 
+\begin_inset Formula $a_{j}$
+\end_inset
+
+ is the number of sampled SNP sets and 
+\begin_inset Formula $b_{j}$
+\end_inset
+
+ is the number of those sets with a specificity score greater than or equal
+ to the user's score 
+\begin_inset Formula $S_{j}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p_{j}=\dfrac{b_{j}+1}{a_{j}+1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We implemented adaptive sampling, so more significant p-values are tested
+ with more iterations and less significant p-values are tested with fewer
+ iterations.
+ Two options allow the user to control the adaptive sampling:
+\end_layout
+
+\begin_layout Enumerate
+
+\family typewriter
+'--max-iterations'
+\family default
+ The maximum number of iterations for each condition.
+\end_layout
+
+\begin_layout Enumerate
+
+\family typewriter
+'--min-observations'
+\family default
+ The minimum number of observed higher scores 
+\begin_inset Formula $S_{j}$
+\end_inset
+
+ required to stop sampling SNP sets for a condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Data Processing
+\end_layout
+
+\begin_layout Subsubsection*
+Novartis Gene Atlas gene expression matrix
+\end_layout
+
+\begin_layout Standard
+The expression data were downloaded from BioGPS:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+target "http://plugins.biogps.org/download/gnf1h-gcrma.zip"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We averaged the expression values for tissue replicates.
+ For each gene, we selected the single probe with the largest minimum value.
+ Finally, we converted the file to 
+\begin_inset CommandInset href
+LatexCommand href
+name "GCT format"
+target "http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+Gene Ontology binary presence/absence matrix
+\end_layout
+
+\begin_layout Standard
+The OBO file was downloaded from Gene Ontology (data-version: 2013-06-29,
+ CVS revision: 9700): 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.geneontology.org"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For each gene, we climbed the hierarchy of ontology terms, so that if a
+ gene is annotated with some term 
+\begin_inset Formula $T$
+\end_inset
+
+, it is also annotated with all of the terms that are parents of 
+\begin_inset Formula $T$
+\end_inset
+
+.
+ Additionally, we used data from Homologene (
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.ncbi.nlm.nih.gov/homologene"
+
+\end_inset
+
+) to copy terms between homologous genes.
+ For exmple, if a mouse gene is annotated with some term, and the human
+ homolog is not annotated with that term, we will copy the term to the human
+ gene.
+ We discarded all GO terms that apply to fewer than 100 or to more than
+ 1000 genes.
+ This left us with a matrix of 19,111 genes and 1,751 terms.
+\end_layout
+
+\begin_layout Subsubsection*
+1000 Genomes Project
+\end_layout
+
+\begin_layout Standard
+We downloaded a filtered set of SNP genotypes from the BEAGLE website:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+target "http://bochet.gcc.biostat.washington.edu/beagle"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Example Commands
+\end_layout
+
+\begin_layout Standard
+To reproduce the results and figures we have shown, you can run the following
+ commands.
+ Please see the reference manual for more details:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Output text files
+\end_layout
+
+\begin_layout LyX-Code
+snpsea
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+--snps             LDL_Teslovich2010.txt
+\end_layout
+
+\begin_layout LyX-Code
+--gene-matrix      NovartisGeneAtlas2011.gct.gz
+\end_layout
+
+\begin_layout LyX-Code
+--gene-intervals   NCBIgenes2013.bed.gz
+\end_layout
+
+\begin_layout LyX-Code
+--snp-intervals    TGP2011.bed.gz
+\end_layout
+
+\begin_layout LyX-Code
+--null-snps        Lango2010.txt.gz
+\end_layout
+
+\begin_layout LyX-Code
+--out              out
+\end_layout
+
+\begin_layout LyX-Code
+--slop             10e3
+\end_layout
+
+\begin_layout LyX-Code
+--threads          6
+\end_layout
+
+\begin_layout LyX-Code
+--null-snpsets     0
+\end_layout
+
+\begin_layout LyX-Code
+--min-observations 100
+\end_layout
+
+\begin_layout LyX-Code
+--max-iterations   1e7
+\end_layout
+
+\end_deeper
+\begin_layout Subsubsection*
+Figures
+\end_layout
+
+\begin_layout LyX-Code
+
+\shape italic
+# A horizontal barplot.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+./snpsea-barplot out
+\end_layout
+
+\end_deeper
+\begin_layout LyX-Code
+
+\shape italic
+# A heatmap of conditions and SNP loci.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+./snpsea-heatmap out
+\end_layout
+
+\end_deeper
+\begin_layout LyX-Code
+
+\shape italic
+# A scatterplot of type 1 error rate for each condition.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+./snpsea-type1error out 
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Supplementary Figures
+\end_layout
+
+\begin_layout Subsection
+Determining 1000 Genomes SNP linkage intervals
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:FigS2"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/snp_linkage_intervals.pdf
+	lyxscale 50
+	width 80text%
+	groupId g1
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We calculated 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ values for all pairs of SNPs within a 1 Mb sliding window along each chromosome.
+ Next, we assigned each of the SNPs from the 1000 Genomes Phase I project
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "consortium_integrated_2012"
+
+\end_inset
+
+ to a linkage interval by identifying each SNP's furthest upstream and downstrea
+m neighbors with 
+\begin_inset Formula $r^{2}\ge0.5$
+\end_inset
+
+.
+ Next, we extended each interval to recombination hotspots reported by HapMap
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "myers_fine-scale_2005"
+
+\end_inset
+
+ with recombination rate >3 cM/Mb.
+\end_layout
+
+\begin_layout Subsection
+Counting genes overlapped by GWAS SNP linkage intervals
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:FigS1"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/gwas_ngenes.pdf
+	lyxscale 50
+	width 80text%
+	groupId g1
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A cumulative density plot of the number of genes overlapped by the linkage
+ intervals of GWAS SNPs.
+ We downloaded the GWAS Catalog SNPs on January 17, 2014 and selected the
+ 11,561 SNPs present in the 1000 Genomes Project 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "consortium_integrated_2012"
+
+\end_inset
+
+.
+ Of these SNPs, 2,119 (18%) of them have linkage disequilibrium (LD) intervals
+ that overlap no genes, and 3,756 (32%) overlap a single gene.
+ The rest of the the SNPs overlap 2 or more genes.
+ This illustrates the critical issue that many SNPs implicate more than
+ one gene.
+\end_layout
+
+\begin_layout Subsection
+Choosing the 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ threshold for linkage intervals
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Red_blood_cell-r2_thresholds"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We chose to use 
+\begin_inset Formula $r^{2}\geq0.5$
+\end_inset
+
+ due to previous experience 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO
+\end_layout
+
+\end_inset
+
+.
+ To investigate if this choice influences the results of the analysis, we
+ repeated the analysis of 45 SNPs associated with red blood cell count 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "van_der_harst_seventy-five_2012"
+
+\end_inset
+
+ using 5 different thresholds 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+(
+\begin_inset Formula $r^{2}\ge$
+\end_inset
+
+ 0.2, 0.4, 0.6, 0.8, 1.0)
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ and with or without extension to recombination hotspots.
+ We also did this for SNPs associated with celiac disease, multiple sclerosis,
+ and HDL cholesterol.
+\end_layout
+
+\begin_layout Standard
+Below, we show how the enrichment results change as (1) we vary the threshold
+ for linkage intervals, and (2) we exclude or include (top or bottom) extensions
+ to recombination hotspots.
+ Each of the scatter plots shows 
+\begin_inset Formula $-\text{log}_{10}P$
+\end_inset
+
+ on the x-axis for 
+\begin_inset Formula $r^{2}=1$
+\end_inset
+
+ and 
+\begin_inset Formula $-\text{log}_{10}P$
+\end_inset
+
+ on the y-axis for the indicated 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ threshold.
+ Grey lines indicate the p-value significance threshold after correction
+ for testing of multiple conditions (cell types, GO annotations).
+ Black points are statistically significant and grey points are not.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Red_blood_cell_count_GeneAtlas2004_r2_thresholds.pdf
+	lyxscale 50
+	width 100text%
+	groupId r2_thresholds
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/lines_Red_blood_cell_count_GeneAtlas2004_r2_thresholds.pdf
+	lyxscale 50
+	width 70text%
+	groupId r2_lines
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observe that the most significant enrichment for specific expression
+ of the genes within loci associated with red blood cell count is in the
+ 
+\emph on
+BM CD71+ early erythroid
+\emph default
+ cell type 
+\begin_inset Formula $(P<1\times10^{-6})$
+\end_inset
+
+.
+ We used SNPsea with the 
+\family typewriter
+'--score single'
+\family default
+ option.
+ This enrichment result is robust against the choice of 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ threshold.
+ Once the threshold is lowered to 
+\begin_inset Formula $r^{2}\ge0.2$
+\end_inset
+
+, we observe a second marginally significant signal 
+\begin_inset Formula $(P=2\times10^{-4})$
+\end_inset
+
+ in the 
+\emph on
+BM CD105+ endothelial
+\emph default
+ cell type.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Red_blood_cell_count_GO2013_r2_thresholds.pdf
+	lyxscale 50
+	width 100text%
+	groupId r2_thresholds
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/lines_Red_blood_cell_count_GO2013_r2_thresholds.pdf
+	lyxscale 50
+	width 70text%
+	groupId r2_lines
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observe the most significant enrichment for 
+\emph on
+GO:0048872 homeostasis of number of cells 
+\emph default
+
+\begin_inset Formula $(P=7\times10^{-6})$
+\end_inset
+
+ when linkage intervals are defined with 
+\begin_inset Formula $r^{2}\ge0.8$
+\end_inset
+
+ and extended to HapMap recombination hotpots.
+ Without extension, no GO terms reach statistical significance.
+ The single significant term falls below the multiple testing threshold
+ at 
+\begin_inset Formula $r^{2}\ge0.4$
+\end_inset
+
+, but remains significant at 
+\begin_inset Formula $r^{2}\ge0.5$
+\end_inset
+
+ (see main text).
+\end_layout
+
+\begin_layout Subsection
+A single trait-associated locus harbors a single causal gene
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:A-single-trait-associated"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Below, we test our assumption that a single gene in each trait-associated
+ locus is driving the signal of the association with the trait.
+ We find that the gene expression enrichment result is lost when we relax
+ this assumption and instead assume that 
+\emph on
+all
+\emph default
+ genes implicated by LD are driving the signal.
+\end_layout
+
+\begin_layout Standard
+This finding contrasts with our observations for GO term enrichment, where
+ the signal appears to remain similar if we (1) simply check for the presence
+ of a gene in the locus that is anotated with a term or (2) count the number
+ of genes in the locus that are annotated with a term.
+ This is because genes in proximity to each other are likely to share the
+ same GO term annotations, as seen 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:Nearby-genes-have"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Red_blood_cell_count-Harst2012-45_SNPs_NovartisGeneAtlas2004_-single_vs_total.pdf
+	lyxscale 50
+	width 48text%
+	groupId single_vs_total
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Red_blood_cell_count-Harst2012-45_SNPs_GO2013_-single_vs_total.pdf
+	lyxscale 50
+	width 48text%
+	groupId single_vs_total
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Left Red blood cell count-associated SNPs with the Novartis Gene Atlas 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ expression matrix.
+ The x-axis shows 
+\begin_inset Formula $-\text{log}_{10}P$
+\end_inset
+
+ for the 
+\family typewriter
+'--score single'
+\family default
+ method, and the y-axis is for the 
+\family typewriter
+'--score total'
+\family default
+ method.
+ When using the 
+\family typewriter
+'single'
+\family default
+ method, we observe one tissue with significant enrichment for tissue-specific
+ gene expression of the genes within risk loci.
+ This signal is lost when we use the 'total' method.
+\end_layout
+
+\begin_layout Description
+Right The same SNPs with the Gene Ontology presence/absence matrix.
+ The observed enrichment p-values are similar between the two methods.
+ The top signals when using the 'single' method are retained when using
+ the 'total' method.
+\end_layout
+
+\begin_layout Subsection
+Nearby genes have similar Gene Ontology annotations
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Nearby-genes-have"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/genesets_go.pdf
+	lyxscale 50
+	width 80text%
+	groupId g1
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We sampled 100,000 random SNPs from the 1000 Genomes Project and found their
+ linkage intervals as described above.
+ Next, we counted the number of genes overlapping each interval: these are
+ the gene sets of various sizes, as shown on the x-axis.
+ For each group of gene sets of a given size, the y-axis shows the percent
+ of those sets where it is true that some GO term applies to more than one
+ gene in the set.
+ This illustrates the point that genes in proximity to each other are likely
+ to have similar Gene Ontology annotations.
+\end_layout
+
+\begin_layout Subsection
+Type 1 error estimates 
+\end_layout
+
+\begin_layout Subsubsection*
+Gene Atlas gene expression matrix
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:FigS4"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/type1error_Novartis2004.pdf
+	lyxscale 50
+	width 80text%
+	groupId g1
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We sampled 10,000 sets of 100 SNPs uniformly from a list of LD-pruned SNPs
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "lango_allen_hundreds_2010"
+
+\end_inset
+
+.
+ We tested each of the 10,000 sets for enrichment of tissue-specific expression
+ in the Gene Atlas 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ gene expression matrix.
+ For each tissue, we show the proportion of the 10,000 enrichment p-values
+ that are below the given thresholds.
+ We observe that the p-values are near the expected values, so the type
+ 1 (false positive) error rate is well-calibrated.
+\end_layout
+
+\begin_layout Subsubsection*
+Gene Ontology presence/absence matrix
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:FigS5"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/type1error_GO2013.pdf
+	lyxscale 50
+	width 80text%
+	groupId g1
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We sampled 10,000 sets of 100 SNPs uniformly from a list of LD-pruned SNPs
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "lango_allen_hundreds_2010"
+
+\end_inset
+
+.
+ We tested each of the 10,000 sets for enrichment of Gene Ontology terms.
+ For each term, we show the proportion of the 10,000 enrichment p-values
+ that are below the given thresholds.
+ We observe that the p-values are more variable than for the Gene Atlas,
+ but the type 1 error (false positive) rate appears to be calibrated relatively
+ well.
+\end_layout
+
+\begin_layout Section
+Additional Examples
+\end_layout
+
+\begin_layout Subsection
+Multiple sclerosis
+\end_layout
+
+\begin_layout Standard
+We used 51 genome-wide significant 
+\begin_inset Formula $(P\leq5\times10^{-8})$
+\end_inset
+
+ SNPs associated with multiple sclerosis, taken from Supplementary Table
+ A of 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "the_international_multiple_sclerosis_genetics_consortium_&_the_wellcome_trust_case_control_consortium_genetic_2011"
+
+\end_inset
+
+ (47 risk loci after accounting for linkage intervals at 
+\begin_inset Formula $r^{2}\ge0.5$
+\end_inset
+
+ with HapMap extensions).
+ We tested these SNPs for specific expression in the Gene Atlas 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:Multiple-sclerosis-expression"
+
+\end_inset
+
+ and for enrichment of Gene Ontology terms 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:Multiple-sclerosis-Gene-Ontology-terms"
+
+\end_inset
+
+.
+ We also compared the results with the two different scoring methods 
+\family typewriter
+'single'
+\family default
+ and 
+\family typewriter
+'total'
+\family default
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:Multiple-sclerosis-Comparison-of-'single'"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+Tissues with specific expression of genes in risk loci
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Multiple-sclerosis-expression"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/manuscript_20140129_Multiple_sclerosis-IMSGC-51_SNPs_NovartisGeneAtlas2004_single_pvalues_barplot.pdf
+	lyxscale 50
+	width 80text%
+	groupId g1
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observed significant enrichment for cell type-specific gene expression
+ in 6 cell types:
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+\size footnotesize
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "48text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+
+\shape italic
+Peripheral Blood CD56+ NK cells
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+PB CD4+ T cells
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+PB CD8+ T cells
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "48text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+
+\shape italic
+PB CD19+ B cells
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+PB CD14+ Monocytes
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+Whole blood
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We used the 
+\begin_inset Quotes eld
+\end_inset
+
+--score single
+\begin_inset Quotes erd
+\end_inset
+
+ option in SNPsea, so the p-value for a tissue is computed by selecting
+ the single gene within each locus with the most specific expression in
+ that tissue.
+\end_layout
+
+\begin_layout Standard
+The adjacent heatmap reveals the Pearson correlation coefficients calculated
+ for all pairs of gene expression profiles.
+ Only the top 25 of 79 total human tissues and cell types from the Novartis
+ Gene Atlas 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ are shown.
+\end_layout
+
+\begin_layout Subsubsection*
+Gene Ontology terms with genes in risk loci
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Multiple-sclerosis-Gene-Ontology-terms"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/manuscript_20140129_Multiple_sclerosis-IMSGC-51_SNPs_GO2013_single_pvalues_barplot.pdf
+	lyxscale 50
+	width 100text%
+	groupId GO
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observed significant enrichment for the presence of genes within 52 Gene
+ Ontology terms.
+ The top 60 terms are shown.
+ We used the 
+\family typewriter
+'--score single'
+\family default
+ option in SNPsea, so the score for each term is computed by determining
+ whether or not one or more genes within each locus is annotated with that
+ term.
+ (In other words, a locus with several genes annotated with a given term
+ receives the same score as a locus with one gene annotated with that term.)
+ The 17 terms with the most significant enrichment 
+\begin_inset Formula $(P<1\times10^{-7})$
+\end_inset
+
+ are:
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "48text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+
+\shape italic
+GO:0001775 cell activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0048534 hematopoietic or lymphoid organ development
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0030097 hemopoiesis
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0045321 leukocyte activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0002521 leukocyte differentiation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0046649 lymphocyte activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0030098 lymphocyte differentiation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0050867 positive regulation of cell activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0051251 positive regulation of lymphocyte activation
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "48text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+
+\shape italic
+GO:0050870 positive regulation of T cell activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0050865 regulation of cell activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0002697 regulation of immune effector process
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0002694 regulation of leukocyte activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0051249 regulation of lymphocyte activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0050863 regulation of T cell activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0042110 T cell activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0030217 T cell differentiation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Comparison of scoring methods: 'single' versus 'total'
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Multiple-sclerosis-Comparison-of-'single'"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Multiple_sclerosis-IMSGC-51_SNPs_NovartisGeneAtlas2004_-single_vs_total.pdf
+	lyxscale 50
+	width 48text%
+	groupId single_vs_total
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Multiple_sclerosis-IMSGC-51_SNPs_GO2013_-single_vs_total.pdf
+	lyxscale 50
+	width 48text%
+	groupId single_vs_total
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Left Multiple sclerosis SNPs with the Novartis Gene Atlas 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ expression matrix.
+ The x-axis shows 
+\begin_inset Formula $-\text{log}_{10}P$
+\end_inset
+
+ for the 
+\family typewriter
+'--score single'
+\family default
+ method, and the y-axis is for the 
+\family typewriter
+'--score total'
+\family default
+ method.
+ When using the 
+\family typewriter
+'single'
+\family default
+ method, we observe several tissues with significant enrichment for tissue-speci
+fic gene expression of the genes within risk loci.
+ This signal is lost when we use the 'total' method.
+\end_layout
+
+\begin_layout Description
+Right The same SNPs with the Gene Ontology presence/absence matrix.
+ The observed enrichment p-values are similar between the two methods.
+ The top signals when using the 'single' method are retained when using
+ the 'total' method.
+\end_layout
+
+\begin_layout Subsubsection*
+Comparison of 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ thresholds and hotspot extensions
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Multiple_sclerosis-r2_thresholds"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Multiple_sclerosis_GeneAtlas2004_r2_thresholds.pdf
+	lyxscale 50
+	width 100text%
+	groupId r2_thresholds
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/lines_Multiple_sclerosis_GeneAtlas2004_r2_thresholds.pdf
+	lyxscale 50
+	width 70text%
+	groupId r2_lines
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We used SNPsea with the 
+\family typewriter
+'--score single'
+\family default
+ option.
+ Thes enrichment results are robust against the choice of 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ threshold.
+ Once the threshold is lowered to 
+\begin_inset Formula $r^{2}\ge0.2$
+\end_inset
+
+, we observe a second marginally significant signal 
+\begin_inset Formula $(P=2\times10^{-4})$
+\end_inset
+
+ in the 
+\emph on
+BM CD105+ endothelial
+\emph default
+ cell type.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Multiple_sclerosis_GO2013_r2_thresholds.pdf
+	lyxscale 50
+	width 100text%
+	groupId r2_thresholds
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/lines_Multiple_sclerosis_GO2013_r2_thresholds.pdf
+	lyxscale 50
+	width 70text%
+	groupId r2_lines
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observe the most significant enrichment for 
+\emph on
+GO:0048872 homeostasis of number of cells 
+\emph default
+
+\begin_inset Formula $(P=7\times10^{-6})$
+\end_inset
+
+ when linkage intervals are defined with 
+\begin_inset Formula $r^{2}\ge0.8$
+\end_inset
+
+ and extended to HapMap recombination hotpots.
+ Without extension, no GO terms reach statistical significance.
+ The single significant term falls below the multiple testing threshold
+ at 
+\begin_inset Formula $r^{2}\ge0.4$
+\end_inset
+
+, but remains significant at 
+\begin_inset Formula $r^{2}\ge0.5$
+\end_inset
+
+ (see main text).
+\end_layout
+
+\begin_layout Subsection
+Celiac disease
+\end_layout
+
+\begin_layout Standard
+We used 35 genome-wide significant 
+\begin_inset Formula $(P\leq5\times10^{-8})$
+\end_inset
+
+ SNPs associated with celiac disease, taken from Table 2 of Trynka, 
+\emph on
+et al.
+
+\emph default
+ 2011 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "trynka_dense_2011"
+
+\end_inset
+
+ (34 risk loci after accounting for linkage intervals at 
+\begin_inset Formula $r^{2}\ge0.5$
+\end_inset
+
+ with HapMap extensions).
+ We tested these SNPs for cell type-specific expression in the Gene Atlas
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:Celiac-disease-Tissues-with-specific"
+
+\end_inset
+
+ and for enrichment of Gene Ontology terms 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:Celiac-disease-Gene-Ontology-terms"
+
+\end_inset
+
+.
+ We also compared the results between two different scoring methods 
+\family typewriter
+'single'
+\family default
+ and 
+\family typewriter
+'total'
+\family default
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:Celiac-disease-Comparison-of-'single'"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+Tissues with specific expression of genes in risk loci
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Celiac-disease-Tissues-with-specific"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/manuscript_20140129_Celiac_disease-Trynka2011-35_SNPs_NovartisGeneAtlas2004_single_pvalues_barplot.pdf
+	lyxscale 50
+	width 80text%
+	groupId g1
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observed significant enrichment for cell type-specific gene expression
+ in 3 cell types:
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+PB CD4+ T cells
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+PB CD8+ T cells
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+BDCA4+ dendritic cells
+\end_layout
+
+\begin_layout Standard
+We used the 
+\family typewriter
+'--score single'
+\family default
+ option in SNPsea, so the p-value for a tissue is computed by selecting
+ the single gene within each locus with the most specific expression in
+ that tissue.
+\end_layout
+
+\begin_layout Standard
+The adjacent heatmap reveals the Pearson correlation coefficients calculated
+ for all pairs of gene expression profiles.
+ Only the top 25 of 79 total human tissues and cell types from the Novartis
+ Gene Atlas 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ are shown.
+\end_layout
+
+\begin_layout Subsubsection*
+Gene Ontology terms with genes in risk loci
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Celiac-disease-Gene-Ontology-terms"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/manuscript_20140129_Celiac_disease-Trynka2011-35_SNPs_GO2013_single_pvalues_barplot.pdf
+	lyxscale 50
+	width 100text%
+	groupId GO
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observed significant enrichment for the presence of genes within 28 Gene
+ Ontology terms.
+ The top 40 terms are shown.
+ We used the 
+\family typewriter
+'--score single'
+\family default
+ option in SNPsea.
+ The 2 terms with the most significant enrichment 
+\begin_inset Formula $(P<1\times10^{-7})$
+\end_inset
+
+ are:
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0051249 regulation of lymphocyte activation
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0042110 T cell activation 
+\end_layout
+
+\begin_layout Subsubsection*
+Comparison of scoring methods: 'single' versus 'total'
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Celiac-disease-Comparison-of-'single'"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Celiac_disease-Trynka2011-35_SNPs_NovartisGeneAtlas2004_-single_vs_total.pdf
+	lyxscale 50
+	width 48text%
+	groupId single_vs_total
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Celiac_disease-Trynka2011-35_SNPs_GO2013_-single_vs_total.pdf
+	lyxscale 50
+	width 48text%
+	groupId single_vs_total
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Left Celiac disease SNPs with the Novartis Gene Atlas 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ expression matrix.
+ The x-axis shows 
+\begin_inset Formula $-\text{log}_{10}P$
+\end_inset
+
+ for the 
+\family typewriter
+'--score single'
+\family default
+ method, and the y-axis is for the 
+\family typewriter
+'--score total'
+\family default
+ method.
+ When using the 
+\family typewriter
+'single'
+\family default
+ method, we observe several tissues with significant enrichment for tissue-speci
+fic gene expression of the genes within risk loci for multiple sclerosis.
+ This signal is lost when we use the 'total' method.
+\end_layout
+
+\begin_layout Description
+Right The same SNPs with the Gene Ontology presence/absence matrix.
+ The observed enrichment p-values are similar between the two methods.
+\end_layout
+
+\begin_layout Subsubsection*
+Comparison of 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ thresholds and hotspot extensions
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Celiac_disease-r2_thresholds"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Celiac_disease_GeneAtlas2004_r2_thresholds.pdf
+	lyxscale 50
+	width 100text%
+	groupId r2_thresholds
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/lines_Celiac_disease_GeneAtlas2004_r2_thresholds.pdf
+	lyxscale 50
+	width 70text%
+	groupId r2_lines
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We used SNPsea with the 
+\family typewriter
+'--score single'
+\family default
+ option.
+ Thes enrichment results are robust against the choice of 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ threshold once it is less than 1.0.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/Celiac_disease_GO2013_r2_thresholds.pdf
+	lyxscale 50
+	width 100text%
+	groupId r2_thresholds
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/lines_Celiac_disease_GO2013_r2_thresholds.pdf
+	lyxscale 50
+	width 70text%
+	groupId r2_lines
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Without extension to hotspots, many GO terms do not reach statistical significan
+ce until the threshold is lowered to 
+\begin_inset Formula $r^{2}\geq0.6$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+HDL cholesterol
+\end_layout
+
+\begin_layout Standard
+We used 46 genome-wide significant 
+\begin_inset Formula $(P\leq5\times10^{-8})$
+\end_inset
+
+ SNPs associated with HDL cholesterol levels, taken from Supplementary Table
+ 2 of Teslovich, 
+\emph on
+et al.
+
+\emph default
+ 2010 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "teslovich_biological_2010"
+
+\end_inset
+
+.
+ We tested these SNPs for cell type-specific expression in the Gene Atlas
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:HDL-Tissues-with-specific"
+
+\end_inset
+
+ and for enrichment of Gene Ontology terms 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:HDL-Gene-Ontology-terms"
+
+\end_inset
+
+.
+ We also compared the results between two different scoring methods 
+\family typewriter
+'single'
+\family default
+ and 
+\family typewriter
+'total'
+\family default
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:HDL-Comparison-of-'single'"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+Tissues with specific expression of genes in risk loci
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:HDL-Tissues-with-specific"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/manuscript_20140129_HDL_cholesterol-Teslovich2010-46_SNPs_NovartisGeneAtlas2004_single_pvalues_barplot.pdf
+	lyxscale 50
+	width 80text%
+	groupId g1
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observed significant enrichment for liver tissue-specific gene expression.
+ We used the 
+\family typewriter
+'--score single'
+\family default
+ option in SNPsea, so the p-value for a tissue is computed by selecting
+ the single gene within each locus with the most specific expression in
+ that tissue.
+\end_layout
+
+\begin_layout Standard
+The adjacent heatmap reveals the Pearson correlation coefficients calculated
+ for all pairs of gene expression profiles.
+ Only the top 25 of 79 total human tissues and cell types from the Novartis
+ Gene Atlas 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ are shown.
+\end_layout
+
+\begin_layout Subsubsection*
+Gene Ontology terms with genes in risk loci
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:HDL-Gene-Ontology-terms"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/manuscript_20140129_HDL_cholesterol-Teslovich2010-46_SNPs_GO2013_single_pvalues_barplot.pdf
+	lyxscale 50
+	width 100text%
+	groupId GO
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observed significant enrichment for the presence of genes within 13 Gene
+ Ontology terms.
+ The top 25 terms are shown.
+ We used the 
+\family typewriter
+'--score single'
+\family default
+ option in SNPsea.
+ The 6 terms with the most significant enrichment 
+\begin_inset Formula $(P<1\times10^{-7})$
+\end_inset
+
+ are:
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "48text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+
+\shape italic
+GO:0008203 cholesterol metabolic process
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0055088 lipid homeostasis
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0006869 lipid transport
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "48text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+
+\shape italic
+GO:0042157 lipoprotein metabolic process
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0015850 organic hydroxy compound transport
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+GO:0016125 sterol metabolic process
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Comparison of scoring methods: 'single' versus 'total'
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:HDL-Comparison-of-'single'"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/HDL_cholesterol-Teslovich2010-46_SNPs_NovartisGeneAtlas2004_-single_vs_total.pdf
+	lyxscale 50
+	width 48text%
+	groupId single_vs_total
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/HDL_cholesterol-Teslovich2010-46_SNPs_GO2013_-single_vs_total.pdf
+	lyxscale 50
+	width 48text%
+	groupId single_vs_total
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Left HDL cholesterol SNPs with the Novartis Gene Atlas 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "su_gene_2004"
+
+\end_inset
+
+ expression matrix.
+ The x-axis shows 
+\begin_inset Formula $-\text{log}_{10}P$
+\end_inset
+
+ for the 
+\family typewriter
+'--score single'
+\family default
+ method, and the y-axis is for the 
+\family typewriter
+'--score total'
+\family default
+ method.
+ When using the 
+\family typewriter
+'single'
+\family default
+ method, we observe several tissues with significant enrichment for tissue-speci
+fic gene expression of the genes within risk loci.
+ This signal is lost when we use the 
+\family typewriter
+'single'
+\family default
+ method.
+\end_layout
+
+\begin_layout Description
+Right The same SNPs with the Gene Ontology presence/absence matrix.
+ The observed enrichment p-values are less significant when using the 'total'
+ method.
+\end_layout
+
+\begin_layout Subsubsection*
+Comparison of 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ thresholds and hotspot extensions
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:HDL-r2_thresholds"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/HDL_cholesterol_GeneAtlas2004_r2_thresholds.pdf
+	lyxscale 50
+	width 100text%
+	groupId r2_thresholds
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/lines_HDL_cholesterol_GeneAtlas2004_r2_thresholds.pdf
+	lyxscale 50
+	width 70text%
+	groupId r2_lines
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We used SNPsea with the 
+\family typewriter
+'--score single'
+\family default
+ option.
+ These enrichment results are not robust against the choice of 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+.
+ Instead, liver tissue and adipocytes fluctuate with the 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ threshold.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/HDL_cholesterol_GO2013_r2_thresholds.pdf
+	lyxscale 50
+	width 100text%
+	groupId r2_thresholds
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/lines_HDL_cholesterol_GO2013_r2_thresholds.pdf
+	lyxscale 50
+	width 70text%
+	groupId r2_lines
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Without extension to hotspots, many GO terms do not reach statistical significan
+ce until the threshold is lowered.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "supplement"
+options "bibtotoc,unsrt"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
