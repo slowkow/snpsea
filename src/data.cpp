@@ -28,6 +28,10 @@ snpsea::snpsea(
     ulong max_iterations
 )
 {
+    // Log everything.
+    _log.open(out_folder + "/log.txt",
+              std::ofstream::out | std::ofstream::app);
+
     write_args(
         user_snpset_file,
         gene_matrix_file,
@@ -41,12 +45,12 @@ snpsea::snpsea(
         null_snpset_replicates,
         min_observations,
         max_iterations,
-        std::cout
+        _log
     );
 
     // Read names of null SNPs that will be sampled to create random or
     // matched SNP sets.
-    std::cout << timestamp() << " # Reading files ..." << std::endl;
+    _log << timestamp() << " # Reading files ..." << std::endl;
     read_names(null_snps_file, _null_snp_names);
 
     // Optional condition file to condition on specified columns in the
@@ -69,7 +73,7 @@ snpsea::snpsea(
         _gene_interval_tree
     );
 
-    std::cout << timestamp() << " # done." << std::endl;
+    _log << timestamp() << " # done." << std::endl;
 
     // Report names from the conditions file that are absent from the
     // gene matrix file.
@@ -81,7 +85,7 @@ snpsea::snpsea(
     // Check if the matrix is binary by reading the first column.
     if (is_binary(_gene_matrix.col(0))) {
         // Let the user know we detected it.
-        std::cout << timestamp() << " # Expression is binary." << std::endl;
+        _log << timestamp() << " # Expression is binary." << std::endl;
         // Cache these values ahead of time.
         _binary_sums = _gene_matrix.colwise().sum();
         _binary_probs = _binary_sums / _nrows;
@@ -170,10 +174,10 @@ snpsea::snpsea(
         }
     }
 
-    std::cout << timestamp()
-              << " # On each iteration, we will test "
-              << _user_geneset_sizes.size()
-              << " gene sets from these bins:" << std::endl;
+    _log << timestamp()
+         << " # On each iteration, we will test "
+         << _user_geneset_sizes.size()
+         << " gene sets from these bins:" << std::endl;
     // Report how many genesets exist of each size.
     for (auto item : _geneset_bins) {
         int n_items = std::count(
@@ -182,32 +186,32 @@ snpsea::snpsea(
                           item.first
                       );
         if (n_items > 0) {
-            std::cout << timestamp()
-                      << " # " << setw(3) << n_items
-                      << " gene sets with size ";
+            _log << timestamp()
+                 << " # " << setw(3) << n_items
+                 << " gene sets with size ";
             if (item.first == MAX_GENES) {
-                std::cout << ">= " << setw(2) << item.first;
+                _log << ">= " << setw(2) << item.first;
             } else {
-                std::cout << "   " << setw(2) << item.first;
+                _log << "   " << setw(2) << item.first;
             }
-            std::cout << " from a pool of size " << item.second.size()
-                      << std::endl;
+            _log << " from a pool of size " << item.second.size()
+                 << std::endl;
         }
     }
 
-    std::cout << timestamp()
-              << " # We will compute up to "
-              << setprecision(0) << scientific << double(max_iterations)
-              << " iterations for each column with "
-              << fixed << threads << " threads.\n"
-              << std::flush;
+    _log << timestamp()
+         << " # We will compute up to "
+         << setprecision(0) << scientific << double(max_iterations)
+         << " iterations for each column with "
+         << fixed << threads << " threads.\n"
+         << std::flush;
 
     if (null_snpset_replicates > 0) {
-        std::cout << timestamp()
-                  << " # Computing "
-                  << setprecision(0) << scientific << null_snpset_replicates
-                  << " null SNP sets ...\n"
-                  << std::flush;
+        _log << timestamp()
+             << " # Computing "
+             << setprecision(0) << scientific << null_snpset_replicates
+             << " null SNP sets ...\n"
+             << std::flush;
 
         for (ulong replicate = 0;
              replicate < null_snpset_replicates; replicate++) {
@@ -234,8 +238,7 @@ snpsea::snpsea(
             }
         }
 
-        std::cout << timestamp() << " # done.\n"
-                  << std::flush;
+        _log << timestamp() << " # done." << std::endl;
     }
 
     std::vector<std::vector<ulong> > genesets;
@@ -246,9 +249,8 @@ snpsea::snpsea(
     // Report p-values and gene identifiers for each SNP-column pair.
     report_pvalues(out_folder + "/snp_pvalues.txt", _user_genesets);
 
-    std::cout << timestamp()
-              << " # Computing one column at a time ...\n"
-              << std::flush;
+    _log << timestamp() << " # Computing one column at a time ..."
+         << std::endl;
 
     // Calculate p-values for the user's SNP set.
     calculate_pvalues(
@@ -259,7 +261,8 @@ snpsea::snpsea(
         1L
     );
 
-    std::cout << timestamp() << " # done.\n\n";
+    _log << timestamp() << " # done." << std::endl;
+    _log.close();
 }
 
 void snpsea::write_args(
@@ -413,8 +416,8 @@ void snpsea::read_bed_intervals(
     while (stream >> row) {
         intervals[row.name] = row.i;
     }
-    std::cout << timestamp() << " # \"" + filename + "\" has "
-              << intervals.size() << " intervals." << std::endl;
+    _log << timestamp() << " # \"" + filename + "\" has "
+         << intervals.size() << " intervals." << std::endl;
 }
 
 // Read an optionally gzipped BED file and store the genomic intervals in
@@ -476,17 +479,17 @@ void snpsea::read_bed_interval_tree(
     );
     nrows = row_names.size() - missing_genes.size();
 
-    std::cout << timestamp()
-              << " # Skipped loading " << skipped_genes
-              << " gene intervals because they are absent from the"
-              << " --gene-matrix file."
-              << std::endl;
+    _log << timestamp()
+         << " # Skipped loading " << skipped_genes
+         << " gene intervals because they are absent from the"
+         << " --gene-matrix file."
+         << std::endl;
 
-    std::cout << timestamp()
-              << " # " << missing_genes.size()
-              << " genes from the --gene-matrix file are absent from the"
-              << " --gene-intervals file."
-              << std::endl;
+    _log << timestamp()
+         << " # " << missing_genes.size()
+         << " genes from the --gene-matrix file are absent from the"
+         << " --gene-intervals file."
+         << std::endl;
 
     // Loop through the chromosomes.
     for (auto item : intervals) {
@@ -523,15 +526,13 @@ void snpsea::read_gct(
     std::getline(stream, str);
 
     if (rows <= 0 || cols <= 0) {
-        std::cerr
-                << "ERROR: Line 2 of GCT file is malformed " + filename
-                << std::endl;
+        std::cerr << "ERROR: Line 2 of GCT file is malformed " + filename
+                  << std::endl;
         exit(EXIT_FAILURE);
     } else {
-        std::cout
-                << timestamp()
-                << " # \"" + filename + "\" has "
-                << rows << " rows, " << cols << " columns." << std::endl;
+        _log << timestamp()
+             << " # \"" + filename + "\" has "
+             << rows << " rows, " << cols << " columns." << std::endl;
     }
 
     // Resize our matrix to hold all of the data.
@@ -577,8 +578,8 @@ void snpsea::overlap_genes(
     ulong slop
 )
 {
-    std::cout << timestamp()
-              << " # Overlapping SNP intervals with gene intervals ...\n";
+    _log << timestamp()
+         << " # Overlapping SNP intervals with gene intervals ...\n";
 
     // Clear out the old gene sets from previous runs.
     absent_snp_names.clear();
@@ -587,8 +588,8 @@ void snpsea::overlap_genes(
 
     for (auto snp : snp_names) {
         if (_snp_intervals.count(snp) == 0) {
-            std::cout << timestamp() << " # "
-                      << snp << " not found in --snp-intervals file.\n";
+            _log << timestamp() << " # "
+                 << snp << " not found in --snp-intervals file.\n";
             absent_snp_names.insert(snp);
         } else {
             // Find the SNP's interval and find overlapping genes.
@@ -600,9 +601,9 @@ void snpsea::overlap_genes(
             }
         }
     }
-    std::cout << timestamp() << " # done. "
-              << absent_snp_names.size() << " SNPs not found. "
-              << _user_naked_snp_names.size() << " SNPs overlap 0 genes.\n";
+    _log << timestamp() << " # done. "
+         << absent_snp_names.size() << " SNPs not found. "
+         << _user_naked_snp_names.size() << " SNPs overlap 0 genes.\n";
 }
 
 void snpsea::merge_user_snps(
@@ -670,14 +671,14 @@ void snpsea::merge_user_snps(
     genesets = new_genesets;
     geneset_sizes = new_geneset_sizes;
 
-    std::cout << timestamp() << " # Merged "
-              << merged_snps.size() << " SNPs into "
-              << count_merged << " loci.\n" << std::flush;
+    _log << timestamp() << " # Merged "
+         << merged_snps.size() << " SNPs into "
+         << count_merged << " loci.\n" << std::flush;
 }
 
 void snpsea::report_user_snp_genes(const std::string & filename)
 {
-    std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";
+    _log << timestamp() << " # Writing \"" + filename + "\" ...\n";
 
     ofstream stream(filename);
 
@@ -750,7 +751,7 @@ void snpsea::report_user_snp_genes(const std::string & filename)
     }
     stream.close();
 
-    std::cout << timestamp() << " # done." << std::endl;
+    _log << timestamp() << " # done." << std::endl;
 }
 
 /*
@@ -769,10 +770,10 @@ void snpsea::drop_snp_intervals()
             ++it;
         }
     }
-    std::cout << timestamp()
-              << " # Dropped " << dropped_snps
-              << " SNP intervals that are absent from the provided null set."
-              << std::endl;
+    _log << timestamp()
+         << " # Dropped " << dropped_snps
+         << " SNP intervals that are absent from the provided null set."
+         << std::endl;
 }
 */
 
@@ -956,7 +957,7 @@ void snpsea::report_pvalues(
     const std::unordered_map<std::string, std::vector<ulong> > genesets
 )
 {
-    std::cout << timestamp() << " # Writing \"" + filename + "\" ...\n";
+    _log << timestamp() << " # Writing \"" + filename + "\" ...\n";
 
     // Open the file.
     ofstream stream(filename);
@@ -1003,7 +1004,7 @@ void snpsea::report_pvalues(
     }
     stream.close();
 
-    std::cout << timestamp() << " # done." << std::endl;
+    _log << timestamp() << " # done." << std::endl;
 }
 
 void snpsea::calculate_pvalues(
@@ -1099,11 +1100,10 @@ void snpsea::calculate_pvalues(
         if (replicates > 1) {
             stream << '\t' << replicate;
         } else {
-            std::cout << '.';
-            if ((col + 1) %  5 == 0) std::cout << ' ';
-            if ((col + 1) % 10 == 0) std::cout << ' ';
-            if ((col + 1) % 50 == 0) std::cout << col + 1 << '\n';
-            std::cout << std::flush;
+            _log << '.' << std::flush;
+            if ((col + 1) %  5 == 0) _log << ' ' << std::flush;
+            if ((col + 1) % 10 == 0) _log << ' ' << std::flush;
+            if ((col + 1) % 50 == 0) _log << col + 1 << std::endl;
         }
 
         stream << '\n' << std::flush;
@@ -1111,13 +1111,12 @@ void snpsea::calculate_pvalues(
 
     // Display a period for each replicate.
     if (replicates > 1) {
-        std::cout << '.';
-        if ((replicate + 1) %  5 == 0) std::cout << ' ';
-        if ((replicate + 1) % 10 == 0) std::cout << ' ';
-        if ((replicate + 1) % 50 == 0) std::cout << replicate + 1 << '\n';
-        std::cout << std::flush;
+        _log << '.' << std::flush;
+        if ((replicate + 1) %  5 == 0) _log << ' ' << std::flush;
+        if ((replicate + 1) % 10 == 0) _log << ' ' << std::flush;
+        if ((replicate + 1) % 50 == 0) _log << replicate + 1 << std::endl;
     } else {
-        std::cout << '\n' << std::flush;
+        _log << '\n' << std::flush;
     }
 
     stream.close();
