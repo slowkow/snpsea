@@ -1,6 +1,6 @@
 % SNPsea Reference Manual
 % Kamil Slowikowski
-% December 31, 2013
+% February 8, 2014
 
 \pagebreak
 
@@ -68,32 +68,64 @@ a summary of the intermediate steps.
 
 Download the binary and run it: <https://github.com/slowkow/snpsea/releases>
 
+**Mac**
+
+To compile C++ code with the required dependencies, you need XCode and
+MacPorts: <http://guide.macports.org/#installing.xcode>
+
 **All other platforms**
 
-Download the source code: <https://github.com/slowkow/snpsea>
+The source code is available: <https://github.com/slowkow/snpsea>
 
-After unzipping the source code, run:
+Install the dependencies:
 
 ```bash
 # Ubuntu
+
 sudo apt-get install build-essential libopenmpi-dev libgsl0-dev
 
 # Mac
-# Install MacPorts: http://www.macports.org
-# Then do this:
+
+#   Install MacPorts: http://www.macports.org/
+#   Then do this:
 sudo port selfupdate
 sudo port install gcc48 openmpi gsl
 
 # Broad Institute
-# You can add this to your .my.bashrc or .my.cshrc
-use .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
 
-# Compile the code.
-cd snpsea/src
+#   You can add this to your .my.bashrc or .my.cshrc
+use .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
+```
+
+Download and compile the code:
+
+```bash
+#   Clone with git, so you can get updates with 'git pull'
+git clone https://github.com/slowkow/snpsea.git
+cd snpsea
+
+#   or if you don't have git
+curl -LOk https://github.com/slowkow/snpsea/archive/master.zip
+unzip master.zip
+cd snpsea-master
+
+#   Compile.
+cd src
 make
 
-# Move the generated executable wherever you like.
-mv ../bin/snpsea ~/bin/
+#   Move the executables wherever you like.
+mv ../bin/snpsea* ~/bin/
+```
+
+Download the required data and run SNPsea:
+
+```bash
+mkdir ../snpsea/data
+cd ../snpsea/data
+curl -LOk http://files.figshare.com/1307287/SNPsea_data_20131204.zip
+unzip SNPsea_data_20131204.zip
+
+snpsea
 ```
 
 
@@ -103,7 +135,9 @@ mv ../bin/snpsea ~/bin/
 Download the compressed archive with data required to perform this analysis
 here (138M):
 
-<http://dx.doi.org/10.6084/m9.figshare.871430>
+Figshare: <http://dx.doi.org/10.6084/m9.figshare.871430>
+
+Zip: <http://files.figshare.com/1307287/SNPsea_data_20131204.zip>
 
 Contents:
 
@@ -193,9 +227,13 @@ hotspot with >3 cM/Mb recombination rate.
 ## C++ Libraries
 
 To compile SNPsea, you will need a modern C++ compiler that supports
-[`c++0x`][cxx0x] and the libraries listed below.
+[`c++0x`][cxx0x] and the dependencies listed below.
 
 See: [Installation]
+
+[intervaltree]
+
+> a minimal C++ interval tree implementation
 
 [Eigen]
 
@@ -222,6 +260,7 @@ that supports them. I compiled successfully with versions 4.6.3 (the default
 version for Ubuntu 12.04) and 4.8.1.
 
 
+[intervaltree]: https://github.com/slowkow/intervaltree
 [Eigen]: http://eigen.tuxfamily.org
 [OpenMPI]: http://www.open-mpi.org
 [gsl]: http://www.gnu.org/software/gsl
@@ -265,7 +304,11 @@ and might fail to work. So, avoid using `apt-get` for these dependencies.
 > environments across platforms.
 
 **Note:** On a server with no display, please edit your [matplotlibrc] file to
-use the `Agg` backend. Otherwise, you may see an error message like this:
+use the `Agg` backend:
+
+    perl -i -pe 's/^(\s*(backend).*)$/#$1\n$2:Agg/' ~/.matplotlib/matplotlibrc
+
+Otherwise, you may see an error message like this:
 
     _tkinter.TclError: no display name and no $DISPLAY environment variable
 
@@ -322,19 +365,19 @@ Here is a [Bash] script with a usage example:
 
 ```bash
 options=(
-    --snps LDL_Teslovich2010.txt
-    --gene-matrix NovartisGeneAtlas2004.gct.gz
-    --gene-intervals NCBIgenes2013.bed.gz
-    --snp-intervals TGP2011.bed.gz
-    --null-snps Lango2010.txt.gz
-    --out out
-    --slop 250e3
-    --threads 4
-    --null-snpsets 1e3
-    --min-observations 50
-    --max-iterations 1e6
+    --snps              LDL_Teslovich2010.txt
+    --gene-matrix       NovartisGeneAtlas2004.gct.gz
+    --gene-intervals    NCBIgenes2013.bed.gz
+    --snp-intervals     TGP2011.bed.gz
+    --null-snps         Lango2010.txt.gz
+    --out               out
+    --slop              10e3
+    --threads           4
+    --null-snpsets      0
+    --min-observations  50
+    --max-iterations    1e6
 )
-snpsea ${options[*]} &> log.txt
+snpsea ${options[*]}
 ```
 
 This will run the analysis on SNPs associated with LDL cholesterol and
@@ -349,7 +392,7 @@ specificity score than the user's SNPs.
 
 ## Options
 
-All input files may be optionally compressed with [`gzip`][gzip].
+All input files may optionally be compressed with [`gzip`][gzip].
 
 [gzip]: http://www.gzip.org/
 
@@ -703,7 +746,7 @@ of 79 human tissues.
 Create this visualization with:
 
 ```bash
-python bin/snpsea-barplot --out out
+python bin/snpsea-barplot out
 ```
 
 
@@ -716,7 +759,7 @@ each SNP linkage interval to the specificity scores of each tissue.
 Create this visualization with:
 
 ```bash
-python bin/snpsea-heatmap --out out
+python bin/snpsea-heatmap out
 ```
 
 
