@@ -1,24 +1,14 @@
 # Makefile for SNPsea
-# Supported platforms: Unix / Linux
+# Kamil Slowikowski
+# February 12, 2014
 
 # Compiler.
 CXX = g++
 
-# Check if the compiler is at least 4.6.
-GCC_VERSION := $(shell $(CXX) -dumpversion | awk '{print $$1>=4.6?"1":"0"}')
-
-# Paths to external resources.
-EIGEN_PATH = ../ext/eigen
-EIGEN_URL = https://bitbucket.org/eigen/eigen
-
-INTERVAL_TREE_PATH = ../ext/intervaltree
-INTERVAL_TREE_URL = https://github.com/slowkow/intervaltree.git
-
 # Compiler flags.
 #DEBUG = -ggdb
-INCLUDE = -I $(EIGEN_PATH) -I $(INTERVAL_TREE_PATH)
 CXXFLAGS = $(DEBUG) -w -O3 -m64 -static -fopenmp -std=c++0x
-CXXFLAGS += $(INCLUDE) -DEIGEN_NO_DEBUG
+CXXFLAGS += -I ../ext/intervaltree -I ../ext/eigen -DEIGEN_NO_DEBUG
 LIB = -static -lz -lpthread -lm -ldl -lgsl
 
 # Header files, source files, objects, binary.
@@ -27,13 +17,18 @@ SRC = option.cpp zfstream.cpp data.cpp
 OBJ = $(SRC:.cpp=.o)
 BIN = ../bin/snpsea
 
+# The compiler must be at least 4.6 because we use C++0x features.
+GCC_VERSION := $(shell $(CXX) -dumpversion | awk '{print $$1>=4.6?"1":"0"}')
+
 all : $(BIN)
+
+$(BIN) : $(OBJ)
+
+$(OBJ) : $(HDR)
 
 $(BIN) : $(INTERVAL_TREE_PATH) $(EIGEN_PATH)
 	mkdir -p ../bin
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ) $(LIB)
-
-$(OBJ) : $(HDR)
 
 # Make an object file for each C++ source file.
 %.o : %.cpp
@@ -43,19 +38,18 @@ else
 	$(CXX) $(CXXFLAGS) -c $<
 endif
 
-$(BIN) : $(OBJ)
+.PHONY: clean
 
-.PHONY: intervaltree eigen clean
-
-# External dependencies.
+# Create the folder if it doesn't exist.
 ../ext :
 	mkdir $@
 
-$(INTERVAL_TREE_PATH) :
-	git clone $(INTERVAL_TREE_URL) $@
+# Clone the repositories SNPsea depends on.
+../ext/intervaltree :
+	git clone 'https://github.com/slowkow/intervaltree.git' $@
 
-$(EIGEN_PATH) :
-	hg clone $(EIGEN_URL) $@
+../ext/eigen :
+	hg clone 'https://bitbucket.org/eigen/eigen' $@
 
 clean:
 	rm -f $(OBJ) $(BIN)

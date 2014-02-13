@@ -23,6 +23,7 @@
 #include <iomanip>
 
 #include <gsl/gsl_randist.h>
+#include <gsl/gsl_cdf.h>
 #include <Eigen/Dense>
 #include "IntervalTree.h"
 #include "zfstream.h"
