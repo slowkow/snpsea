@@ -252,14 +252,14 @@ snpsea::snpsea(
     }
 
     // Report specificity scores and gene identifiers for each SNP-column pair.
-    report_scores(out_folder + "/snp_conditions.txt", _user_genesets);
+    report_scores(out_folder + "/snp_condition_scores.txt", _user_genesets);
 
     _log << timestamp() << " # Computing one column at a time ..."
          << std::endl;
 
     // Calculate p-values for the user's SNP set.
     calculate_pvalues(
-        out_folder + "/pvalues.txt",
+        out_folder + "/condition_pvalues.txt",
         score_method,
         genesets,
         min_observations,
