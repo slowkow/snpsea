@@ -50,9 +50,8 @@ Citation
 
 If you benefit from this method, please cite:
 
-> Slowikowski, K. et al. *SNPsea: test trait-associated loci for enrichment of
-> condition-specificity of gene measurements or binary annotations.*
-> Manuscript in progress.
+> Slowikowski, K. et al. *SNPsea: an algorithm to identify cell types,
+> tissues, and pathways affected by risk loci.* Manuscript in progress.
 
 See additional information and examples here:
 
