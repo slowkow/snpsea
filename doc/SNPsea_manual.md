@@ -1,44 +1,51 @@
 % SNPsea Reference Manual
 % Kamil Slowikowski
-% February 8, 2014
+% February 13, 2014
 
 \pagebreak
 
 # Introduction
 
-SNPsea is a nonparametric permutation analysis for identifying pathways and
-tissue types influenced by the alleles discovered through genome-wide
-association studies (GWAS). It was originally conceived to test for enrichment
-of cell type-specific expression of genes in loci near trait-associated SNPs.
+SNPsea is a general algorithm to identify cell types, tissues, and pathways
+likely to be affected by risk loci.
 
-The implementation described here is generalized, so you may provide
-a quantitative gene matrix with gene expression (or any other measurements) or
-a binary gene matrix with presence absence (1, 0) values. The columns of the
-matrix might be tissues, cell types, GO annotation codes, or any other types
-of conditions. In general, this analysis is appropriate when you are
-interested in testing for enrichment of condition-specificity of genes linked
-to a given set of trait-associated SNPs.
+For example, with a gene expression matrix containing expression profiles for
+multiple cell types, we identify genes in linkage disequilibrium with
+trait-associated SNPs and score them for specificity to each cell type.
+We compare the score to a null distribution by sampling random SNP sets
+matched on the number of linked genes. To evaluate significance, we calculate
+an exact permutation p-value.
 
-The following hypothesis is tested by this analysis:
+This implementation is generalized, so you may provide (1) a continuous gene
+matrix with gene expression (or any other values) or (2) a binary gene matrix
+with presence/absence 1/0 values.
 
-> If trait-associated alleles impact a small number of pathogenic tissues or
-> cell types, then the subset of genes with critical functions in those
-> pathogenic cell types are likely to be within trait-associated loci.
+The columns of the matrix could be tissues, cell types, GO annotation codes,
+or any other types of *conditions*. Continuous matrices *must* be normalized
+before running SNPsea so that columns are directly comparable to each other.
+
+In general, this analysis is appropriate when you are interested in testing
+for enrichment of condition-specificity of genes linked to a set of
+trait-associated SNPs.
+
+If trait-associated alleles impact a small number of pathogenic tissues or
+cell types, we hypothesize that the subset of genes with critical functions in
+those pathogenic cell types are likely to be within trait-associated loci.
 
 We assume that a gene's specificity to a given cell type or condition is
-a reasonable indicator of the gene's importance to the function of that cell
-type.
+a reasonable indicator of the gene's importance to its function.
 
-Please see the following publications for additional information outside the
-scope of this reference manual:
+If you benefit from this method, please cite:
 
-> Slowikowski, K. et al. SNPsea: test trait-associated loci for enrichment of
-> condition-specificity of gene measurements or binary annotations.
-> Manuscript in progress.
+> Slowikowski, K. et al. SNPsea: an algorithm to identify cell types, tissues,
+> and pathways affected by risk loci > Manuscript in progress.
+
+See additional examples:
 
 > Hu, X. et al. Integrating autoimmune risk loci with gene-expression data
 > identifies specific pathogenic immune cell subsets. The American Journal
 > of Human Genetics 89, 496–506 (2011). [PubMed][Hu2011]
+
 
 [Hu2011]: http://www.ncbi.nlm.nih.gov/pubmed/21963258
 
@@ -135,81 +142,151 @@ snpsea
 Download the compressed archive with data required to perform this analysis
 here (138M):
 
-Figshare: <http://dx.doi.org/10.6084/m9.figshare.871430>
-
-Zip: <http://files.figshare.com/1307287/SNPsea_data_20131204.zip>
-
-Contents:
+<http://dx.doi.org/10.6084/m9.figshare.871430>
 
 ```
-GO2013.gct.gz
-ImmGen2012.gct.gz
-LDL_Teslovich2010.txt
-Lango2010.txt.gz
-NCBIgenes2013.bed.gz
-NovartisGeneAtlas2004.gct.gz
-TGP2011.bed.gz
+GWAS SNPs
+
+Celiac_disease-Trynka2011-35_SNPs.gwas
+HDL_cholesterol-Teslovich2010-46_SNPs.gwas
+Multiple_sclerosis-IMSGC-51_SNPs.gwas
+Red_blood_cell_count-Harst2012-45_SNPs.gwas
+
+
+GeneAtlas2004.gct.gz  # Gene Atlas 2004 gene expression matrix
+GO2013.gct.gz         # Gene Ontology 2013 gene annotation matrix
+ImmGen2012.gct.gz     # ImmGen 2012 gene expression matrix
+
+
+NCBIgenes2013.bed.gz  # NCBI gene intervals
+Lango2010.txt.gz      # LD-pruned SNPs
+TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals
 ```
 
 
-### `GO2013.gct.gz`
+### Celiac_disease-Trynka2011-35_SNPs.gwas
 
-A GCT formatted gene matrix with 1s and 0s indicating presence or absence of
-19,111 genes in 1,751 Gene Ontology annotations.
+35 SNPs associated with Celiac disease taken from Table 2.
+Positions are on hg19. All SNPs have P <= 5e-8.
 
+    doi:10.1038/ng.998
+    PMID: 22057235
 
-### `ImmGen2012.gct.gz`
+    Trynka G, Hunt KA, Bockett NA, et al. Dense genotyping identifies and
+    localizes multiple common and rare variant association signals in celiac
+    disease. Nat Genet. 2011;43(12):1193-201.
 
-Gene expression data for 15,139 genes across 249 blood cell types from
-[GSE15907]. Replicates for each cell type were averaged. For each gene, the
-single probe with the largest minimum was selected.
-
-> Immunological Genome Project. <http://www.immgen.org/>
-
-
-### `LDL_Teslovich2010.txt`
-
-37 SNPs taken from:
-
-> Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and
-> population relevance of 95 loci for blood lipids. Nature.
-> 2010;466(7307):707-13. [PubMed][Teslovich2010]
+    http://www.ncbi.nlm.nih.gov/pubmed/22057235
 
 
-### `Lango2010.txt.gz`
+### HDL_cholesterol-Tesolvich2010-46_SNPs.gwas
 
-A list of 56,890 SNPs pruned by linkage disequilibrium that span the whole
-genome. Null SNP sets matched on the number of genes in the user's SNP set are
-sampled from this list. See this paper for more information:
+46 SNPs associated with HDL taken from Supplementary Table 2.
+Positions are on hg19. All SNPs have P <= 5e-8.
 
-> Lango allen H, Estrada K, Lettre G, et al. Hundreds of variants clustered in
-> genomic loci and biological pathways affect human height. Nature.
-> 2010;467(7317):832-8. [PubMed][Lango2010]
+    doi:10.1038/nature09270
+    PMID: 20686565
 
+    Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and
+    population relevance of 95 loci for blood lipids. Nature.
+    2010;466(7307):707-13.
 
-### `NCBIgenes2013.bed.gz`
-
-40,437 Gene coordinates were obtained from the [NCBI]. The coordinates
-I provide are a subset of those listed in `gene2refseq.gz`.
+    http://www.ncbi.nlm.nih.gov/pubmed/20686565
 
 
-### `NovartisGeneAtlas2004.gct.gz`
+### Multiple_sclerosis-IMSGC-51_SNPs.gwas
 
-Gene expression data for 17,581 genes across 79 human tissues from [GSE1133].
-Replicates for each tissue were averaged. For each gene, the single probe with
+51 SNPs associated with Multiple Sclerosis taken from Supplementary Table A.
+Positions are on hg19. All SNPs have P <= 5e-8.
+
+    doi:10.1038/nature10251
+    PMID: 21833088
+
+    Sawcer S, Hellenthal G, Pirinen M, et al. Genetic risk and a primary role
+    for cell-mediated immune mechanisms in multiple sclerosis. Nature.
+    2011;476(7359):214-9.
+
+    http://www.ncbi.nlm.nih.gov/pubmed/21833088
+
+
+### Red_blood_cell_count-Harst2012-45_SNPs.gwas
+
+45 SNPs associated with red blood cell count (RBC) taken from Table 1.
+Positions are on hg19. All SNPs have P <= 5e-8.
+
+    doi:10.1038/nature11677
+    PMID: 23222517
+
+    Van der harst P, Zhang W, Mateo leach I, et al. Seventy-five genetic loci
+    influencing the human red blood cell. Nature. 2012;492(7429):369-75.
+
+    http://www.ncbi.nlm.nih.gov/pubmed/23222517
+
+
+
+### GeneAtlas2004.gct.gz
+
+Gene expression data for 79 human tissues from GSE1133. Replicates for
+each tissue profile were averaged. For each gene, the single probe with
 the largest minimum was selected.
 
-> Su AI et al. A gene atlas of the mouse and human protein-encoding
-> transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7
+    Su AI et al. A gene atlas of the mouse and human protein-encoding
+    transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7
+
+    http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133
 
 
-### `TGP2011.bed.gz`
+### GO2013.gct.gz
 
-Linkage intervals for a filtered set of 22,518,294 SNPs from the [1000 Genomes
-Project][tgp] Phase 1 (May 21, 2011). SNP genotypes were obtained from the
-[BEAGLE] release v3 website and processed to create linkage intervals for each
-SNP. The linkage intervals were extended to the nearest [HapMap] recombination
+A GCT formatted gene matrix with 1s and 0s indicating presence or absence of
+genes in Gene Ontology annotations. 19,111 genes in 1,751 Gene Ontology
+annotations.
+
+    http://www.geneontology.org/
+
+
+### ImmGen2012.gct.gz
+
+Gene expression data for 249 blood cell types from GSE15907. Replicates for
+each cell type profile were averaged. For each gene, the single probe with
+the largest minimum was selected.
+
+    Immunological Genome Project
+
+    http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907
+
+
+### NCBIgenes2013.bed.gz
+
+All human start and stop positions taken from:
+
+    ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
+
+
+### Lango2010.txt.gz
+
+A list of SNPs that span the whole genome, pruned by linkage disequilibrium
+(LD). SNPsea samples null SNP sets matched on the number of genes in the
+user's SNP set from this list. See this paper for more information:
+
+    Lango allen H, Estrada K, Lettre G, et al. Hundreds of variants clustered
+    in genomic loci and biological pathways affect human height. Nature.
+    2010;467(7317):832-8.
+
+    http://www.ncbi.nlm.nih.gov/pubmed/20881960
+
+
+### TGP2011.bed.gz
+
+Linkage intervals for a filtered set of SNPs from the 1000 Genomes
+Project Phase 1 (May 21, 2011). SNP genotypes were obtained from the
+BEAGLE release v3 website and processed to create linkage intervals for each
+SNP. The linkage intervals were extended to the nearest HapMap recombination
 hotspot with >3 cM/Mb recombination rate.
+
+    http://www.1000genomes.org/
+    http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3/
+    http://hapmap.ncbi.nlm.nih.gov/downloads/
 
 
 [Bash]: http://www.gnu.org/software/bash/manual/bashref.html
@@ -366,7 +443,7 @@ Here is a [Bash] script with a usage example:
 ```bash
 options=(
     --snps              LDL_Teslovich2010.txt
-    --gene-matrix       NovartisGeneAtlas2004.gct.gz
+    --gene-matrix       GeneAtlas2004.gct.gz
     --gene-intervals    NCBIgenes2013.bed.gz
     --snp-intervals     TGP2011.bed.gz
     --null-snps         Lango2010.txt.gz
@@ -382,7 +459,7 @@ snpsea ${options[*]}
 
 This will run the analysis on SNPs associated with LDL cholesterol and
 test for tissue-specific expression of the nearby genes across 79 human
-tissues in the Novartis 2011 gene expression matrix. Additionally, 1000 null
+tissues in the Gene Atlas gene expression matrix. Additionally, 1000 null
 random matched SNP sets will be tested and their results will also be
 recorded. Each tissue will be tested up to 1 million times, or testing will
 stop for a tissue if 50 matched SNP sets are observed to achieve a higher
@@ -441,7 +518,7 @@ All input files may optionally be compressed with [`gzip`][gzip].
 --slop ARG               If a SNP interval overlaps no gene intervals,
                          extend the SNP interval this many nucleotides
                          further and try again.
-                         [default: 250000]
+                         [default: 10000]
 
 --threads ARG            Number of threads to use.
                          [default: 1]
@@ -449,7 +526,7 @@ All input files may optionally be compressed with [`gzip`][gzip].
 --null-snpsets ARG       Test this many null matched SNP sets, so you can
                          compare your results to a distribution of null
                          results.
-                         [default: 10]
+                         [default: 0]
 
 --min-observations ARG   Stop testing a column in --gene-matrix after
                          observing this many null SNP sets with 
@@ -461,7 +538,7 @@ All input files may optionally be compressed with [`gzip`][gzip].
 --max-iterations ARG     Maximum number of null SNP sets tested for each
                          column in --gene-matrix. Increase this value to
                          resolve smaller p-values.
-                         [default: 1000]
+                         [default: 10000]
 ```
 
 
@@ -505,7 +582,7 @@ You must provide a single gene matrix that must be in [GCT][gct] format.
 
 
 ```
-zcat NovartisGeneAtlas2004.gct.gz | cut -f1-4 | head
+zcat GeneAtlas2004.gct.gz | cut -f1-4 | head
 
 #1.2
 17581  79
@@ -607,10 +684,10 @@ The usage example shown above produces the following output files:
 ```
 out/
     args.txt
-    pvalues.txt
+    condition_pvalues.txt
     null_pvalues.txt
+    snp_condition_scores.txt
     snp_genes.txt
-    snp_pvalues.txt
 ```
 
 
@@ -622,17 +699,18 @@ The command line arguments needed to reproduce the analysis.
 cat args.txt
 
 # SNPsea v1.0.2
---snps             LDL_Teslovich2010.txt
---gene-matrix      NovartisGeneAtlas2004.gct.gz
+--snps             Red_blood_cell_count-Harst2012-45_SNPs.gwas
+--gene-matrix      GeneAtlas2004.gct.gz
 --gene-intervals   NCBIgenes2013.bed.gz
 --snp-intervals    TGP2011.bed.gz
 --null-snps        Lango2010.txt.gz
 --out              out
---slop             250000
---threads          4
---null-snpsets     1000
---min-observations 50
---max-iterations   1000000
+--score            single
+--slop             100000
+--threads          8
+--null-snpsets     0
+--min-observations 100
+--max-iterations   10000000
 ```
 
 Repeat the analysis:
@@ -642,21 +720,24 @@ snpsea --args args.txt
 ```
 
 
-### `pvalues.txt`
+### `condition_pvalues.txt`
 
 The p-values representing enrichment of condition-specificity for the given
 SNPs.
 
 ```
-head pvalues.txt | column -t
+head condition_pvalues.txt | column -t
 
-name                      pvalue       nulls_observed  nulls_tested
-ColorectalAdenocarcinoma  0.87         87              100
-WholeBlood                0.00606299   77              12700
-BM-CD33+Myeloid           0.054        81              1500
-PB-CD14+Monocytes         0.316667     95              300
-PB-BDCA4+Dentritic_Cells  0.164286     115             700
-PB-CD56+NKCells           0.000104993  86              819100
+condition                  pvalue     nulls_observed  nulls_tested
+Colorectal_Adenocarcinoma  0.933555   280             300
+Whole_Blood                0.521595   156             300
+BM-CD33+Myeloid            0.159772   111             700
+PB-CD14+Monocytes          0.103264   154             1500
+PB-BDCA4+Dentritic_cells   0.0606256  187             3100
+PB-CD56+NK_cells           0.194009   135             700
+PB-CD4+T_cells             0.428571   128             300
+PB-CD8+T_cells             0.531561   159             300
+PB-CD19+B_cells            0.226819   158             700
 ```
 
 
@@ -698,37 +779,38 @@ SNP will be listed and the other columns will contain `NA`.
 head snp_genes.txt | column -t
 
 chrom  start      end        name        n_genes  genes
-chr7   128560761  128773770  rs10488631  2        3663,23534
-chr2   100637056  100895271  rs10865035  3        3899,150577,164832
-chr11  118475098  118746223  rs10892279  2        1656,23187
+chr4   55364224   55408999   rs218238    0        NA
+chr6   139827777  139844854  rs590856    0        NA
 NA     NA         NA         rs99999999  NA       NA
-chr21  43817297   43851877   rs11203203  1        53347
-chr1   117256697  117293763  rs11586238  4        914,965,3321,5738
-chr1   161389417  161637888  rs12746613  5        2212,2213,2215,3310,9103
-chr2   61068167   61382443   rs13031237  5        5194,5966,84542,339803,339804
-chr3   58553160   58558769   rs13315591  1        11170
+chr6   109505894  109651220  rs1008084   2        8763,27244
+chr10  71089843   71131638   rs10159477  1        3098
+chr2   111807303  111856057  rs10207392  1        55289
+chr16  88831494   88903796   rs10445033  4        353,2588,9780,81620
+chr7   151396253  151417368  rs10480300  1        51422
+chr12  4320955    4336783    rs10849023  2        894,57103
+chr15  76129642   76397903   rs11072566  4        26263,92912,123591,145957
 ```
 
 
-### `snp_pvalues.txt`
+### `snp_condition_scores.txt`
 
-Each SNP, condition, gene with greatest specificity to that sample, and
-p-value for the SNP-sample pair, adjusted for the number of genes overlapping
-the given SNP.
+Each SNP, condition, gene with greatest specificity to that condition, and
+score for the SNP-condition pair, adjusted for the number of genes overlapping
+the given SNP's linkage interval.
 
 ```
-head snp_pvalues.txt | column -t
+head snp_condition_scores.txt | column -t
 
-marker      column                    gene   pvalue
-rs10488631  ColorectalAdenocarcinoma  3663   0.270409
-rs10488631  WholeBlood                3663   0.302693
-rs10488631  BM-CD33+Myeloid           3663   0.0569547
-rs10488631  PB-CD14+Monocytes         3663   0.0960891
-rs10488631  PB-BDCA4+Dentritic_Cells  3663   0.240571
-rs10488631  PB-CD56+NKCells           23534  0.58674
-rs10488631  PB-CD4+Tcells             3663   0.683486
-rs10488631  PB-CD8+Tcells             23534  0.634216
-rs10488631  PB-CD19+Bcells            3663   0.261931
+snp        condition                 gene   score
+rs9349204  Colorectal_Adenocarcinoma  10817  0.693027
+rs9349204  Whole_Blood                896    0.285864
+rs9349204  BM-CD33+Myeloid            896    0.236487
+rs9349204  PB-CD14+Monocytes          29964  0.340561
+rs9349204  PB-BDCA4+Dentritic_cells   29964  0.411727
+rs9349204  PB-CD56+NK_cells           896    0.0356897
+rs9349204  PB-CD4+T_cells             896    0.38182
+rs9349204  PB-CD8+T_cells             896    0.332008
+rs9349204  PB-CD19+B_cells            29964  0.255196
 ```
 
 
@@ -741,9 +823,8 @@ rs10488631  PB-CD19+Bcells            3663   0.261931
 ![A horizontal bar plot of negative log10 p-values for a test of 37
 LDL-associated SNPs for enrichment of tissue-specific expression in profiles
 of 79 human tissues.
-](figures/Teslovich2010_Novartis2011_pvalues_barplot_25.pdf)\
+](figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-pvalues_barplot.pdf)\
 
-Create this visualization with:
 
 ```bash
 python bin/snpsea-barplot out
@@ -754,9 +835,8 @@ python bin/snpsea-barplot out
 
 ![A heatmap exposing the contributions of specifically expressed genes within
 each SNP linkage interval to the specificity scores of each tissue.
-](figures/Teslovich2010_Novartis2011_snp_pvalues_heatmap.pdf)\
+](figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-snp_condition_heatmap.pdf)\
 
-Create this visualization with:
 
 ```bash
 python bin/snpsea-heatmap out
@@ -767,9 +847,8 @@ python bin/snpsea-heatmap out
 
 ![A scatter plot of the observed proportion of p-values under various
 thresholds after repeating the analysis with 10,000 random SNP sets.
-](figures/type1error_Novartis2004.pdf)\
+](figures/type1error_GeneAtlas2004.pdf)\
 
-Create this visualization with:
 
 ```bash
 Rscript bin/snpsea-type1error out
