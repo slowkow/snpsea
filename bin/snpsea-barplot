@@ -3,11 +3,10 @@
 snpsea-barplot
 
 Create a bar plot of p-values for each condition in --gene-matrix with an
-adjacent heatmap triangle showing all pairwise sample Pearson correlations of
-expression profiles.
+adjacent heatmap all pairwise sample Pearson correlations of conditions.
 
 Usage:
-    snpsea-barplot <out> [--top INT --gene-matrix FILE --title STRING --width INT --fontsize INT]
+    snpsea-barplot <out> [--top INT --gene-matrix FILE --title STRING --width INT --fontsize INT --shorten INT]
 
 Options:
     -h, --help          Show this message and exit.
@@ -17,6 +16,7 @@ Options:
     --title STRING      Title printed at the top of the figure.
     --width INT         Width of the figure [default: 12].
     --fontsize INT      Font size of y-axis labels [default: 12].
+    --shorten INT       Shorten lengthy condition names [default: 48].
 
 Author:
     Kamil Slowikowski <slowikow@broadinstitute.org>
@@ -34,14 +34,17 @@ import os
 import re
 
 
+
 def main():
     args = docopt(__doc__)
     import os
 
+    mp.rc('font', family='serif', size=float(args['--fontsize']))
+
     out = lambda x: os.path.join(args['<out>'], x)
    
-    width = int(args['--width'])
-    height = width / 2
+    width = float(args['--width'])
+    height = width / 2.0
 
     matrix = args['--gene-matrix'] or find_gene_matrix(out('args.txt'))
 
@@ -54,38 +57,32 @@ def main():
             out('pvalues_barplot.pdf'),
             title=args['--title'],
             figsize=(width, height),
-            fontsize=int(args['--fontsize']),
+            namelen=int(args['--shorten']),
             top=int(args['--top']))
 
 
-def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5), fontsize=12,
-            cluster_method='all', title=None, alpha=0.05, top=50):
+def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5),
+            namelen=48, cluster_method='all', title=None, alpha=0.05, top=50):
     # Read results from snpsea.
     pvalues = pd.read_table(f_pvalues, index_col=0)
 
-    top = min(top, pvalues.shape[0])
-
-    # Get rid of the 0 p-values.
-    idx = pvalues.pvalue == 0
-    pvalues.ix[idx, 'pvalue'] = 1.0 / pvalues.ix[idx, 'nulls_tested']
-    pvalues = pvalues.sort('pvalue')[:top]
-
-    # Detect compression.
-    comp = 'gzip' if f_matrix.endswith('.gz') else None
-
     # The matrix must be in GCT format.
+    comp = 'gzip' if f_matrix.endswith('.gz') else None
     matrix = pd.read_table(f_matrix, 
                                compression=comp,
                                skiprows=2,
                                index_col=0).drop('Description', axis=1)
 
-    # Select the top N columns.
-    n_samples = matrix.shape[1]
-    matrix = matrix.ix[:, pvalues.index]
-
     # Bonferroni threshold of significance after testing multiple conditions.
     bonf = lambda a, n: 1 - (1 - a) ** (1 / float(n))
+
+    n_samples = matrix.shape[1]
     bonferroni_threshold = -np.log10(bonf(alpha, n_samples))
+
+    # Select top results.
+    sig = np.sum(pvalues['pvalue'] > bonferroni_threshold)
+    pvalues = pvalues.sort('pvalue')[:top]
+    matrix = matrix.ix[:, pvalues.index]
 
     # By default, cluster samples by all of the gene values.
     # Otherwise, cluster by the genes overlapped by the user's SNPs.
@@ -117,27 +114,25 @@ def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5), fontsize=12,
     # Order the p-values by the clustering.
     pvalues = pvalues.ix[order]
     
-    # Magic fontsize formula obtained by trial and error.
-    #fontsize = 7 * figsize[1] ** (figsize[1] / float(top))
+    # Shorten lengthy names.
+    pvalues.index = [shorten(x, namelen) for x in pvalues.index]
 
     # Plot the negative log10 transformed p-values.
     pvalues['pvalue'] = -np.log10(pvalues['pvalue'])
     ax = pvalues['pvalue'].plot(ax=ax,
                                 kind='barh',
                                 title=title,
-                                #linewidth=1.5,
                                 linewidth=0,
-                                #fontsize=fontsize,
                                 grid=False,
-                                color='#999999')
-                                #color='#ffffff')
+                                color='#5599ff')
 
-    # Significant conditions are marked with an asterisk.
+    # Insignificant conditions are spaced away from the plot.
     labels = [item.get_text() for item in ax.get_yticklabels()]
     signif = pvalues.index[pvalues['pvalue'] >= bonferroni_threshold]
     for i, item in enumerate(labels):
-        if item not in signif:
-            labels[i] = '   {}'.format(item) 
+        if item in signif:
+            labels[i] = '* {}'.format(item)
+        labels[i] = labels[i].replace('_', ' ')
     ax.set_yticklabels(labels)
 
     # Vertical grid lines.
@@ -153,10 +148,10 @@ def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5), fontsize=12,
 
     # Adjust tick parameters.
     ax.tick_params(length=0, axis='x')
-    ax.tick_params(length=0, axis='y', labelsize=fontsize)
+    ax.tick_params(length=0, axis='y')
 
     # Labels.
-    ax.set_xlabel('-log10(p-value)')
+    ax.set_xlabel('$-\log_{10}\ P$')
     ax.set_ylabel('')
 
     # Add a vertical Bonferroni p-value cutoff line.
@@ -183,8 +178,8 @@ def heatmap_triangle(dataframe, axes):
     # UPGMA clustering, but other methods are also available.
     Z = sch.linkage(D, method='average')
     R = sch.dendrogram(Z, no_plot=True)
-    sample_order = R['leaves']
-    D = D.ix[sample_order, sample_order]
+    cluster_order = R['leaves']
+    D = D.ix[cluster_order, cluster_order]
 
     # Get the lower triangle of the matrix. 
     C = np.tril(D)
@@ -219,9 +214,15 @@ def heatmap_triangle(dataframe, axes):
     cb = pl.colorbar(caxes, ax=axes, orientation='horizontal', shrink=0.7,
                 fraction=0.05, pad=-0.05, ticks=np.linspace(-1, 1, 5),
                 use_gridspec=True)
-    cb.set_label('Pearson')
+    cb.set_label("$\mathrm{Pearson's}\ r$")
 
     return caxes, D.index
+
+
+def shorten(x, n=48):
+    if len(x) > n:
+        return x[:n/2] + '...' + x[-n/2:]
+    return x
 
 
 def flatten(lists):
