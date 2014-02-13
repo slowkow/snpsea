@@ -2,14 +2,15 @@
 """
 snpsea-heatmap
 
-Create a heatmap of from the snp_pvalues.txt file produced by snpsea.
+Create a heatmap of from the snp_condition_scores.txt file produced by snpsea.
+
 This reveals the composition of each condition's specificity score by
 displaying all SNP-gene pairs and their contributions. Each heatmap cell is
 annotated with the name of the gene in the given locus (column) with the
 greatest specificity to the given condition (row).
 
 Usage:
-    snpsea-heatmap <out> [--gene-matrix FILE --alpha NUM --title STR]
+    snpsea-heatmap <out> [--gene-matrix FILE --alpha NUM --title STR --fontsize NUM]
 
 Options:
     -h, --help          Show this message and exit.
@@ -17,6 +18,7 @@ Options:
     --gene-matrix FILE  Override the --gene-matrix argument in args.txt.
     --title STR         Title for the figure.
     --alpha NUM         Significance threshold [default: 0.05].
+    --fontsize NUM      Font size [default: 12.0].
 
 Author:
     Kamil Slowikowski <slowikow@broadinstitute.org>
@@ -30,21 +32,26 @@ import pandas as pd
 import pylab as pl
 import textwrap as tw
 import re
+import os
 
 
 def main():
     args = docopt(__doc__)
-    import os
+
+    mp.rc('font', family='serif', size=float(args['--fontsize']))
 
     out = lambda x: os.path.join(args['<out>'], x)
     
     matrix = args['--gene-matrix'] or find_gene_matrix(out('args.txt'))
 
-    heatmap(out('pvalues.txt'),
+    if not args['--title']:
+        args['--title'] = os.path.basename(args['<out>'].rstrip('/'))
+
+    heatmap(out('condition_pvalues.txt'),
             matrix,
-            out('snp_pvalues.txt'),
-            out('snp_pvalues_heatmap.pdf'),
-            title=args['--title'] or '',
+            out('snp_condition_scores.txt'),
+            out('snp_condition_heatmap.pdf'),
+            title=args['--title'],
             alpha=float(args['--alpha']))
 
 
@@ -52,22 +59,24 @@ def heatmap(f_condition_pvalues, f_matrix, f_snp_condition_scores,
             f_heatmap, title='', alpha=0.05):
     # Bonferroni corrected p-value for each condition.
     condition_pvalues = pd.read_table(f_condition_pvalues)
-    bonf = 1 - (1 - condition_pvalues.score) ** condition_pvalues.shape[0]
+    bonf = 1 - (1 - condition_pvalues.pvalue) ** condition_pvalues.shape[0]
     # Select just the significant pvalues.
     condition_pvalues = condition_pvalues[bonf < alpha]
 
     # No condition is significant.
     if condition_pvalues.shape[0] == 0:
+        print "Exit. No conditions have significant enrichment results!"
         return
 
     def make_label((condition, pvalue, nulls, reps)):
-        if nulls == 0:
-            return '{}\np < {}'.format(condition, 1.0 / reps)
+        if nulls == 1:
+            equality = '<'
         else:
-            return '{}\np = {:0.2e}'.format(condition, pvalue)
+            equality = '='
+        return '{}\nP {} {:0.2e}'.format(condition, equality, pvalue)
 
 
-    conditions = condition_pvalues['name'].tolist()[::-1]
+    conditions = condition_pvalues.condition.tolist()[::-1]
     labels = condition_pvalues.apply(make_label, axis=1).tolist()[::-1]
 
     # Detect compression.
@@ -126,7 +135,7 @@ def heatmap(f_condition_pvalues, f_matrix, f_snp_condition_scores,
 
     # Plot heatmap.
     ax = fig.add_axes([0.3, 0.1, 0.6, 0.6])
-    cmap = pl.cm.Oranges
+    cmap = pl.cm.Reds
     norm = mp.colors.BoundaryNorm(ticks, cmap.N)
     im = ax.matshow(log10_scores, aspect='auto', origin='lower',
                     cmap=cmap, norm=norm)
@@ -140,14 +149,14 @@ def heatmap(f_condition_pvalues, f_matrix, f_snp_condition_scores,
     # Labels. If the locus is represented by joined SNPs, print line by line.
     xlabels = [x.replace(',', '\n') for x in list(scores.index)]
     ax.set_xticklabels(xlabels, rotation=0)
-    ax.set_yticklabels(labels)
+    ax.set_yticklabels(map(lambda x: x.replace('_', ' '), labels))
     ax.set_title(title)
 
     # Plot the NCBI gene names.
     xy = [(x, y) for x in range(n_snps) for y in range(n_conditions)]
     for x, y in xy:
         ax.text(x, y, tw.fill(str(symbols.ix[x, y]), 8),
-                bbox=dict(color='white'),
+                bbox=dict(color='white', boxstyle='round'),
                 ha='center', va='center')
 
     # Plot a colorbar.
@@ -156,6 +165,7 @@ def heatmap(f_condition_pvalues, f_matrix, f_snp_condition_scores,
     colorbar = pl.colorbar(im, cax=axcolor, ticks=ticks)
 
     colorbar.set_label('Specificity score')
+    colorbar.set_ticklabels([''] * len(ticks))
 
     # Save.
     fig.savefig(f_heatmap, bbox_inches='tight')

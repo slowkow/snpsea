@@ -37,7 +37,6 @@ import re
 
 def main():
     args = docopt(__doc__)
-    import os
 
     mp.rc('font', family='serif', size=float(args['--fontsize']))
 
@@ -49,12 +48,12 @@ def main():
     matrix = args['--gene-matrix'] or find_gene_matrix(out('args.txt'))
 
     if not args['--title']:
-        args['--title'] = os.path.basename(args['<out>'])
+        args['--title'] = os.path.basename(args['<out>'].rstrip('/'))
 
-    barplot(out('pvalues.txt'),
+    barplot(out('condition_pvalues.txt'),
             matrix,
             out('snp_genes.txt'),
-            out('pvalues_barplot.pdf'),
+            out('condition_pvalues_barplot.pdf'),
             title=args['--title'],
             figsize=(width, height),
             namelen=int(args['--shorten']),
