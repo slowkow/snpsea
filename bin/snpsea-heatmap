@@ -2,10 +2,11 @@
 """
 snpsea-heatmap
 
-Create a heatmap of samples and SNPs from the snp_pvalues.txt file produced by
-snpsea to reveal the SNPs and genes that contribute to statistically
-significant condition-specificity scores. Each of the heatmap's cells are
-annotated with the given SNP's most specific gene's name (NCBI symbol).
+Create a heatmap of from the snp_pvalues.txt file produced by snpsea.
+This reveals the composition of each condition's specificity score by
+displaying all SNP-gene pairs and their contributions. Each heatmap cell is
+annotated with the name of the gene in the given locus (column) with the
+greatest specificity to the given condition (row).
 
 Usage:
     snpsea-heatmap <out> [--gene-matrix FILE --alpha NUM --title STR]
@@ -18,7 +19,7 @@ Options:
     --alpha NUM         Significance threshold [default: 0.05].
 
 Author:
-    Kamil Slowikowski <slowikowk@broadinstitute.org>
+    Kamil Slowikowski <slowikow@broadinstitute.org>
 """
 
 
@@ -47,28 +48,27 @@ def main():
             alpha=float(args['--alpha']))
 
 
-def heatmap(f_sample_pvalues, f_matrix, f_pvalues,
+def heatmap(f_condition_pvalues, f_matrix, f_snp_condition_scores,
             f_heatmap, title='', alpha=0.05):
-    sample_pvalues = pd.read_table(f_sample_pvalues)
-    # Bonferroni corrected p-values.
-    bonf = 1 - (1 - sample_pvalues.pvalue) ** sample_pvalues.shape[0]
-    #sample_pvalues.pvalue = bonf
-    # Select just the significant samples.
-    sample_pvalues = sample_pvalues[bonf < alpha]
+    # Bonferroni corrected p-value for each condition.
+    condition_pvalues = pd.read_table(f_condition_pvalues)
+    bonf = 1 - (1 - condition_pvalues.score) ** condition_pvalues.shape[0]
+    # Select just the significant pvalues.
+    condition_pvalues = condition_pvalues[bonf < alpha]
 
-    # No sample is significant.
-    if sample_pvalues.shape[0] == 0:
+    # No condition is significant.
+    if condition_pvalues.shape[0] == 0:
         return
 
-    def make_label((sample, pvalue, nulls, reps)):
+    def make_label((condition, pvalue, nulls, reps)):
         if nulls == 0:
-            return '{}\np < {}'.format(sample, 1.0 / reps)
+            return '{}\np < {}'.format(condition, 1.0 / reps)
         else:
-            return '{}\np = {:0.2e}'.format(sample, pvalue)
+            return '{}\np = {:0.2e}'.format(condition, pvalue)
 
 
-    samples = sample_pvalues['name'].tolist()[::-1]
-    labels = sample_pvalues.apply(make_label, axis=1).tolist()[::-1]
+    conditions = condition_pvalues['name'].tolist()[::-1]
+    labels = condition_pvalues.apply(make_label, axis=1).tolist()[::-1]
 
     # Detect compression.
     comp = 'gzip' if f_matrix.endswith('.gz') else None
@@ -83,68 +83,68 @@ def heatmap(f_sample_pvalues, f_matrix, f_pvalues,
     for entrezid, symbol in genelist:
         genedict[entrezid] = symbol
 
-    # Read snp pvalues for each sample and the representative gene symbols.
-    df      = pd.read_table(f_pvalues)
+    # Read snp-condition pairs and the representative gene symbols.
+    df         = pd.read_table(f_snp_condition_scores)
     df['gene'] = df['gene'].map(lambda x: genedict.get(x, x))
     # Get a matrix of conditions and SNP loci with gene symbols.
-    symbols = df.pivot(index='marker', columns='column', values='gene')
-    # And a matrix of conditions and SNP loci with p-values.
-    pvalues = df.pivot(index='marker', columns='column', values='pvalue')
+    symbols    = df.pivot(index='snp', columns='condition', values='gene')
+    # And a matrix of conditions and SNP loci with scores.
+    scores     = df.pivot(index='snp', columns='condition', values='score')
 
-    # Select just the significant samples.
-    symbols = symbols[samples]
-    pvalues = pvalues[samples]
+    # Select just the significant scores.
+    symbols = symbols[conditions]
+    scores = scores[conditions]
 
     # Select just SNPs that have at least one significant gene.
-    idx = pvalues.apply(lambda row: any(row < alpha), axis=1)
+    idx = scores.apply(lambda row: any(row < alpha), axis=1)
     # No SNP is significant.
     if not any(idx):
         return
     symbols = symbols[idx]
-    pvalues = pvalues[idx]
+    scores = scores[idx]
    
-    # Sort the SNPs by their max contribution to the significant samples.
-    contribs = pvalues.apply(lambda r: np.log(r.replace(0, 1)).sum(), axis=1)
+    # Sort the SNPs by their max contribution to the significant conditions.
+    contribs = scores.apply(lambda r: np.log(r.replace(0, 1)).sum(), axis=1)
     idx = np.argsort(contribs)
     symbols = symbols.ix[idx]
-    pvalues = pvalues.ix[idx]
+    scores = scores.ix[idx]
 
     cell_size = 1.9
-    n_snps = pvalues.shape[0]
-    n_samples = len(samples)
+    n_snps = scores.shape[0]
+    n_conditions = len(conditions)
 
     # Golden rectangle.
-    figsize = (n_snps * cell_size, 0.618 * n_samples * cell_size)
+    figsize = (n_snps * cell_size, 0.618 * n_conditions * cell_size)
     fig = pl.figure(figsize=figsize)
 
-    # Transform the pvalues for plotting.
-    log10_pvalues = -np.log10(pvalues.T)
+    # Transform the scores for plotting.
+    log10_scores = -np.log10(scores.T)
 
-    minp = np.floor(np.min(log10_pvalues.values))
-    maxp = np.ceil(np.max(log10_pvalues.values))
+    minp = np.floor(np.min(log10_scores.values))
+    maxp = np.ceil(np.max(log10_scores.values))
     ticks = np.linspace(minp, maxp, maxp - minp + 1)
 
     # Plot heatmap.
     ax = fig.add_axes([0.3, 0.1, 0.6, 0.6])
     cmap = pl.cm.Oranges
     norm = mp.colors.BoundaryNorm(ticks, cmap.N)
-    im = ax.matshow(log10_pvalues, aspect='auto', origin='lower',
+    im = ax.matshow(log10_scores, aspect='auto', origin='lower',
                     cmap=cmap, norm=norm)
 
     # Ticks.
     ax.tick_params(length=0)
     ax.xaxis.tick_bottom()
     ax.set_xticks(np.arange(n_snps))
-    ax.set_yticks(np.arange(n_samples))
+    ax.set_yticks(np.arange(n_conditions))
 
     # Labels. If the locus is represented by joined SNPs, print line by line.
-    xlabels = [x.replace(',', '\n') for x in list(pvalues.index)]
+    xlabels = [x.replace(',', '\n') for x in list(scores.index)]
     ax.set_xticklabels(xlabels, rotation=0)
     ax.set_yticklabels(labels)
     ax.set_title(title)
 
     # Plot the NCBI gene names.
-    xy = [(x, y) for x in range(n_snps) for y in range(n_samples)]
+    xy = [(x, y) for x in range(n_snps) for y in range(n_conditions)]
     for x, y in xy:
         ax.text(x, y, tw.fill(str(symbols.ix[x, y]), 8),
                 bbox=dict(color='white'),
@@ -155,7 +155,7 @@ def heatmap(f_sample_pvalues, f_matrix, f_pvalues,
 
     colorbar = pl.colorbar(im, cax=axcolor, ticks=ticks)
 
-    colorbar.set_label('-log10(p-value)')
+    colorbar.set_label('Specificity score')
 
     # Save.
     fig.savefig(f_heatmap, bbox_inches='tight')
