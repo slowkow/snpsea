@@ -619,11 +619,11 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>We assume that a gene's specificity to a given cell type or condition is a reasonable indicator of the gene's importance to its function.</p>
 <p>If you benefit from this method, please cite:</p>
 <blockquote>
-<p>Slowikowski, K. et al. SNPsea: an algorithm to identify cell types, tissues, and pathways affected by risk loci &gt; Manuscript in progress.</p>
+<p>Slowikowski, K. et al. <strong>SNPsea: an algorithm to identify cell types, tissues, and pathways affected by risk loci.</strong> Manuscript in progress.</p>
 </blockquote>
 <p>See additional examples:</p>
 <blockquote>
-<p>Hu, X. et al. Integrating autoimmune risk loci with gene-expression data identifies specific pathogenic immune cell subsets. The American Journal of Human Genetics 89, 496–506 (2011). <a href="http://www.ncbi.nlm.nih.gov/pubmed/21963258">PubMed</a></p>
+<p>Hu, X. et al. <strong>Integrating autoimmune risk loci with gene-expression data identifies specific pathogenic immune cell subsets.</strong> The American Journal of Human Genetics 89, 496–506 (2011). <a href="http://www.ncbi.nlm.nih.gov/pubmed/21963258">PubMed</a></p>
 </blockquote>
 <h2 id="contact"><a href="#contact">Contact</a></h2>
 <p>Please contact me with questions and comments: <script type="text/javascript">
@@ -842,7 +842,7 @@ http://hapmap.ncbi.nlm.nih.gov/downloads/</code></pre>
 <h2 id="example"><a href="#example">Example</a></h2>
 <p>Here is a <a href="http://www.gnu.org/software/bash/manual/bashref.html">Bash</a> script with a usage example:</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="ot">options=(</span>
-    <span class="kw">--snps</span>              LDL_Teslovich2010.txt
+    <span class="kw">--snps</span>              Red_blood_cell_count-Harst2012-45_SNPs.gwas
     <span class="kw">--gene-matrix</span>       GeneAtlas2004.gct.gz
     <span class="kw">--gene-intervals</span>    NCBIgenes2013.bed.gz
     <span class="kw">--snp-intervals</span>     TGP2011.bed.gz
@@ -851,11 +851,11 @@ http://hapmap.ncbi.nlm.nih.gov/downloads/</code></pre>
     <span class="kw">--slop</span>              10e3
     <span class="kw">--threads</span>           4
     <span class="kw">--null-snpsets</span>      0
-    <span class="kw">--min-observations</span>  50
-    <span class="kw">--max-iterations</span>    1e6
+    <span class="kw">--min-observations</span>  100
+    <span class="kw">--max-iterations</span>    1e7
 )
 <span class="kw">snpsea</span> <span class="ot">${options[*]}</span></code></pre>
-<p>This will run the analysis on SNPs associated with LDL cholesterol and test for tissue-specific expression of the nearby genes across 79 human tissues in the Gene Atlas gene expression matrix. Additionally, 1000 null random matched SNP sets will be tested and their results will also be recorded. Each tissue will be tested up to 1 million times, or testing will stop for a tissue if 50 matched SNP sets are observed to achieve a higher specificity score than the user's SNPs.</p>
+<p>SNPs will test SNPs associated with Red blood cell count for tissue-specific expression of linked genes across 79 human tissues in the Gene Atlas expression matrix. Each tissue will be tested up to 10 million times with matched random SNP sets, or testing will stop for a tissue if 100 matched SNP sets achieve a higher specificity score than the user's SNPs.</p>
 <h2 id="options"><a href="#options">Options</a></h2>
 <p>All input files may optionally be compressed with <a href="http://www.gzip.org/"><code>gzip</code></a>.</p>
 <h3 id="required"><a href="#required">Required</a></h3>
@@ -917,18 +917,18 @@ http://hapmap.ncbi.nlm.nih.gov/downloads/</code></pre>
 <h2 id="input-file-formats"><a href="#input-file-formats">Input File Formats</a></h2>
 <h3 id="snps-arg"><a href="#snps-arg"><code>--snps ARG</code></a></h3>
 <p>You must provide one or more comma-separated text files. SNP identifiers must be listed one per line. Only the first column is used.</p>
-<pre><code>head LDL_Teslovich2010.txt
+<pre><code>head Red_blood_cell_count-Harst2012-45_SNPs.gwas
 
-rs11136341  chr8   145043543
-rs3757354   chr6   16127407
-rs12027135  chr1   25775733
-rs217386    chr7   44600695
-rs1169288   chr12  121416650
-rs7225700   chr17  45391804
-rs2479409   chr1   55504650
-rs247616    chr16  56989590
-rs2954022   chr8   126482621
-rs1564348   chr6   160578860</code></pre>
+# Harst et al. 2012
+# doi:10.1038/nature11677
+# PMID: 23222517
+# 45 SNPs associated with red blood cell count (RBC) taken from Table 1.
+# Positions are on hg19. SNPs are included if P &lt;= 5e-8.
+CHR POS SNP P
+chr1    40069939    rs3916164   3e-10
+chr1    158575729   rs857684    4e-16
+chr1    199007208   rs7529925   8e-09
+chr1    248039451   rs3811444   5e-10</code></pre>
 <p>Instead of providing a file with SNPs, you may use &quot;randomN&quot; like this:</p>
 <pre><code>--snps random20</code></pre>
 <p>to sample 20 random SNPs from the <strong><code>--snp-intervals</code></strong> file.</p>
