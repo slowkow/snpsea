@@ -1570,7 +1570,7 @@ key "van_der_harst_seventy-five_2012"
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename figures/GeneAtlas2004-r2_thresholds.pdf
+	filename figures/r2_thresholds-GeneAtlas2004.pdf
 	lyxscale 50
 	width 48text%
 
@@ -1582,7 +1582,7 @@ key "van_der_harst_seventy-five_2012"
 
 
 \begin_inset Graphics
-	filename figures/GO2013-r2_thresholds.pdf
+	filename figures/r2_thresholds-GO2013.pdf
 	lyxscale 50
 	width 48text%
 
@@ -1737,7 +1737,7 @@ Supplementary Figure 5: Type 1 error estimates
 
 
 \begin_inset Graphics
-	filename figures/type1error_Novartis2004.pdf
+	filename figures/type1error_GeneAtlas2004.pdf
 	lyxscale 50
 	width 65text%
 
@@ -2087,7 +2087,7 @@ Supplementary Figure 6: Red blood cell count GO enrichment
 
 
 \begin_inset Graphics
-	filename figures/manuscript_20140129_Red_blood_cell_count-Harst2012-45_SNPs_GO2013_single_pvalues_barplot.pdf
+	filename figures/Red_blood_cell_count-Harst2012-45_SNPs-GO2013-single-pvalues_barplot.pdf
 	lyxscale 50
 	width 100text%
 	groupId GO
@@ -2131,7 +2131,7 @@ Supplementary Figure 7: Multiple sclerosis
 
 
 \begin_inset Graphics
-	filename figures/manuscript_20140129_Multiple_sclerosis-IMSGC-51_SNPs_NovartisGeneAtlas2004_single_pvalues_barplot.pdf
+	filename figures/Multiple_sclerosis-IMSGC-51_SNPs-GeneAtlas2004-single-pvalues_barplot.pdf
 	lyxscale 50
 	width 65text%
 	groupId g1
@@ -2156,7 +2156,7 @@ We observed significant enrichment for 6 cell types.
 
 
 \begin_inset Graphics
-	filename figures/manuscript_20140129_Multiple_sclerosis-IMSGC-51_SNPs_GO2013_single_pvalues_barplot.pdf
+	filename figures/Multiple_sclerosis-IMSGC-51_SNPs-GO2013-single-pvalues_barplot.pdf
 	lyxscale 50
 	width 100text%
 	groupId GO
@@ -2185,7 +2185,7 @@ Supplementary Figure 8: Celiac disease
 
 
 \begin_inset Graphics
-	filename figures/manuscript_20140129_Celiac_disease-Trynka2011-35_SNPs_NovartisGeneAtlas2004_single_pvalues_barplot.pdf
+	filename figures/Celiac_disease-Trynka2011-35_SNPs-GeneAtlas2004-single-pvalues_barplot.pdf
 	lyxscale 50
 	width 65text%
 	groupId g1
@@ -2210,7 +2210,7 @@ We observed significant enrichment for 3 cell types.
 
 
 \begin_inset Graphics
-	filename figures/manuscript_20140129_Celiac_disease-Trynka2011-35_SNPs_GO2013_single_pvalues_barplot.pdf
+	filename figures/Celiac_disease-Trynka2011-35_SNPs-GO2013-single-pvalues_barplot.pdf
 	lyxscale 50
 	width 100text%
 	groupId GO
@@ -2239,7 +2239,7 @@ Supplementary Figure 9: HDL cholesterol
 
 
 \begin_inset Graphics
-	filename figures/manuscript_20140129_HDL_cholesterol-Teslovich2010-46_SNPs_NovartisGeneAtlas2004_single_pvalues_barplot.pdf
+	filename figures/HDL_cholesterol-Teslovich2010-46_SNPs-GeneAtlas2004-single-pvalues_barplot.pdf
 	lyxscale 50
 	width 65text%
 	groupId g1
@@ -2264,7 +2264,7 @@ We observed significant enrichment for liver tissue-specific gene expression.
 
 
 \begin_inset Graphics
-	filename figures/manuscript_20140129_HDL_cholesterol-Teslovich2010-46_SNPs_GO2013_single_pvalues_barplot.pdf
+	filename figures/HDL_cholesterol-Teslovich2010-46_SNPs-GO2013-single-pvalues_barplot.pdf
 	lyxscale 50
 	width 80text%
 
