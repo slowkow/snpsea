@@ -37,13 +37,13 @@ a reasonable indicator of the gene's importance to its function.
 
 If you benefit from this method, please cite:
 
-> Slowikowski, K. et al. SNPsea: an algorithm to identify cell types, tissues,
-> and pathways affected by risk loci > Manuscript in progress.
+> Slowikowski, K. et al. **SNPsea: an algorithm to identify cell types,
+> tissues, and pathways affected by risk loci.** Manuscript in progress.
 
 See additional examples:
 
-> Hu, X. et al. Integrating autoimmune risk loci with gene-expression data
-> identifies specific pathogenic immune cell subsets. The American Journal
+> Hu, X. et al. **Integrating autoimmune risk loci with gene-expression data
+> identifies specific pathogenic immune cell subsets.** The American Journal
 > of Human Genetics 89, 496–506 (2011). [PubMed][Hu2011]
 
 
@@ -442,7 +442,7 @@ Here is a [Bash] script with a usage example:
 
 ```bash
 options=(
-    --snps              LDL_Teslovich2010.txt
+    --snps              Red_blood_cell_count-Harst2012-45_SNPs.gwas
     --gene-matrix       GeneAtlas2004.gct.gz
     --gene-intervals    NCBIgenes2013.bed.gz
     --snp-intervals     TGP2011.bed.gz
@@ -451,19 +451,17 @@ options=(
     --slop              10e3
     --threads           4
     --null-snpsets      0
-    --min-observations  50
-    --max-iterations    1e6
+    --min-observations  100
+    --max-iterations    1e7
 )
 snpsea ${options[*]}
 ```
 
-This will run the analysis on SNPs associated with LDL cholesterol and
-test for tissue-specific expression of the nearby genes across 79 human
-tissues in the Gene Atlas gene expression matrix. Additionally, 1000 null
-random matched SNP sets will be tested and their results will also be
-recorded. Each tissue will be tested up to 1 million times, or testing will
-stop for a tissue if 50 matched SNP sets are observed to achieve a higher
-specificity score than the user's SNPs.
+SNPs will test SNPs associated with Red blood cell count for tissue-specific
+expression of linked genes across 79 human tissues in the Gene Atlas expression
+matrix. Each tissue will be tested up to 10 million times with matched random
+SNP sets, or testing will stop for a tissue if 100 matched SNP sets achieve a
+higher specificity score than the user's SNPs.
 
 
 
@@ -551,18 +549,18 @@ You must provide one or more comma-separated text files. SNP identifiers must
 be listed one per line. Only the first column is used.
 
 ```
-head LDL_Teslovich2010.txt
+head Red_blood_cell_count-Harst2012-45_SNPs.gwas
 
-rs11136341  chr8   145043543
-rs3757354   chr6   16127407
-rs12027135  chr1   25775733
-rs217386    chr7   44600695
-rs1169288   chr12  121416650
-rs7225700   chr17  45391804
-rs2479409   chr1   55504650
-rs247616    chr16  56989590
-rs2954022   chr8   126482621
-rs1564348   chr6   160578860
+# Harst et al. 2012
+# doi:10.1038/nature11677
+# PMID: 23222517
+# 45 SNPs associated with red blood cell count (RBC) taken from Table 1.
+# Positions are on hg19. SNPs are included if P <= 5e-8.
+CHR	POS	SNP	P
+chr1	40069939	rs3916164	3e-10
+chr1	158575729	rs857684	4e-16
+chr1	199007208	rs7529925	8e-09
+chr1	248039451	rs3811444	5e-10
 ```
 
 Instead of providing a file with SNPs, you may use "randomN" like this:
