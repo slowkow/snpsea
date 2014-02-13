@@ -2,10 +2,11 @@
 
 usage <- "snpsea-type1error
 
-Given a null_pvalues.txt file with results for many replicates of null SNP
-sets, create a scatter plot that shows the proportion of p-values at various
-thresholds. This allows us to determine if SNPsea is well-calibrated and
-produces the expected number of type 1 errors (false positives).
+Given a null_pvalues.txt file produced by SNPsea that contains results for
+many replicates of null SNP sets, create a scatter plot that shows the
+proportion of p-values at various thresholds. This allows us to determine if
+SNPsea is well-calibrated and produces the expected number of type 1 errors
+(false positives).
 
 Usage:
     snpsea-type1error <out>
@@ -31,7 +32,7 @@ library(ggplot2)
 library(gap)
 
 # Read the null pvalues.
-header <- c("name", "pvalue", "nulls_observed", "nulls_tested", "replicate")
+header <- c("condition", "pvalue", "nulls_observed", "nulls_tested", "replicate")
 null_pvalues <- read.delim(file.path(base, "null_pvalues.txt"),
                            header=F,
                            col.names=header)
@@ -46,7 +47,7 @@ df <- null_pvalues[, list(fun(pvalue, 0.5),
                         fun(pvalue, 0.005)), by=name]
 
 # Prepare the data for plotting.
-mf <- melt(df, id.vars=c("name"))
+mf <- melt(df, id.vars=c("condition"))
 mf$variable <- as.character(mf$variable)
 mf$variable[mf$variable == "V1"] <- "P < 0.5"
 mf$variable[mf$variable == "V2"] <- "P < 0.1"
