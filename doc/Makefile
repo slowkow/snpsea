@@ -3,13 +3,9 @@ PDFOPT = --standalone --normalize --toc --toc-depth=2
 VARS += --variable geometry:margin=1in
 VARS += --variable fontsize:11pt
 
-.PHONY: all supplement manual clean
+.PHONY: all manual clean
 
-all: supplement manual
-
-
-supplement: SNPsea_supplement.md
-	pandoc $(PDFOPT) $(VARS) $? -o SNPsea_supplement.pdf
+all: manual
 
 
 manual: SNPsea_manual.md
@@ -19,4 +15,3 @@ manual: SNPsea_manual.md
 
 clean:
 	rm -f SNPsea_manual.pdf SNPsea_manual.html
-	rm -f SNPsea_supplement.pdf
