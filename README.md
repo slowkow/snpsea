@@ -9,6 +9,7 @@ SNPsea: an algorithm to identify cell types, tissues, and pathways affected by r
 
 - <a href="#citation">Citation</a>
 - <a href="#quick-start">Quick Start</a>
+- <a href="#example">Example</a>
 
 Overview
 --------
@@ -102,4 +103,25 @@ make
 
 [dependencies]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html#c-libraries
 
+- - -
 
+
+Example
+-------
+
+![Example of SNPsea results.][example]
+
+[example]: https://raw.github.com/slowkow/snpsea/master/doc/figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-pvalues_barplot.png
+
+We identified *BM-CD71+Early Erythroid* as the cell type with most significant
+enrichment (P < 2e-7) for cell type-specific gene expression relative to 78
+other tissues in the Gene Atlas ([Su *et al.* 2004][Su2004]).
+
+We used SNPsea to test the genes in linkage disequilibrium (LD) with 45 SNPs
+associated with red blood cell count (P <= 5e-8) in GWAS of Europeans ([Harst
+*et al.* 2012][Harst2012]). For each cell type, we tested a maximum of 1e7
+null SNP sets by sampling random LD pruned SNP sets where each null SNP
+matched on the number of genes in LD.
+
+[Harst2012]: http://www.ncbi.nlm.nih.gov/pubmed/23222517
+[Su2004]: http://www.ncbi.nlm.nih.gov/pubmed/15075390
