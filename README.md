@@ -73,7 +73,7 @@ Quick Start
 
 To build the source code:
 
-1.  Install the [dependencies]:
+-   Install the [dependencies]:
 
 ```bash
 #       Install Python libraries.
@@ -90,7 +90,7 @@ sudo apt-get install build-essential libopenmpi-dev libgsl0-dev
     # use .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
 ```
 
-2.  Download and compile SNPsea:
+-   Download and compile SNPsea:
 
 ```bash
 git clone https://github.com/slowkow/snpsea.git
