@@ -21,6 +21,7 @@ snpsea::snpsea(
     std::string null_snps_file,
     std::string condition_file,
     std::string out_folder,
+    std::string score_method,
     ulong slop,
     int threads,
     ulong null_snpset_replicates,
@@ -40,6 +41,7 @@ snpsea::snpsea(
         null_snps_file,
         condition_file,
         out_folder,
+        score_method,
         slop,
         threads,
         null_snpset_replicates,
@@ -138,6 +140,7 @@ snpsea::snpsea(
         null_snps_file,
         condition_file,
         out_folder,
+        score_method,
         slop,
         threads,
         null_snpset_replicates,
@@ -221,6 +224,7 @@ snpsea::snpsea(
                 // Calculate p-values for random null gene sets.
                 calculate_pvalues(
                     out_folder + "/null_pvalues.txt",
+                    score_method,
                     random_genesets(n_random_snps, slop),
                     min_observations,
                     max_iterations,
@@ -230,6 +234,7 @@ snpsea::snpsea(
                 // Calculate p-values for matched null gene sets.
                 calculate_pvalues(
                     out_folder + "/null_pvalues.txt",
+                    score_method,
                     matched_genesets(),
                     min_observations,
                     max_iterations,
@@ -246,8 +251,8 @@ snpsea::snpsea(
         genesets.push_back(item.second);
     }
 
-    // Report p-values and gene identifiers for each SNP-column pair.
-    report_pvalues(out_folder + "/snp_pvalues.txt", _user_genesets);
+    // Report specificity scores and gene identifiers for each SNP-column pair.
+    report_scores(out_folder + "/snp_conditions.txt", _user_genesets);
 
     _log << timestamp() << " # Computing one column at a time ..."
          << std::endl;
@@ -255,6 +260,7 @@ snpsea::snpsea(
     // Calculate p-values for the user's SNP set.
     calculate_pvalues(
         out_folder + "/pvalues.txt",
+        score_method,
         genesets,
         min_observations,
         max_iterations,
@@ -273,6 +279,7 @@ void snpsea::write_args(
     std::string null_snps_file,
     std::string condition_file,
     std::string out_folder,
+    std::string score_method,
     ulong slop,
     int threads,
     ulong null_snpset_replicates,
@@ -291,6 +298,7 @@ void snpsea::write_args(
         stream << "--condition        " << condition_file << "\n";
     }
     stream << "--out              " << out_folder << "\n"
+           << "--score            " << score_method << "\n"
            << "--slop             " << slop << "\n"
            << "--threads          " << threads << "\n"
            << "--null-snpsets     " << null_snpset_replicates << "\n"
@@ -318,7 +326,9 @@ void snpsea::read_names(std::string filename, std::set<std::string> & names)
         }
         if (!found_snp) {
             for (unsigned int i = 0; i < row.size(); i++) {
-                if (row[i] == "SNP" || row[i] == "snp" || row[i] == "name") {
+                // Guess the name of the column with SNPs.
+                if (row[i] == "SNP" || row[i] == "snp" || row[i] == "name"
+                || row[i] == "marker") {
                     found_snp = true;
                     snp_col = i;
                     break;
@@ -703,7 +713,7 @@ void snpsea::report_user_snp_genes(const std::string & filename)
     ofstream stream(filename);
 
     // Print the column names.
-    stream << "chrom\tstart\tend\tname\tn_genes\tgenes\n";
+    stream << "chrom\tstart\tend\tsnp\tn_genes\tgenes\n";
 
     // Print a row for each of the user's missing SNPs.
     for (auto snp : _user_absent_snp_names) {
@@ -920,9 +930,43 @@ std::vector<std::vector<ulong> > snpsea::random_genesets(int n, ulong slop)
     return genesets;
 }
 
-// Returns a score for a column in the binary gene matrix using the
-// genes in the given set of gene sets.
-double snpsea::score_binary(
+// Returns a score for a column in the binary gene matrix, requiring only one
+// gene in the given set to be present in the column for each gene set.
+double snpsea::score_binary_single(
+    const ulong & col,
+    const std::vector<std::vector<ulong> > & genesets
+)
+{
+    ulong n = _binary_sums(col);
+    double p = _binary_probs(col);
+    double score = 0.0;
+    for (auto geneset : genesets) {
+        unsigned int k = 0;
+        for (auto gene_id : geneset) {
+            if (_gene_matrix(gene_id, col) > 0) {
+                k++;
+                break;
+            }
+        }
+        if (k > 0) {
+            // Use the hypergeometric distribution to calculate a probability.
+            unsigned int n1 = n;
+            unsigned int n2 = _nrows - n;
+            unsigned int t = geneset.size();
+            // k  = number of 1s in this geneset (set to 0)
+            // n1 = number of 1s in this column
+            // n2 = number of 0s in this column
+            // t  = number of genes in this geneset
+            // p(k) = C(n1, k) C(n2, t - k) / C(n1 + n2, t)
+            score += -log(1.0 - gsl_ran_hypergeometric_pdf(0, n1, n2, t));
+        }
+    }
+    return std::isfinite(score) ? score : 0.0;
+}
+
+// Returns a score for a column in the binary gene matrix, considering the
+// total number of genes present in the column for each gene set.
+double snpsea::score_binary_total(
     const ulong & col,
     const std::vector<std::vector<ulong> > & genesets
 )
@@ -945,34 +989,56 @@ double snpsea::score_binary(
         // n1 = number of 1s in this column
         // n2 = number of 0s in this column
         // t  = number of genes in this geneset
-        score += -log10(gsl_ran_hypergeometric_pdf(k, n1, n2, t));
+        // p(k) = C(n1, k) C(n2, t - k) / C(n1 + n2, t)
+        if (k > 0) {
+            // Upper tail: Q(k) = \sum_{i > k} p(i)
+            score += -log(gsl_cdf_hypergeometric_Q(k - 1, n1, n2, t));
+        }
     }
     return std::isfinite(score) ? score : 0.0;
 }
 
 // Returns a score for a column in the quantitative gene matrix using
-// the genes in the given set of gene sets.
-double snpsea::score_quantitative(
+// the single most specific gene in the given set of gene sets.
+double snpsea::score_quantitative_single(
     const ulong & col,
     const std::vector<std::vector<ulong> > & genesets
 )
 {
     double score = 0.0;
     for (auto geneset : genesets) {
+        // Find the single gene with the greatest specificity to the column.
         double percentile = 1.0;
         for (auto gene_id : geneset) {
             percentile = std::min(percentile, _gene_matrix(gene_id, col));
         }
         if (percentile < 1.0) {
             // Each gene set contributes to the score.
-            score += -log10(1 - pow(1 - percentile, geneset.size()));
+            score += -log(1 - pow(1 - percentile, geneset.size()));
+        }
+    }
+    return std::isfinite(score) ? score : 0.0;
+}
+
+// Returns a score for a column in the quantitative gene matrix using
+// all of the genes in the given set of gene sets.
+double snpsea::score_quantitative_total(
+    const ulong & col,
+    const std::vector<std::vector<ulong> > & genesets
+)
+{
+    double score = 0.0;
+    for (auto geneset : genesets) {
+        // Use the specificity percentiles from all genes.
+        for (auto gene_id : geneset) {
+            score += -log(_gene_matrix(gene_id, col));
         }
     }
     return std::isfinite(score) ? score : 0.0;
 }
 
 
-void snpsea::report_pvalues(
+void snpsea::report_scores(
     const std::string filename,
     const std::unordered_map<std::string, std::vector<ulong> > genesets
 )
@@ -981,13 +1047,13 @@ void snpsea::report_pvalues(
 
     // Open the file.
     ofstream stream(filename);
-    // Write the header.
-    stream << "marker\tcolumn\tgene\tpvalue\n";
+    // Print the column names.
+    stream << "snp\tcondition\tgene\tscore\n";
     // Iterate through each SNP's gene set.
     for (const auto & kv : genesets) {
         // Iterate through each column.
         for (int col = 0; col < _col_names.size(); col++) {
-            double pvalue = 1;
+            double score = 1;
             std::string min_gene;
             if (_binary_gene_matrix) {
                 ulong n = _binary_sums(col);
@@ -998,10 +1064,10 @@ void snpsea::report_pvalues(
                         k++;
                     }
                 }
-                pvalue = gsl_ran_binomial_pdf(k, p, n);
-                // The p-value does not depend on a single gene for binary
-                // matrices, but instead for the whole gene set.
-                min_gene = "NULL";
+                score = gsl_ran_binomial_pdf(k, p, n);
+                // The score does not depend on a single gene for binary
+                // matrices, but instead on the whole gene set.
+                min_gene = "";
             } else {
                 double percentile = 1.0;
                 for (auto gene_id : kv.second) {
@@ -1012,14 +1078,14 @@ void snpsea::report_pvalues(
                 }
                 if (percentile < 1.0) {
                     // Each gene set contributes to the score.
-                    pvalue = 1 - pow(1 - percentile, kv.second.size());
+                    score = 1 - pow(1 - percentile, kv.second.size());
                 }
             }
-            // The SNP's name, column name, best rank gene, p-value.
+            // The SNP's name, column name, best rank gene, score.
             stream << kv.first << "\t"
                    << _col_names[col] << "\t"
                    << min_gene << "\t"
-                   << pvalue << "\n";
+                   << score << "\n";
         }
     }
     stream.close();
@@ -1029,6 +1095,7 @@ void snpsea::report_pvalues(
 
 void snpsea::calculate_pvalues(
     std::string filename,
+    std::string score_method,
     std::vector<std::vector<ulong> > genesets,
     long min_observations,
     long max_iterations,
@@ -1039,16 +1106,24 @@ void snpsea::calculate_pvalues(
     replicate++;
 
     // Set the appropriate scoring function.
-    auto score_function = &snpsea::score_quantitative;
-    if (_binary_gene_matrix) {
-        score_function = &snpsea::score_binary;
+    auto score_function = &snpsea::score_quantitative_single;
+    if (score_method == "single") {
+        if (_binary_gene_matrix) {
+            score_function = &snpsea::score_binary_single;
+        }
+    } else if (score_method == "total") {
+        score_function = &snpsea::score_quantitative_total;
+        if (_binary_gene_matrix) {
+            score_function = &snpsea::score_binary_total;
+        }
     }
 
     std::fstream stream;
     if (replicates <= 1) {
         // Overwrite the file.
         stream.open(filename, std::fstream::out);
-        stream << "name\tpvalue\tnulls_observed\tnulls_tested" << std::endl;
+        // Print the column names.
+        stream << "condition\tpvalue\tnulls_observed\tnulls_tested" << std::endl;
     } else {
         // Append to the file.
         stream.open(filename, std::fstream::out | std::fstream::app);
