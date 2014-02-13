@@ -18,25 +18,19 @@ int main(int argc, const char * argv[])
     ezOptionParser opt;
 
     opt.overview =
-        "SNPsea: test trait-associated loci for enrichment\n"
-        "of gene measurements or binary annotations.\n"
-        "=================================================\n"
-        "  1. Condition --gene-matrix on columns listed in --condition.\n"
-        "  2. Test each column in --gene-matrix for enrichment of genes\n"
-        "     within --snps assigned to intervals in --snp-intervals.\n"
-        "  3. Repeat with the null matched SNP set from --null-snps\n"
-        "     for --max-iterations and stop if --min-observations null SNP\n"
-        "     sets with higher scores are observed for that column.";
+        "SNPsea: an algorithm to identify cell types, tissues, and pathways\n"
+        "        affected by risk loci";
     opt.syntax = "    snpsea [OPTIONS]";
     opt.example =
-        "    snpsea --snps file.txt               \\ # or  --snps random20 \n"
+        "    snpsea --snps file.txt               \\ # or  --snps random20\n"
         "           --gene-matrix file.gct.gz     \\\n"
         "           --null-snps file.txt          \\\n"
         "           --snp-intervals file.bed.gz   \\\n"
         "           --gene-intervals file.bed.gz  \\\n"
         "           --condition file.txt          \\\n"
         "           --out folder                  \\\n"
-        "           --slop 250e3                  \\\n"
+        "           --score single                \\\n"
+        "           --slop 10e3                   \\\n"
         "           --threads 2                   \\\n"
         "           --null-snpsets 100            \\\n"
         "           --min-observations 25         \\\n"
@@ -135,7 +129,7 @@ int main(int argc, const char * argv[])
         1, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Create output files in this directory.", // Help description.
+        "Create output files in this directory.\n\n", // Help description.
         "--out" // Flag token.
     );
 
@@ -145,25 +139,34 @@ int main(int argc, const char * argv[])
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "Text file with a list of columns in --gene-matrix to condition on"
-        " before calculating p-values. Each column in --gene-matrix is"
-        " projected onto each column listed in this file and its projection"
-        " is subtracted.",
+        " before calculating p-values. For each column in --gene-matrix we"
+        " subtract its projection onto the columns listed in --condition.",
         "--condition" // Flag token.
     );
 
     ezOptionValidator * vU8 = new ezOptionValidator(ezOptionValidator::U8);
     opt.add(
-        "250000", // Default.
+        "10000", // Default.
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "If a SNP overlaps no gene intervals, extend the SNP interval this"
-        " many nucleotides further and try again.\n[default: 250000]",
+        " many nucleotides further and try again.\n[default: 10000]",
         "--slop", // Flag token.
         vU8
     );
 
-    auto gt1 = new ezOptionValidator("s4", "ge", "1");
+    opt.add(
+        "single", // Default.
+        0, // Required?
+        1, // Number of args expected.
+        0, // Delimiter if expecting multiple args.
+        "Score each SNP locus with its 'single' most specific gene"
+        " or the 'total' of all genes in the locus.\n[default: single]",
+        "--score" // Flag token.
+    );
+
+    auto ge1 = new ezOptionValidator("s4", "ge", "1");
     opt.add(
         "1", // Default.
         0, // Required?
@@ -171,19 +174,19 @@ int main(int argc, const char * argv[])
         0, // Delimiter if expecting multiple args.
         "Number of threads to use. [default: 1]",
         "--threads", // Flag token.
-        gt1
+        ge1
     );
 
-    auto gt0 = new ezOptionValidator("s4", "ge", "0");
+    auto ge0 = new ezOptionValidator("s4", "ge", "0");
     opt.add(
         "10", // Default.
         0, // Required?
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
-        "Test this many null matched SNP sets, so you can compare"
-        " your results to a distribution of null results.\n[default: 10]",
+        "Generate a distribution of scores with N null matched SNP sets"
+        " to evaluate type 1 error.\n[default: 0]",
         "--null-snpsets", // Flag token.
-        gt0
+        ge0
     );
 
     opt.add(
@@ -193,10 +196,10 @@ int main(int argc, const char * argv[])
         0, // Delimiter if expecting multiple args.
         "Stop testing a column in --gene-matrix after observing this many"
         " null SNP sets with specificity scores greater or equal to those"
-        " obtained with the SNP set in --snps. Increase this value to obtain"
+        " obtained with the SNPs in --snps. Increase this value to obtain"
         " more accurate p-values.\n[default: 25]",
         "--min-observations", // Flag token.
-        gt1
+        ge1
     );
 
     opt.add(
@@ -205,10 +208,10 @@ int main(int argc, const char * argv[])
         1, // Number of args expected.
         0, // Delimiter if expecting multiple args.
         "Maximum number of null SNP sets tested against each column in"
-        " --gene-matrix. Increase this value to resolve smaller p-values."
-        "\n[default: 1000]",
+        " --gene-matrix. Increase this value to resolve small p-values."
+        "\n[default: 10000]",
         "--max-iterations", // Flag token.
-        gt1
+        ge1
     );
 
     // Read the options.
@@ -264,7 +267,8 @@ int main(int argc, const char * argv[])
     snp_intervals_file,
     null_snps_file,
     condition_file,
-    out_folder;
+    out_folder,
+    score_method;
 
     opt.get("--snps")->getString(user_snpset_file);
     opt.get("--gene-matrix")->getString(gene_matrix_file);
@@ -273,6 +277,7 @@ int main(int argc, const char * argv[])
     opt.get("--null-snps")->getString(null_snps_file);
     opt.get("--condition")->getString(condition_file);
     opt.get("--out")->getString(out_folder);
+    opt.get("--score")->getString(score_method);
 
     // Ensure the files exist.
     // The argument may be a filename or a string like "random20".
@@ -300,6 +305,17 @@ int main(int argc, const char * argv[])
 
     // Create the output directory.
     mkpath(out_folder);
+
+    // Restrict the score methods.
+    if (score_method[0] == 's') {
+        score_method = "single";
+    } else if (score_method[0] == 't') {
+        score_method = "total";
+    } else {
+        std::cerr << "ERROR: --score" << score_method << std::endl;
+        std::cerr << "Must be one of: single total" << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     int
     threads,
@@ -352,6 +368,7 @@ int main(int argc, const char * argv[])
         null_snps_file,
         condition_file,
         out_folder,
+        score_method,
         slop,
         threads,
         null_snpset_replicates,

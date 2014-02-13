@@ -23,6 +23,7 @@ public:
         std::string null_snps_file,
         std::string condition_file,
         std::string out_folder,
+        std::string score_method,
         ulong slop,
         int threads,
         ulong null_snpset_replicates,
@@ -38,6 +39,7 @@ public:
         std::string null_snps_file,
         std::string condition_file,
         std::string out_folder,
+        std::string score_method,
         ulong slop,
         int threads,
         ulong null_snpset_replicates,
@@ -111,23 +113,34 @@ public:
 
     MatrixXd geneset_pvalues_binary(std::vector<ulong> & geneset);
 
-    double score_binary(
+    double score_binary_single(
         const ulong & col,
         const std::vector<std::vector<ulong> > & genesets
     );
 
-    double score_quantitative(
+    double score_binary_total(
         const ulong & col,
         const std::vector<std::vector<ulong> > & genesets
     );
 
-    void report_pvalues(
+    double score_quantitative_single(
+        const ulong & col,
+        const std::vector<std::vector<ulong> > & genesets
+    );
+
+    double score_quantitative_total(
+        const ulong & col,
+        const std::vector<std::vector<ulong> > & genesets
+    );
+
+    void report_scores(
         const std::string filename,
         const std::unordered_map<std::string, std::vector<ulong> > genesets
     );
 
     void calculate_pvalues(
         std::string filename,
+        std::string score_method,
         std::vector<std::vector<ulong> > genesets,
         long min_observations,
         long max_iterations,
