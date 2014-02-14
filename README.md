@@ -145,6 +145,8 @@ options=(
 )
 snpsea ${options[*]}
 
+# Time elapsed: 2 minutes 36 seconds
+
 # Create the figure shown above:
 snpsea-barplot out
 ```
