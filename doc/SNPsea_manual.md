@@ -776,7 +776,7 @@ SNP will be listed and the other columns will contain `NA`.
 ```
 head snp_genes.txt | column -t
 
-chrom  start      end        name        n_genes  genes
+chrom  start      end        snp         n_genes  genes
 chr4   55364224   55408999   rs218238    0        NA
 chr6   139827777  139844854  rs590856    0        NA
 NA     NA         NA         rs99999999  NA       NA
@@ -799,7 +799,7 @@ the given SNP's linkage interval.
 ```
 head snp_condition_scores.txt | column -t
 
-snp        condition                 gene   score
+snp        condition                  gene   score
 rs9349204  Colorectal_Adenocarcinoma  10817  0.693027
 rs9349204  Whole_Blood                896    0.285864
 rs9349204  BM-CD33+Myeloid            896    0.236487
