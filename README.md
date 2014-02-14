@@ -119,8 +119,9 @@ other tissues in the Gene Atlas ([Su *et al.* 2004][Su2004]).
 We used SNPsea to test the genes in linkage disequilibrium (LD) with 45 SNPs
 associated with red blood cell count (P <= 5e-8) in GWAS of Europeans ([Harst
 *et al.* 2012][Harst2012]). For each cell type, we tested a maximum of 1e7
-null SNP sets by sampling random LD pruned SNP sets where each null SNP
-matched on the number of genes in LD.
+null SNP sets by sampling random LD pruned SNP sets and scoring them. Each
+set contains random SNPs matched to the input SNPs on the number of genes in
+LD.
 
 [Harst2012]: http://www.ncbi.nlm.nih.gov/pubmed/23222517
 [Su2004]: http://www.ncbi.nlm.nih.gov/pubmed/15075390
