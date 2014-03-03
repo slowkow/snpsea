@@ -5,10 +5,14 @@
 # Compiler.
 CXX = g++
 
+# External dependency directories.
+PATH_INTERVALTREE = ../ext/intervaltree
+PATH_EIGEN = ../ext/eigen
+
 # Compiler flags.
 #DEBUG = -ggdb
 CXXFLAGS = $(DEBUG) -w -O3 -m64 -static -fopenmp -std=c++0x
-CXXFLAGS += -I ../ext/intervaltree -I ../ext/eigen -DEIGEN_NO_DEBUG
+CXXFLAGS += -I $(PATH_INTERVALTREE) -I $(PATH_EIGEN) -DEIGEN_NO_DEBUG
 LIB = -static -lz -lpthread -lm -ldl -lgsl
 
 # Header files, source files, objects, binary.
@@ -26,7 +30,7 @@ $(BIN) : $(OBJ)
 
 $(OBJ) : $(HDR)
 
-$(BIN) : $(INTERVAL_TREE_PATH) $(EIGEN_PATH)
+$(BIN) : $(PATH_INTERVALTREE) $(PATH_EIGEN)
 	mkdir -p ../bin
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ) $(LIB)
 
