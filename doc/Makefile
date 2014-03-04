@@ -1,4 +1,4 @@
-HTMLOPT = --standalone --toc --toc-depth=2 --template skeleton
+HTMLOPT = --standalone --toc --toc-depth=2 --template skeleton --mathjax
 PDFOPT = --standalone --normalize --toc --toc-depth=2
 VARS += --variable geometry:margin=1in
 VARS += --variable fontsize:11pt
