@@ -1,11 +1,10 @@
 SNPsea: an algorithm to identify cell types, tissues, and pathways affected by risk loci
 ========================================================================================
 
-| <http://www.broadinstitute.org/mpg/snpsea> | Reference Manual [HTML] or [PDF] |
+| <http://www.broadinstitute.org/mpg/snpsea> | Reference Manual [HTML] |
 |:---:|:---:|
 
 [HTML]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html
-[PDF]: https://github.com/slowkow/snpsea/blob/master/doc/SNPsea_manual.pdf?raw=true
 
 - <a href="#citation">Citation</a>
 - <a href="#quick-start">Quick Start</a>
