@@ -1027,14 +1027,17 @@ double snpsea::score_quantitative_total(
     const std::vector<std::vector<ulong> > & genesets
 )
 {
-    double score = 0.0;
+    double total = 0.0;
     for (auto geneset : genesets) {
+        double score = 0.0;
         // Use the specificity percentiles from all genes.
         for (auto gene_id : geneset) {
             score += -log(_gene_matrix(gene_id, col));
         }
+        // Gamma(shape, scale)
+        total += -log(gsl_cdf_gamma_Q(score, geneset.size(), 1.0));
     }
-    return std::isfinite(score) ? score : 0.0;
+    return std::isfinite(total) ? total : 0.0;
 }
 
 
