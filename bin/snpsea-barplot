@@ -38,7 +38,7 @@ import re
 def main():
     args = docopt(__doc__)
 
-    mp.rc('font', family='serif', size=float(args['--fontsize']))
+    mp.rc('font', family='serif')
 
     out = lambda x: os.path.join(args['<out>'], x)
    
@@ -56,11 +56,12 @@ def main():
             out('condition_pvalues_barplot.pdf'),
             title=args['--title'],
             figsize=(width, height),
+            fontsize=float(args['--fontsize']),
             namelen=int(args['--shorten']),
             top=int(args['--top']))
 
 
-def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5),
+def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5), fontsize=10,
             namelen=48, cluster_method='all', title=None, alpha=0.05, top=50):
     # Read results from snpsea.
     pvalues = pd.read_table(f_pvalues, index_col=0)
@@ -133,6 +134,7 @@ def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5),
             labels[i] = '* {}'.format(item)
         labels[i] = labels[i].replace('_', ' ')
     ax.set_yticklabels(labels)
+    ax.tick_params(axis='y', which='major', labelsize=fontsize)
 
     # Vertical grid lines.
     ax.grid(b=True, which='major', axis='both', alpha=0.5)
