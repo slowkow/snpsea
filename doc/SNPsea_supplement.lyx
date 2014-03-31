@@ -85,10 +85,6 @@ SNPsea: an algorithm to identify cell types, tissues, and pathways affected
 Kamil Slowikowski, Xinli Hu, Soumya Raychaudhuri
 \end_layout
 
-\begin_layout Date
-February 12, 2014
-\end_layout
-
 \begin_layout Standard
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
@@ -99,14 +95,14 @@ LatexCommand tableofcontents
 \end_layout
 
 \begin_layout Standard
-\begin_inset Newpage pagebreak
+\begin_inset Newpage newpage
 \end_inset
 
 
 \end_layout
 
 \begin_layout Section
-Supplementary Notes 
+Supplementary Note
 \end_layout
 
 \begin_layout Subsection
@@ -114,9 +110,43 @@ Algorithm Details
 \end_layout
 
 \begin_layout Standard
-For a given set of SNPs associated to a single trait, SNPsea tests whether
- implicated genes, in aggregate, are enriched for specificity to an annotation
- or condition in a user-provided matrix of genes and annotations/conditions.
+SNPsea tests if genes implicated by risk loci (e.g., those discovered through
+ genome-wide association (GWA) studies) are specifically expressed in some
+ conditions over others, and if this specificity is statistically significant.
+ The program requires two inputs:
+\end_layout
+
+\begin_layout Enumerate
+A list of SNP identifiers: rs123, 12:456, ...
+\end_layout
+
+\begin_layout Enumerate
+A matrix of genes and conditions, such as:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+expression profiles of different cell types.
+\end_layout
+
+\begin_layout Itemize
+Ontology terms and presence/absence 1/0 values for each gene in each term.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+For example, SNPsea can be used to find tissues or cell types whose function
+ is likely to be influenced by genes in risk loci.
+ If the genes in risk loci are used in relatively few cell types, we hypothesize
+ that they are likely to affect those cell types' unique functions.
+ This assumes that expression specificity is a good indicator of a gene's
+ importance to the unique function of the cell type.
+\end_layout
+
+\begin_layout Standard
+For a given set of SNPs associated to some phenotype, SNPsea tests whether
+ all implicated genes, in aggregate, are enriched for specificity to a condition
+ in a user-provided matrix of genes and conditions/annotations.
  The algorithm consists of three steps:
 \end_layout
 
@@ -154,8 +184,12 @@ Step 3: Testing significance
 
 \begin_deeper
 \begin_layout Itemize
-We compare the specificity scores to scores obtained with random sets of
- matched SNP sets and use those scores to calculate an empirical p-value.
+We compare the specificity scores to a null distribution of scores obtained
+ with random sets of matched SNP sets and compute an empirical 
+\begin_inset Formula $P$
+\end_inset
+
+-value.
  
 \end_layout
 
@@ -165,16 +199,19 @@ Step 1: Assigning genes to each SNP
 \end_layout
 
 \begin_layout Standard
-Accurate analyses must address the critical issue that SNPs infrequently
- implicate a locus with a single gene.
- Instead, SNPs implicate loci in LD with 0 to 20 genes that may plausibly
- influence the associated trait (
+Accurate analyses must address the critical issue that SNPs frequently implicate
+ a region with multiple different genes (
 \series bold
 Supplementary Figure 2
 \series default
 ).
- We determine the genes implicated by each SNP using a previously described
- strategy (
+ The challenge is to find evidence to show which of those genes are associated
+ with a given trait.
+\end_layout
+
+\begin_layout Standard
+We determine the genes plausibly implicated by each trait-associated SNP
+ using a previously described strategy (
 \series bold
 Supplementary Figure 1
 \series default
@@ -186,12 +223,12 @@ key "rossin_proteins_2011"
 \end_inset
 
 ).
- First, we define a linkage interval that spans between the furthest neighboring
- SNPs within a 1 Mb window with 
+ First, we define the linkage interval for a given SNP as the span between
+ the furthest correlated SNPs 
 \begin_inset Formula $r^{2}>0.5$
 \end_inset
 
- using European reference genomes 
+ (EUR) within a 1 Mb window 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "consortium_integrated_2012"
@@ -199,7 +236,7 @@ key "consortium_integrated_2012"
 \end_inset
 
 .
- Next, we extend each interval to the nearest recombination hotspots with
+ Next, we extend the interval to the nearest recombination hotspots with
  recombination rate >3 cM/Mb 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -209,21 +246,47 @@ key "myers_fine-scale_2005"
 
 .
  To address the case when no genes overlap an interval, we provide an option
- to extend the interval up- and downstream (by default 10 Kb).
- After each SNP has been assigned an interval and a set of overlapping genes,
- we merge SNPs with shared genes into a single locus to avoid multiple-counting
- of genes.
+ for SNPsea to extend the interval up- and downstream (by default 10 Kb).
 \end_layout
 
 \begin_layout Standard
-By default, we assume that one gene in each associated locus is associated
+Most frequently, we find multiple genes 
+\begin_inset Formula $(m_{k}>1)$
+\end_inset
+
+ in a single SNP locus 
+\begin_inset Formula $k$
+\end_inset
+
+.
+ We expect many loci with multiple genes because of regions with high LD
+ across long stretches of a chromosome.
+ Less frequently, a locus has a single gene 
+\begin_inset Formula $(m_{k}=1)$
+\end_inset
+
+, and loci with no genes 
+\begin_inset Formula $(m_{k}=0)$
+\end_inset
+
+ are discarded.
+\end_layout
+
+\begin_layout Standard
+After each SNP has been assigned an interval and a set of genes overlapping
+ the interval, we merge SNPs with shared genes into a single locus to avoid
+ multiple-counting of genes.
+\end_layout
+
+\begin_layout Paragraph*
+Two score options
+\end_layout
+
+\begin_layout Standard
+By default, SNPsea assumes one gene in each associated locus is associated
  with the given trait.
- However, we expect some loci with multiple genes due to poorly mapped regions
- in the genome, or due to regions with high LD that span long stretches
- across the chromosome.
- We also allow investigators the alternative to assume that all genes within
- a locus are associated, and we compare results of the two alternatives
- with four phenotypes (
+ We also include the option to assume all genes within a locus are associated.
+ We compare results of the two options with four phenotypes (
 \series bold
 Supplementary Figure 4
 \series default
@@ -243,16 +306,10 @@ The
 \family typewriter
 '--score single'
 \family default
- method (recommended) assumes that a single gene in each locus is associated
+ method (default option) assumes that a single gene in each locus is associated
  with the given phenotype.
  For each condition, we choose the gene in each locus with the greatest
  specificity to that condition.
- We assume specificity is a good way to represent a gene's importance to
- the function of a condition
-\emph on
- 
-\emph default
-(cell type or tissue).
 \end_layout
 
 \begin_layout Enumerate
@@ -269,10 +326,10 @@ Step 2: Calculating specificity scores
 \end_layout
 
 \begin_layout Standard
-SNPsea accepts matrices with continuous or binary values in each cell, but
- the algorithm for a continuous matrix differs from that for a binary matrix.
+SNPsea uses different algorithms for matrices with continuous or binary
+ values.
  Before running SNPsea, a matrix with continuous values must be normalized
- so that columns are comparable.
+ so that columns are directly comparable.
  
 \emph on
 It is not appropriate to use this method on a 
@@ -285,62 +342,15 @@ raw
 
  matrix of expression values
 \emph default
-, because the values across conditions (cell types, tissues, experiments)
- are not directly comparable.
+.
 \end_layout
 
 \begin_layout Paragraph
-Calculating specificity for a gene expression matrix
+Specificity for a matrix of continuous values
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\[
-A=\text{continuous gene expression matrix}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We row-normalize the matrix 
-\begin_inset Formula $A$
-\end_inset
-
- with 
-\begin_inset Formula $m$
-\end_inset
-
- genes and 
-\begin_inset Formula $n$
-\end_inset
-
- conditions by the L2 norm.
- This results in a new matrix 
-\begin_inset Formula $A'$
-\end_inset
-
- where each value is between 0 and 1 and represents specificity of gene
- 
-\begin_inset Formula $i$
-\end_inset
-
- in condition 
-\begin_inset Formula $j$
-\end_inset
-
-.
- A value of 1 indicates complete specificity to condition 
-\begin_inset Formula $j$
-\end_inset
-
- and 0 indicates complete absence in condition 
-\begin_inset Formula $j$
-\end_inset
-
- as described previously 
+We extend an approach we have previoulsy described in detail 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "hu_integrating_2011"
@@ -348,6 +358,21 @@ key "hu_integrating_2011"
 \end_inset
 
 .
+ Let 
+\begin_inset Formula $A$
+\end_inset
+
+ denote a continuous gene expression matrix with 
+\begin_inset Formula $m$
+\end_inset
+
+ genes and 
+\begin_inset Formula $n$
+\end_inset
+
+ conditions.
+ First, we normalize the expression of each gene by dividing each value
+ by the L2 norm of the genes values in different conditions.
 \end_layout
 
 \begin_layout Standard
@@ -362,71 +387,85 @@ A'_{i,j}=\dfrac{A_{i,j}}{\sqrt{A_{i,1}^{2}+A_{i,2}^{2}+\cdots+A_{i,n}^{2}}}
 \end_layout
 
 \begin_layout Standard
-Next, we rank each column by ascending percentile (lower rank indicates
- greater specificity) to produce a new matrix 
-\begin_inset Formula $A''$
+The resulting matrix 
+\begin_inset Formula $A'$
 \end_inset
 
-.
- Each value is between 0 and 1 and represents a nonparametric rank of specificit
-y to condition 
-\begin_inset Formula $j$
+ has values 
+\begin_inset Formula $A'_{i,j}$
 \end_inset
 
- for gene 
+ between 0 and 1 indicating specificity of gene 
 \begin_inset Formula $i$
 \end_inset
 
-:
+ to condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ A value 
+\begin_inset Formula $A'_{i,j}=1$
+\end_inset
+
+ indicates that gene 
+\begin_inset Formula $i$
+\end_inset
+
+ is exclusively expressed in condition 
+\begin_inset Formula $j$
+\end_inset
+
+, and 
+\begin_inset Formula $A'_{i,j}=0$
+\end_inset
+
+ indicates that gene 
+\begin_inset Formula $i$
+\end_inset
+
+ is not expressed in condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Next, we transform 
+\begin_inset Formula $A'$
+\end_inset
+
+ to a matrix 
+\begin_inset Formula $A''$
+\end_inset
+
+ of non-parametric condition-specificity percentiles as follows.
+ For each condition 
+\begin_inset Formula $j$
+\end_inset
+
+, we rank the values of 
+\begin_inset Formula $A'_{,j}$
+\end_inset
+
+ in ascending order and divide them by the number of genes 
+\begin_inset Formula $m$
+\end_inset
+
+, resulting in percentiles between 0 and 1 where a lower value indicates
+ greater specificity to the given condition.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-A''_{i,j}=\dfrac{\text{Rank}(A'_{i,j})}{m}
+A''_{i,j}=\dfrac{\text{Rank}_{j}(A'_{i,j})}{m}
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-In each locus-condition pair, we choose the single gene with the highest
- specificity to that condition.
- To correct for testing multiple genes 
-\begin_inset Formula $g_{k}$
-\end_inset
-
- in each SNP locus' set of genes 
-\begin_inset Formula $k$
-\end_inset
-
-, we create a new matrix 
-\begin_inset Formula $P$
-\end_inset
-
- of probabilities.
- It consists of one row for each SNP locus 
-\begin_inset Formula $k$
-\end_inset
-
- and one column for each condition 
-\begin_inset Formula $j$
-\end_inset
-
-.
- We correct for testing multiple genes in each SNP locus, because we choose
- the single gene with the greatest specificity among 
-\begin_inset Formula $g_{k}$
-\end_inset
-
- genes in the locus.
- We also provide the option to use all genes in each SNP locus 
-\begin_inset Formula $i\in k$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Standard
@@ -436,142 +475,136 @@ In each locus-condition pair, we choose the single gene with the highest
 
 \end_layout
 
+\begin_layout Paragraph*
+Locus scores for a matrix of continuous values
+\end_layout
+
 \begin_layout Standard
-\begin_inset space \hspace*{\fill}
+We create a new matrix 
+\begin_inset Formula $P$
 \end_inset
 
+, where each value 
+\begin_inset Formula $P_{k,j}$
+\end_inset
 
-\begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="5">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0pt">
-<row>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
+ is a score for a SNP locus 
+\begin_inset Formula $k$
+\end_inset
 
-\begin_layout Plain Layout
+ and a condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ The locus scores 
+\begin_inset Formula $P_{,j}$
+\end_inset
+
+ for a single condition 
+\begin_inset Formula $j$
+\end_inset
+
+ are approximately uniformly distributed for a set of randomly selected
+ loci under the following assumption: for the set of genes in a given SNP
+ locus 
+\begin_inset Formula $I_{k}$
+\end_inset
+
+, the values 
+\begin_inset Formula $A''_{i\in I_{k},j}$
+\end_inset
+
+ are random, independent, and approximately uniformly distributed.
+ We'll come back to this assumption later when testing significance in Step
+ 3 below.
+\end_layout
+
+\begin_layout Paragraph*
 
 \family typewriter
-'--score single'
+'--score single' (default)
 \end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
+\begin_layout Standard
+This approach assumes one gene in each SNP locus is associated with the
+ trait.
 \end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\family typewriter
-'--score total'
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row topspace="2mm">
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $P_{k,j}=1-(1-\text{Min}(A''_{k,j}))^{g_{k}}$
+\begin_layout Standard
+For each locus-condition pair 
+\begin_inset Formula $(k,j)$
 \end_inset
 
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $P_{k,j}=-\sum_{i\in k}\text{log}A''_{i,j}$
+, we choose the single gene 
+\begin_inset Formula $i$
 \end_inset
 
-
-\end_layout
-
+ in locus 
+\begin_inset Formula $k$
 \end_inset
-</cell>
-</row>
-</lyxtabular>
+
+ with greatest specificity to condition 
+\begin_inset Formula $j$
+\end_inset
+
+ among the 
+\begin_inset Formula $m_{k}$
+\end_inset
+
+ genes in the locus, as previously described in Hu 
+\emph on
+et al.
+
+\emph default
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "hu_integrating_2011"
 
 \end_inset
 
-
-\begin_inset space \hspace*{\fill}
+.
+ Let 
+\begin_inset Formula $g_{k}$
 \end_inset
 
+ denote this most specific gene, so that 
+\begin_inset Formula $A''_{g_{k},j}=\text{Min}_{i\in I_{k}}(A''_{i,j})$
+\end_inset
 
-\end_layout
+ where 
+\begin_inset Formula $I_{k}$
+\end_inset
 
-\begin_layout Paragraph
-Calculating specificity for a binary presence/absence matrix
+ denotes the set of genes in locus 
+\begin_inset Formula $k$
+\end_inset
+
+.
+ If we assume values of 
+\begin_inset Formula $A''_{i\in I_{k},j}$
+\end_inset
+
+ are uniformly distributed for a given condition 
+\begin_inset Formula $j$
+\end_inset
+
+ and genes 
+\begin_inset Formula $i\in I_{k}$
+\end_inset
+
+, then the probability of obtaining a value equal to or less than 
+\begin_inset Formula $A''_{g_{k},j}$
+\end_inset
+
+ is as follows:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-B=\text{binary (1/0) presence/absence matrix}
+P_{k,j}=1-(1-\text{Min}_{i\in I_{k}}(A''_{i,j}))^{m_{k}}
 \]
 
 \end_inset
@@ -579,12 +612,60 @@ B=\text{binary (1/0) presence/absence matrix}
 
 \end_layout
 
+\begin_layout Paragraph*
+
+\family typewriter
+'--score total'
+\end_layout
+
 \begin_layout Standard
-Matrix 
+This assumes all genes in a given SNP locus are associated with a trait
+ --- in most circumstances, we consider this model to be unlikely in most
+ situations.
+ We compute the probability of observing values 
+\begin_inset Formula $A''_{i\in I_{k}}$
+\end_inset
+
+ for some locus 
+\begin_inset Formula $k$
+\end_inset
+
+ as the product of percentiles.
+ This assumes 
+\begin_inset Formula $A''_{i\in I_{k}}$
+\end_inset
+
+ values are uniformly distributed.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P_{k,j} & = & \int_{x}^{\infty}\Gamma(m_{k},1)\ \ \text{for}\ \ x=\sum_{i\in I_{k}}-\text{ln}A''_{i,j}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Locus scores for a matrix of binary values
+\end_layout
+
+\begin_layout Standard
+Let 
 \begin_inset Formula $B$
 \end_inset
 
- with 
+ denote a binary matrix (1=present, 0=absent) with 
 \begin_inset Formula $m$
 \end_inset
 
@@ -592,52 +673,59 @@ Matrix
 \begin_inset Formula $n$
 \end_inset
 
- conditions has binary values, so we do not transform it into 
-\begin_inset Formula $B'$
-\end_inset
-
- or 
-\begin_inset Formula $B''$
-\end_inset
-
-.
- Instead, we create a matrix 
-\begin_inset Formula $P$
-\end_inset
-
- of hypergeometric probabilities.
- Below, 
+ conditions.
+ Let 
 \begin_inset Formula $m_{j}$
 \end_inset
 
- genes are present in condition 
+ denote the number of genes present in condition 
 \begin_inset Formula $j$
 \end_inset
 
-, 
-\begin_inset Formula $g_{k}$
+.
+ Let 
+\begin_inset Formula $m_{k}$
 \end_inset
 
- genes are in locus 
+ denote the number of genes in locus 
 \begin_inset Formula $k$
 \end_inset
 
  and 
-\begin_inset Formula $g_{k,j}$
+\begin_inset Formula $m_{k,j}\le m_{k}$
 \end_inset
 
- of them are present in condition 
+ denote the number of genes in locus 
+\begin_inset Formula $k$
+\end_inset
+
+ that are present in condition 
 \begin_inset Formula $j$
 \end_inset
 
 .
- By default, we account for the presence or absence of any of the locus'
+\end_layout
+
+\begin_layout Standard
+We provide two options to calculate locus scores.
+ By default, we account for presence or absence of any of the 
+\begin_inset Formula $m_{k}$
+\end_inset
+
  genes in condition 
 \begin_inset Formula $j$
 \end_inset
 
-.
- We also provide the option to account for the number of genes in each locus.
+, as shown below (
+\family typewriter
+'--score single'
+\family default
+).
+ Alternatively, we account for the number of genes in a given locus (
+\family typewriter
+'--score total'
+\family default
+).
 \end_layout
 
 \begin_layout Standard
@@ -736,7 +824,7 @@ Matrix
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $p(x)=\dfrac{{m_{j} \choose x}{m-m_{j} \choose g_{k}-x}}{{m \choose g_{k}}}$
+\begin_inset Formula $p(x)=\dfrac{{m_{j} \choose x}{m-m_{j} \choose m_{k}-x}}{{m \choose m_{k}}}$
 \end_inset
 
 
@@ -767,8 +855,8 @@ Matrix
 
 \begin_layout Plain Layout
 \begin_inset Formula $P_{k,j}=\begin{cases}
-1-p(0) & g_{k,j}>0\\
-1 & g_{k,j}=0
+1-p(0) & m_{k,j}>0\\
+1 & m_{k,j}=0
 \end{cases}$
 \end_inset
 
@@ -800,8 +888,8 @@ Matrix
 
 \begin_layout Plain Layout
 \begin_inset Formula $P_{k,j}=\begin{cases}
-1-\sum_{x=0}^{g_{k,j}-1}p(x) & g_{k,j}>0\\
-1 & g_{k,j}=0
+1-\sum_{x=0}^{m_{k,j}-1}p(x) & m_{k,j}>0\\
+1 & m_{k,j}=0
 \end{cases}$
 \end_inset
 
@@ -829,8 +917,12 @@ Matrix
 
 \end_layout
 
+\begin_layout Paragraph*
+Condition specificity scores
+\end_layout
+
 \begin_layout Standard
-Finally, we define a specificity score 
+For both continuous and binary matrices, we define a specificity score 
 \begin_inset Formula $S_{j}$
 \end_inset
 
@@ -838,13 +930,17 @@ Finally, we define a specificity score
 \begin_inset Formula $j$
 \end_inset
 
- as the aggregate of all loci:
+ as the aggregate of 
+\begin_inset Formula $P_{k,j}$
+\end_inset
+
+ values across SNP loci:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-S_{j}=-\sum_{k}\text{log}P_{k,j}
+S_{j}=\sum_{k}-\text{log}P_{k,j}
 \]
 
 \end_inset
@@ -861,8 +957,15 @@ Analytical p-values
 \end_layout
 
 \begin_layout Standard
-We previously found that the use of analytical distributions such as the
- Poisson distribution can result in inaccurate p-values 
+We previously found that aggregating the 
+\begin_inset Formula $P_{k,j}$
+\end_inset
+
+ scores and determining a 
+\begin_inset Formula $P$
+\end_inset
+
+-value analytically from a distribution results in inaccurate p-values 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "hu_integrating_2011"
@@ -870,9 +973,15 @@ key "hu_integrating_2011"
 \end_inset
 
 .
- SNP linkage intervals, gene densities, gene sizes and gene functions are
- correlated across the genome and are challenging to model analytically.
- This motivated us to use a sampling strategy instead.
+ 
+\begin_inset Formula $A''_{i,j}$
+\end_inset
+
+ values may be relatively uniform genome-wide, but proximate genes often
+ have shared functions.
+ The genome has a complex correlation structure of linkage disequilibrium,
+ gene density, gene size and function that is challenging to model analytically.
+ We use the sampling strategy described below instead.
 \end_layout
 
 \begin_layout Paragraph
@@ -881,21 +990,26 @@ Permutation p-values
 
 \begin_layout Standard
 For each condition, we use a sampling approach to calculate an empirical
- p-value: the tail probability of observing a condition-specificity score
- 
+ p-value.
+ This is the tail probability of observing a condition-specificity score
+ greater or equal to 
 \begin_inset Formula $S_{j}$
 \end_inset
 
- in a distribution of scores obtained with null SNP sets.
- We compute specificity scores 
+.
+ We obtain the distribution empirically with null SNP sets.
+\end_layout
+
+\begin_layout Standard
+We compute specificity scores 
 \begin_inset Formula $S$
 \end_inset
 
- for random SNP sets where each SNP is matched to a SNP in the user's set
- on the number of linked genes.
- To adequately cover genes across the genome, we sample SNP sets from a
- list of LD-pruned SNPs that is a subset of the SNPs from the 1000 Genomes
- Project 
+ for random SNP sets.
+ Each SNP in a null set is matched to a SNP in the user's set on the number
+ of linked genes.
+ To adequately sample genes from the entire genome, we sample SNP sets from
+ a list of LD-pruned SNPs (subset of SNPs in 1000 Genomes Project) 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "lango_allen_hundreds_2010"
@@ -903,7 +1017,10 @@ key "lango_allen_hundreds_2010"
 \end_inset
 
 .
- For each condition 
+\end_layout
+
+\begin_layout Standard
+For each condition 
 \begin_inset Formula $j$
 \end_inset
 
@@ -914,16 +1031,18 @@ key "phipson_permutation_2010"
 
 \end_inset
 
- where 
+.
+ Let 
 \begin_inset Formula $a_{j}$
 \end_inset
 
- is the number of sampled SNP sets and 
+ denote the number of sampled SNP sets (e.g.
+ 10,000) and let 
 \begin_inset Formula $b_{j}$
 \end_inset
 
- of them have a specificity score greater than or equal to the user's score
- 
+ denote how many null specificity scores are greater than or equal to the
+ user's score 
 \begin_inset Formula $S_{j}$
 \end_inset
 
@@ -942,10 +1061,10 @@ p_{j}=\dfrac{b_{j}+1}{a_{j}+1}
 \end_layout
 
 \begin_layout Standard
-We implemented adaptive sampling to calculate p-values more efficiently.
- As each condition is tested, we perform more iterations to increase resolution
- of significant p-values and fewer iterations for less significant p-values
- to save computation time.
+We implemented adaptive sampling to calculate p-values efficiently.
+ As each condition is tested for significance, we increase the number of
+ iterations to resolve significant p-values and save computation by using
+ fewer iterations for less significant p-values.
  Two options allow the user to control the adaptive sampling:
 \end_layout
 
@@ -967,7 +1086,8 @@ We implemented adaptive sampling to calculate p-values more efficiently.
 \family typewriter
 '--min-observations N'
 \family default
- The minimum number of observed higher scores 
+ The minimum number of observed null specificity scores greater than or
+ equal to 
 \begin_inset Formula $S_{j}$
 \end_inset
 
@@ -1174,7 +1294,7 @@ width "50col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -1406,6 +1526,13 @@ snpsea-type1error <out>
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Supplementary Figures
 \end_layout
@@ -1422,7 +1549,7 @@ Supplementary Figure 1: Determining SNP linkage intervals
 \begin_inset Graphics
 	filename figures/snp_linkage_intervals.pdf
 	lyxscale 50
-	width 50text%
+	width 75text%
 
 \end_inset
 
@@ -1464,6 +1591,13 @@ key "myers_fine-scale_2005"
  with recombination rate >3 cM/Mb.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Supplementary Figure 2: Counting genes in GWAS SNP linkage intervals
 \end_layout
@@ -1476,7 +1610,7 @@ Supplementary Figure 2: Counting genes in GWAS SNP linkage intervals
 \begin_inset Graphics
 	filename figures/gwas_ngenes.pdf
 	lyxscale 50
-	width 40text%
+	width 75text%
 
 \end_inset
 
@@ -1506,6 +1640,13 @@ key "consortium_integrated_2012"
  one gene.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Supplementary Figure 3: Choosing the 
 \begin_inset Formula $r^{2}$
@@ -1515,64 +1656,14 @@ Supplementary Figure 3: Choosing the
 \end_layout
 
 \begin_layout Standard
-We chose to use 
-\begin_inset Formula $r^{2}\geq0.5$
+\begin_inset space \hfill{}
 \end_inset
 
- due to previous experience 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "rossin_proteins_2011"
 
-\end_inset
-
-.
- To investigate if this choice influences SNPsea results, we repeated the
- analysis of 45 red blood cell count-associated SNPs 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "van_der_harst_seventy-five_2012"
-
-\end_inset
-
- using 5 different thresholds 
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\uuline off
-\uwave off
-\noun off
-\color none
-(
-\begin_inset Formula $r^{2}\ge$
-\end_inset
-
- 0.2, 0.4, 0.6, 0.8, 1.0)
-\family default
-\series default
-\shape default
-\size default
-\emph default
-\bar default
-\strikeout default
-\uuline default
-\uwave default
-\noun default
-\color inherit
-.
- We also did this for SNPs associated with multiple sclerosis, celiac disease,
- and HDL cholesterol.
-\end_layout
-
-\begin_layout Standard
 \begin_inset Graphics
 	filename figures/r2_thresholds-GeneAtlas2004.pdf
 	lyxscale 50
-	width 48text%
+	width 60text%
 
 \end_inset
 
@@ -1581,18 +1672,29 @@ key "van_der_harst_seventy-five_2012"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
 \begin_inset Graphics
 	filename figures/r2_thresholds-GO2013.pdf
 	lyxscale 50
-	width 48text%
+	width 60text%
 
+\end_inset
+
+
+\begin_inset space \hfill{}
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-Gene Atlas and Gene Ontology (left and right).
+Gene Atlas and Gene Ontology (top and bottom).
  Each subplot has 
 \begin_inset Formula $-\text{log}_{10}P$
 \end_inset
@@ -1642,9 +1744,72 @@ hemopoiesis
  (see main text).
 \end_layout
 
+\begin_layout Standard
+To investigate if the choice of 
+\begin_inset Formula $r^{2}$
+\end_inset
+
+ threshold influences SNPsea results, we repeated the analysis of four traits
+ using 5 different thresholds 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+(
+\begin_inset Formula $r^{2}\ge$
+\end_inset
+
+ 0.2, 0.4, 0.6, 0.8, 1.0)
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+.
+ SNPsea results seem to be robust to the choice of threshold, mostly due
+ to the fact that we extend linkage intervals for each SNP to the nearest
+ recombination hotspots as described in 
+\series bold
+Supplementary Figure 1
+\series default
+.
+ We chose to use 
+\begin_inset Formula $r^{2}\geq0.5$
+\end_inset
+
+ for our analysis and for our provided data files due to this result, and
+ also due to previous experience 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rossin_proteins_2011"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
-Supplementary Figure 4: Each trait-associated locus harbors a single associated
- gene
+Supplementary Figure 4: Comparison of 'single' and 'total' options
 \end_layout
 
 \begin_layout Standard
@@ -1654,8 +1819,8 @@ Supplementary Figure 4: Each trait-associated locus harbors a single associated
 
 \begin_inset Graphics
 	filename figures/single_vs_total-RBC-MS-CD-HDL.png
-	lyxscale 50
-	width 80text%
+	lyxscale 15
+	width 100text%
 
 \end_inset
 
@@ -1667,7 +1832,7 @@ Supplementary Figure 4: Each trait-associated locus harbors a single associated
 \end_layout
 
 \begin_layout Standard
-Gene Atlas 
+Quantile-quantile plots for Gene Atlas 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "su_gene_2004"
@@ -1675,7 +1840,7 @@ key "su_gene_2004"
 \end_inset
 
  and Gene Ontology (top and bottom).
- The x and y axes are
+ The x and y axes are 
 \begin_inset Formula $-\text{log}_{10}P$
 \end_inset
 
@@ -1683,13 +1848,8 @@ key "su_gene_2004"
 \family typewriter
 '--score single' and '--score total'
 \family default
- SNPsea options.
-\end_layout
-
-\begin_layout Standard
-We tested our assumption that a single gene in each trait-associated locus
- is driving the condition-specificity signal by running SNPsea with the
- 
+ SNPsea options, respectively.
+ The 
 \family typewriter
 'single'
 \family default
@@ -1697,7 +1857,7 @@ We tested our assumption that a single gene in each trait-associated locus
 \family typewriter
 'total'
 \family default
- methods described 
+ methods are described 
 \begin_inset CommandInset ref
 LatexCommand vpageref
 reference "par:single_total"
@@ -1705,26 +1865,18 @@ reference "par:single_total"
 \end_inset
 
 .
- We lose power to detect gene expression enrichment when we relax the single
- gene assumption and instead assume that 
-\emph on
-all
-\emph default
- genes implicated by LD are driving the signal.
+ The 
+\begin_inset Formula $P$
+\end_inset
+
+-values appear similar between methods.
 \end_layout
 
 \begin_layout Standard
-This is in contrast with our observations for GO term enrichment, where
- p-values appear similar between methods: 
-\family typewriter
-'single'
-\family default
- where we check for the presence of a one or more genes in the locus anotated
- with a term and 
-\family typewriter
-'total'
-\family default
- where we record the number of genes in the locus annotated with a term.
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1797,7 +1949,7 @@ key "su_gene_2004"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Newpage pagebreak
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -1821,8 +1973,8 @@ We tested SNPsea with the three additional phenotypes listed below with
 '--score single'
 \family default
  option.
- The adjacent heatmaps show Pearson correlation coefficients for all pairs
- of conditions.
+ Below we show the number of significantly enriched conditions we found
+ for each phenotype.
 \end_layout
 
 \begin_layout Standard
@@ -1838,46 +1990,48 @@ We tested SNPsea with the three additional phenotypes listed below with
 
 
 \begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="5">
+<lyxtabular version="3" rows="6" columns="7">
 <features tabularvalignment="middle">
 <column alignment="left" valignment="top" width="0">
-<column alignment="left" valignment="top" width="0">
-<column alignment="left" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
 <column alignment="left" valignment="top" width="0">
 <column alignment="left" valignment="top" width="0">
 <row>
-<cell alignment="left" valignment="top" bottomline="true" usebox="none">
+<cell alignment="left" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-Phenotype
+
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" bottomline="true" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-SNPs
+
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" bottomline="true" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-Loci
+
 \end_layout
 
 \end_inset
 </cell>
-<cell multicolumn="1" alignment="left" valignment="top" bottomline="true" usebox="none">
+<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-Reference
+
 \end_layout
 
 \end_inset
@@ -1886,6 +2040,166 @@ Reference
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Phenotype
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SNPs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Loci
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+GO
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Gene Atlas
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Reference
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Red blood cell count
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Table 1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+van der Harst, 
+\emph on
+et al.
+
+\emph default
+ 2012 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "van_der_harst_seventy-five_2012"
+
+\end_inset
+
 
 \end_layout
 
@@ -1902,7 +2216,7 @@ Multiple sclerosis
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1911,11 +2225,29 @@ Multiple sclerosis
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 47
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+52
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6
 \end_layout
 
 \end_inset
@@ -1957,7 +2289,7 @@ Celiac disease
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1966,11 +2298,29 @@ Celiac disease
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 34
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+28
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
 \end_layout
 
 \end_inset
@@ -2016,7 +2366,7 @@ HDL cholesterol
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2025,11 +2375,29 @@ HDL cholesterol
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 46
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+13
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
 \end_layout
 
 \end_inset
@@ -2077,6 +2445,13 @@ key "teslovich_biological_2010"
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Supplementary Figure 6: Red blood cell count GO enrichment
 \end_layout
@@ -2115,7 +2490,7 @@ hemopoiesis
 \end_layout
 
 \begin_layout Standard
-\begin_inset Newpage pagebreak
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -2123,6 +2498,13 @@ hemopoiesis
 
 \begin_layout Subsection
 Supplementary Figure 7: Multiple sclerosis
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2151,6 +2533,13 @@ We observed significant enrichment for 6 cell types.
 \end_layout
 
 \begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset space \hfill{}
 \end_inset
 
@@ -2158,8 +2547,7 @@ We observed significant enrichment for 6 cell types.
 \begin_inset Graphics
 	filename figures/Multiple_sclerosis-IMSGC-51_SNPs-GO2013-single-pvalues_barplot.pdf
 	lyxscale 50
-	width 100text%
-	groupId GO
+	width 95text%
 
 \end_inset
 
@@ -2175,8 +2563,29 @@ We observed significant enrichment for 52 Gene Ontology terms.
  The top 60 terms are shown.
 \end_layout
 
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Supplementary Figure 8: Celiac disease
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2205,6 +2614,13 @@ We observed significant enrichment for 3 cell types.
 \end_layout
 
 \begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset space \hfill{}
 \end_inset
 
@@ -2229,8 +2645,29 @@ We observed significant enrichment for 28 Gene Ontology terms.
  The top 40 terms are shown.
 \end_layout
 
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Supplementary Figure 9: HDL cholesterol
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2259,6 +2696,13 @@ We observed significant enrichment for liver tissue-specific gene expression.
 \end_layout
 
 \begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset space \hfill{}
 \end_inset
 
@@ -2283,7 +2727,14 @@ We observed significant enrichment for 13 Gene Ontology terms.
 \end_layout
 
 \begin_layout Standard
-\begin_inset VSpace vfill*
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
 \end_inset
 
 
