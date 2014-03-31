@@ -13,30 +13,35 @@ SNPsea: an algorithm to identify cell types, tissues, and pathways affected by r
 Overview
 --------
 
-SNPsea is a general algorithm that may be used to identify cell types,
-tissues, and pathways likely to be affected by risk loci.
+SNPsea is a general algorithm to identify cell types, tissues, and pathways
+likely to be affected by risk loci. The required input is a list of SNP
+identifiers and a matrix of genes and conditions.
 
-For example, with a gene expression matrix containing expression profiles for
-multiple cell types, we identify genes in linkage disequilibrium with
-trait-associated SNPs and score them for specificity to each cell type.
-We compare the score to a null distribution by sampling random SNP sets
-matched on the number of linked genes. To evaluate significance, we calculate
-an exact permutation p-value.
+Suppose we have a gene expression matrix with expression profiles for multiple
+cell types. Our goal may be to determine if some alleles associated to a trait
+contain genes that are important for the function of a particular cell type.
 
-This implementation is generalized, so you may provide:
+First, we identify the genes in linkage disequilibrium with the given
+trait-associated SNPs and score them for specificity to each cell type. To
+evaluate significance of the specificity, we calculate an exact permutation
+p-value as follows. We take the sum of the specificity scores and compare it
+to a null distribution that is defined by sampling random matched SNP sets.
+They are matched to the original trait-associated SNPs on the number of linked
+genes.
 
--   a continuous gene matrix with gene expression (or any other values)
--   a binary gene matrix with presence absence (1, 0) values.
+This implementation is generalized, so you may provide (1) a continuous gene
+matrix with gene expression (or any other values) or (2) a binary gene matrix
+with presence/absence 1/0 values. We provide two continuous matrices and one
+binary matrix for you.
 
 The columns of the matrix could be tissues, cell types, GO annotation codes,
 or any other types of *conditions*. Continuous matrices *must* be normalized
 before running SNPsea so that columns are directly comparable to each other.
 
-In general, this analysis is appropriate when you are interested in testing
-for enrichment of condition-specificity of genes linked to a set of
-trait-associated SNPs.
+This analysis is able to detect if there is an enrichment of
+condition-specificity of the genes linked with trait-associated SNPs.
 
-If trait-associated alleles impact a small number of pathogenic tissues or
+If trait-associated alleles influence a small number of pathogenic tissues or
 cell types, we hypothesize that the subset of genes with critical functions in
 those pathogenic cell types are likely to be within trait-associated loci.
 
