@@ -69,44 +69,53 @@ See additional information and examples here:
 Quick Start
 -----------
 
--   **Binary for Linux**: <https://github.com/slowkow/snpsea/releases>
+**Linux 64 bit executable**: <https://github.com/slowkow/snpsea/releases>
 
--   **Data**: <http://dx.doi.org/10.6084/m9.figshare.871430>
+**Data**: <http://dx.doi.org/10.6084/m9.figshare.871430>
+
+On Linux, you can get started right away:
+
+```bash
+git clone https://github.com/slowkow/snpsea.git
+cd snpsea
+curl -LOk http://files.figshare.com/1382662/SNPsea_data_20140212.zip
+unzip SNPsea_data_20140212.zip
+bash example.sh
+```
 
 - - -
 
-To build the source code:
+On other platforms, you have to build the source code.
 
--   Install the [dependencies]:
+First, install the [dependencies]:
 
 ```bash
 #       Install Python libraries.
 pip install docopt numpy pandas matplotlib
 #       Change the graphical backend for matplotlib.
 perl -i -pe 's/^(\s*(backend).*)$/#$1\n$2:Agg/' ~/.matplotlib/matplotlibrc
+
 #       Install R libraries.
 R -e 'install.packages(c("data.table", "reshape2", "gap", "ggplot2"))'
+
 #       Install C++ libraries.
-sudo apt-get install build-essential libopenmpi-dev libgsl0-dev
-    #       Mac: 
-    # sudo port selfupdate; sudo port install gcc48 openmpi gsl
-    #       Broad Institute
-    # use .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
+#       Ubuntu
+sudo apt-get update; sudo apt-get install build-essential libopenmpi-dev libgsl0-dev
+#       Mac
+sudo port selfupdate; sudo port install gcc48 openmpi gsl
+#       Broad Institute
+use .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
 ```
 
--   Download and compile SNPsea:
+Next, download and compile SNPsea:
 
 ```bash
 git clone https://github.com/slowkow/snpsea.git
 cd snpsea/src
 make
-# Run!
-../bin/snpsea
 ```
 
 [dependencies]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html#c-libraries
-
-- - -
 
 
 Example
