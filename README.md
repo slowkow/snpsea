@@ -76,8 +76,9 @@ Quick Start
 On Linux, you can get started right away:
 
 ```bash
-git clone https://github.com/slowkow/snpsea.git
-cd snpsea
+mkdir snpsea; cd snpsea
+curl -LOk https://github.com/slowkow/snpsea/releases/download/v1.0.3/snpsea_v1.0.3.zip
+unzip snpsea_v1.0.3.zip
 curl -LOk http://files.figshare.com/1382662/SNPsea_data_20140212.zip
 unzip SNPsea_data_20140212.zip
 bash example.sh
