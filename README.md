@@ -54,8 +54,9 @@ Citation
 
 If you benefit from this method, please cite:
 
-> Slowikowski, K. et al. *SNPsea: an algorithm to identify cell types,
-> tissues, and pathways affected by risk loci.* Manuscript in progress.
+> Slowikowski, K. et al. **SNPsea: an algorithm to identify cell types,
+> tissues, and pathways affected by risk loci.** Bioinformatics (2014).
+> doi:[10.1093/bioinformatics/btu326][Slowikowski2014]
 
 See additional information and examples here:
 
@@ -64,6 +65,7 @@ See additional information and examples here:
 > of Human Genetics 89, 496–506 (2011). [PubMed][Hu2011]
 
 [Hu2011]: http://www.ncbi.nlm.nih.gov/pubmed/21963258
+[Slowikowski2014]: http://bioinformatics.oxfordjournals.org/content/early/2014/05/10/bioinformatics.btu326
 
 
 Quick Start

@@ -44,7 +44,8 @@ a reasonable indicator of the gene's importance to its function.
 If you benefit from this method, please cite:
 
 > Slowikowski, K. et al. **SNPsea: an algorithm to identify cell types,
-> tissues, and pathways affected by risk loci.** Manuscript in progress.
+> tissues, and pathways affected by risk loci.** Bioinformatics (2014).
+> doi:[10.1093/bioinformatics/btu326][Slowikowski2014]
 
 See additional examples:
 
@@ -54,7 +55,7 @@ See additional examples:
 
 
 [Hu2011]: http://www.ncbi.nlm.nih.gov/pubmed/21963258
-
+[Slowikowski2014]: http://bioinformatics.oxfordjournals.org/content/early/2014/05/10/bioinformatics.btu326
 
 
 ## Contact
