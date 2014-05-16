@@ -1,5 +1,5 @@
 HTMLOPT = --standalone --toc --toc-depth=2 --template skeleton --mathjax
-HTMLOPT = --toc --toc-depth=2
+HTMLOPT += --toc --toc-depth=2
 
 .PHONY: all manual clean
 
