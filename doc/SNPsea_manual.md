@@ -691,11 +691,11 @@ options=(
 snpsea ${options[*]}
 ```
 
-SNPs will test SNPs associated with Red blood cell count for tissue-specific
-expression of linked genes across 79 human tissues in the Gene Atlas expression
-matrix. Each tissue will be tested up to 10 million times with matched random
-SNP sets, or testing will stop for a tissue if 100 matched SNP sets achieve a
-higher specificity score than the user's SNPs.
+SNPsea will test SNPs associated with Red blood cell count for tissue-specific
+expression of linked genes across 79 human tissues in the Gene Atlas
+expression matrix. Each tissue will be tested up to 10 million times with
+matched random SNP sets, or testing will stop for a tissue if 100 matched SNP
+sets achieve a higher specificity score than the user's SNPs.
 
 
 
