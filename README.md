@@ -19,6 +19,19 @@ Cartoon
 
 [cartoon]: https://raw.github.com/slowkow/snpsea/master/doc/figures/cartoon.png
 
+This cartoon illustrates the key ideas of the algorithm:
+
+A.  Each SNP in a set of disease-associated SNPs is in linkage disequilibrium
+    (LD) with multiple genes. The genes are scored, in aggregate, for
+    specificity to each tissue.
+
+B.  The procedure is repeated with random null SNP sets that are not
+    associated with any phenotype.
+
+C.  The random SNP sets form the null distribution which allows us to
+    determine the statistical significance of enrichment for specificity to
+    a particular tissue.
+
 
 Example
 -------
