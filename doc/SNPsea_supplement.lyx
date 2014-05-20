@@ -1,5 +1,5 @@
-#LyX 2.0 created this file. For more info see http://www.lyx.org/
-\lyxformat 413
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
 \begin_document
 \begin_header
 \textclass article
@@ -12,13 +12,13 @@
 \font_roman ae
 \font_sans helvet
 \font_typewriter courier
+\font_math auto
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
-
 \graphics default
 \default_output_format pdf2
 \output_sync 0
@@ -40,15 +40,24 @@
 \pdf_pdfusetitle false
 \papersize letterpaper
 \use_geometry true
-\use_amsmath 1
-\use_esint 1
-\use_mhchem 1
-\use_mathdots 1
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 0
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
 \cite_engine basic
+\cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
 \suppress_date false
+\justification true
 \use_refstyle 1
 \index Index
 \shortcut idx
@@ -278,12 +287,14 @@ After each SNP has been assigned an interval and a set of genes overlapping
  multiple-counting of genes.
 \end_layout
 
-\begin_layout Paragraph*
-Two score options
+\begin_layout Subsubsection*
+Step 2: Calculating specificity scores
 \end_layout
 
 \begin_layout Standard
-By default, SNPsea assumes one gene in each associated locus is associated
+SNPsea uses different algorithms for matrices with continuous or binary
+ values.
+ By default, SNPsea assumes one gene in each associated locus is associated
  with the given trait.
  We also include the option to assume all genes within a locus are associated.
  We compare results of the two options with four phenotypes (
@@ -306,7 +317,7 @@ The
 \family typewriter
 '--score single'
 \family default
- method (default option) assumes that a single gene in each locus is associated
+ option (default) assumes that a single gene in each locus is associated
  with the given phenotype.
  For each condition, we choose the gene in each locus with the greatest
  specificity to that condition.
@@ -317,18 +328,16 @@ The
 \family typewriter
 '--score total'
 \family default
- method assumes that all genes in a SNP's linkage interval are associated.
+ option assumes that all genes in a SNP's linkage interval are associated.
  We account for all linked genes when calculating scores.
 \end_layout
 
-\begin_layout Subsubsection*
-Step 2: Calculating specificity scores
+\begin_layout Paragraph
+Specificity for a matrix of continuous values
 \end_layout
 
 \begin_layout Standard
-SNPsea uses different algorithms for matrices with continuous or binary
- values.
- Before running SNPsea, a matrix with continuous values must be normalized
+Before running SNPsea, a matrix with continuous values must be normalized
  so that columns are directly comparable.
  
 \emph on
@@ -345,12 +354,8 @@ raw
 .
 \end_layout
 
-\begin_layout Paragraph
-Specificity for a matrix of continuous values
-\end_layout
-
 \begin_layout Standard
-We extend an approach we have previoulsy described in detail 
+We extend an approach we have previously described in detail 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "hu_integrating_2011"
@@ -372,7 +377,7 @@ key "hu_integrating_2011"
 
  conditions.
  First, we normalize the expression of each gene by dividing each value
- by the L2 norm of the genes values in different conditions.
+ by the L2 norm of the gene's values across all conditions.
 \end_layout
 
 \begin_layout Standard
@@ -497,7 +502,7 @@ We create a new matrix
 \end_inset
 
 .
- The locus scores 
+ We define the locus scores 
 \begin_inset Formula $P_{,j}$
 \end_inset
 
@@ -505,9 +510,9 @@ We create a new matrix
 \begin_inset Formula $j$
 \end_inset
 
- are approximately uniformly distributed for a set of randomly selected
- loci under the following assumption: for the set of genes in a given SNP
- locus 
+ to be approximately uniformly distributed for a set of randomly selected
+ loci under the null hypothesis of no association to the condition.
+ We make the assumption that, for a set of genes in a given SNP locus 
 \begin_inset Formula $I_{k}$
 \end_inset
 
@@ -516,8 +521,15 @@ We create a new matrix
 \end_inset
 
  are random, independent, and approximately uniformly distributed.
- We'll come back to this assumption later when testing significance in Step
- 3 below.
+ If there is an actual association to a condition 
+\begin_inset Formula $j$
+\end_inset
+
+, we will observe an unexpectedly small value for 
+\begin_inset Formula $P_{,j}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Paragraph*
@@ -527,8 +539,12 @@ We create a new matrix
 \end_layout
 
 \begin_layout Standard
-This approach assumes one gene in each SNP locus is associated with the
- trait.
+This approach tests for the association of one gene in each SNP locus to
+ condition 
+\begin_inset Formula $j$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -594,7 +610,7 @@ key "hu_integrating_2011"
 \begin_inset Formula $i\in I_{k}$
 \end_inset
 
-, then the probability of obtaining a value equal to or less than 
+, then the probability to randomly draw a value equal to or less than 
 \begin_inset Formula $A''_{g_{k},j}$
 \end_inset
 
@@ -619,23 +635,39 @@ P_{k,j}=1-(1-\text{Min}_{i\in I_{k}}(A''_{i,j}))^{m_{k}}
 \end_layout
 
 \begin_layout Standard
-This assumes all genes in a given SNP locus are associated with a trait
- --- in most circumstances, we consider this model to be unlikely in most
- situations.
- We compute the probability of observing values 
+This approach tests for the association of all genes in each SNP locus to
+ condition 
+\begin_inset Formula $j$
+\end_inset
+
+ --- we consider this model to be unlikely in most situations.
+ The product (log sum) of uniform values between (0,1) follows a gamma distribut
+ion 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "johnson_univariate_2005"
+
+\end_inset
+
+.
+ If the genes 
+\begin_inset Formula $I_{k}$
+\end_inset
+
+ have no specificity to a condition 
+\begin_inset Formula $j$
+\end_inset
+
+, then the values 
 \begin_inset Formula $A''_{i\in I_{k}}$
 \end_inset
 
- for some locus 
-\begin_inset Formula $k$
-\end_inset
-
- as the product of percentiles.
- This assumes 
+ are approximately uniformly distributed.
+ So, we compute the probability to randomly draw values 
 \begin_inset Formula $A''_{i\in I_{k}}$
 \end_inset
 
- values are uniformly distributed.
+ with a smaller product as the upper tail of the gamma distribution:
 \end_layout
 
 \begin_layout Standard
@@ -742,13 +774,13 @@ We provide two options to calculate locus scores.
 
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="7">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
 <column alignment="center" valignment="top" width="0pt">
 <row>
 <cell alignment="center" valignment="top" usebox="none">
@@ -1131,6 +1163,7 @@ target "http://plugins.biogps.org/download/gnf1h-gcrma.zip"
 \begin_layout Standard
 We averaged the expression values for tissue replicates.
  For each gene, we selected the single probe with the largest minimum value.
+ This left us with 17,581 genes and 79 tissues.
  Finally, we converted the file to 
 \begin_inset CommandInset href
 LatexCommand href
@@ -1229,9 +1262,9 @@ target "http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html"
 \begin_layout Standard
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="2">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
 <row>
 <cell alignment="center" valignment="top" bottomline="true" usebox="none">
 \begin_inset Text
@@ -1262,8 +1295,8 @@ Figures
 \size small
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="1">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
 <row>
 <cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
@@ -1410,14 +1443,14 @@ snpsea
 \begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="8" columns="1">
-<features tabularvalignment="middle">
-<column alignment="left" valignment="top" width="0">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="left" valignment="top">
 <row>
 <cell alignment="left" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-Horizontal barplot of p-values:
+Horizontal bar plot of p-values:
 \end_layout
 
 \end_inset
@@ -1991,14 +2024,14 @@ We tested SNPsea with the three additional phenotypes listed below with
 
 \begin_inset Tabular
 <lyxtabular version="3" rows="6" columns="7">
-<features tabularvalignment="middle">
-<column alignment="left" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="left" valignment="top" width="0">
-<column alignment="left" valignment="top" width="0">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="left" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
 <row>
 <cell alignment="left" valignment="top" usebox="none">
 \begin_inset Text

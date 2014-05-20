@@ -19,7 +19,6 @@
     <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script src="sections.js"></script>
 
 <style type="text/css">
 /*
@@ -660,8 +659,8 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>SNPsea is an algorithm to identify cell types and pathways likely to be affected by risk loci. It requires a list of SNP identifiers and a matrix of genes and conditions.</p>
-<p>Genome-wide association studies (GWAS) discovered many genomic loci associated with risk for multiple diseases. SNPsea provides a simple way to determine the types of cells influenced by genes in those loci.</p>
-<p>Suppose that disease-associated alleles influence a small number of pathogenic cell types. We hypothesize that the genes with critical functions in those cell types are likely to be within risk loci for that disease. We assume that a gene's specificity to a cell type is a reasonable indicator of its importance to the unique function of that cell type.</p>
+<p>Genome-wide association studies (GWAS) have discovered multiple genomic loci associated with risk for different types of disease. SNPsea provides a simple way to determine the types of cells influenced by genes in these risk loci.</p>
+<p>Suppose disease-associated alleles influence a small number of pathogenic cell types. We hypothesize that genes with critical functions in those cell types are likely to be within risk loci for that disease. We assume that a gene's specificity to a cell type is a reasonable indicator of its importance to the unique function of that cell type.</p>
 <p>First, we identify the genes in linkage disequilibrium (LD) with the given trait-associated SNPs and score the gene set for specificity to each cell type. Next, we define a null distribution of scores for each cell type by sampling random SNP sets matched on the number of linked genes. Finally, we evaluate the significance of the original gene set's specificity by comparison to the null distributions: we calculate an exact permutation p-value.</p>
 <p>SNPsea is a general algorithm. You may provide your own:</p>
 <ol style="list-style-type: decimal">
@@ -686,11 +685,9 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <img src="figures/cartoon.png" />
 </div>
 <p>This cartoon illustrates the key ideas of the algorithm:</p>
-<ol style="list-style-type: upper-alpha">
-<li><p><strong>Step 1</strong>: Each SNP in a set of disease-associated SNPs is in linkage disequilibrium (LD) with multiple genes. The genes are scored, in aggregate, for specificity to each tissue.</p></li>
-<li><p><strong>Step 2</strong>: The algorithm is repeated with random null SNP sets that are not associated with any phenotype. These have been selected from an LD-pruned list of SNPs, so the whole genome is covered.</p></li>
-<li><p><strong>Step 3</strong>: The random SNP set scores form the null distributions which allows us to determine statistical significance for enrichment of specificity to a particular tissue/cell-type/condition.</p></li>
-</ol>
+<p><strong>A|</strong> Step 1. Each SNP in a set of disease-associated SNPs is in linkage disequilibrium (LD) with multiple genes. The genes are scored, in aggregate, for specificity to each tissue.</p>
+<p><strong>B|</strong> Step 2: The algorithm is repeated with random null SNP sets that are not associated with any phenotype. These have been selected from an LD-pruned list of SNPs, so the whole genome is covered.</p>
+<p><strong>C|</strong> Step 3: The random SNP set scores form the null distributions which allows us to determine statistical significance for enrichment of specificity to a particular tissue/cell-type/condition.</p>
 </div>
 <div id="flow-chart" class="section level3">
 <h3>Flow Chart</h3>
@@ -860,9 +857,10 @@ HDL_cholesterol-Teslovich2010-46_SNPs.gwas
 Multiple_sclerosis-IMSGC-51_SNPs.gwas
 Red_blood_cell_count-Harst2012-45_SNPs.gwas
 
-GeneAtlas2004.gct.gz  # Gene Atlas 2004 gene expression matrix
-GO2013.gct.gz         # Gene Ontology 2013 gene annotation matrix
-ImmGen2012.gct.gz     # ImmGen 2012 gene expression matrix
+GeneAtlas2004.gct.gz  # Gene Atlas 2004 Affymetrix expression matrix
+ImmGen2012.gct.gz     # ImmGen 2012 Affymetrix expression matrix
+FANTOM2014.gct.gz     # FANTOM5 2014 CAGE matrix
+GO2013.gct.gz         # Gene Ontology 2013 binary annotation matrix
 
 NCBIgenes2013.bed.gz  # NCBI gene intervals
 Lango2010.txt.gz      # LD-pruned SNPs
@@ -908,22 +906,30 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
 <div id="celiac_disease-trynka2011-35_snps.gwas" class="section level4">
 <h4>Celiac_disease-Trynka2011-35_SNPs.gwas</h4>
 <p>35 SNPs associated with Celiac disease taken from Table 2. Positions are on hg19. All SNPs have <span class="math">\(P \le 5e-8\)</span>.</p>
+<blockquote>
 <p>Trynka G, Hunt KA, Bockett NA, et al. Dense genotyping identifies and localizes multiple common and rare variant association signals in celiac disease. Nat Genet. 2011;43(12):1193-201. <a href="http://www.ncbi.nlm.nih.gov/pubmed/22057235">Pubmed</a></p>
+</blockquote>
 </div>
 <div id="hdl_cholesterol-teslovich2010-46_snps.gwas" class="section level4">
 <h4>HDL_cholesterol-Teslovich2010-46_SNPs.gwas</h4>
 <p>46 SNPs associated with HDL taken from Supplementary Table 2. Positions are on hg19. All SNPs have <span class="math">\(P \le 5e-8\)</span>.</p>
+<blockquote>
 <p>Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and population relevance of 95 loci for blood lipids. Nature. 2010;466(7307):707-13. <a href="http://www.ncbi.nlm.nih.gov/pubmed/20686565">Pubmed</a></p>
+</blockquote>
 </div>
 <div id="multiple_sclerosis-imsgc-51_snps.gwas" class="section level4">
 <h4>Multiple_sclerosis-IMSGC-51_SNPs.gwas</h4>
 <p>51 SNPs associated with Multiple Sclerosis taken from Supplementary Table A. Positions are on hg19. All SNPs have <span class="math">\(P \le 5e-8\)</span>.</p>
+<blockquote>
 <p>Sawcer S, Hellenthal G, Pirinen M, et al. Genetic risk and a primary role for cell-mediated immune mechanisms in multiple sclerosis. Nature. 2011;476(7359):214-9. <a href="http://www.ncbi.nlm.nih.gov/pubmed/21833088">Pubmed</a></p>
+</blockquote>
 </div>
 <div id="red_blood_cell_count-harst2012-45_snps.gwas" class="section level4">
 <h4>Red_blood_cell_count-Harst2012-45_SNPs.gwas</h4>
 <p>45 SNPs associated with red blood cell count (RBC) taken from Table 1. Positions are on hg19. All SNPs have <span class="math">\(P \le 5e-8\)</span>.</p>
-<p>Van der harst P, Zhang W, Mateo leach I, et al. Seventy-five genetic loci influencing the human red blood cell. Nature. 2012;492(7429):369-75. <a href="http://www.ncbi.nlm.nih.gov/pubmed/23222517">Pubmed</a></p>
+<blockquote>
+<p>van der Harst P, Zhang W, Mateo leach I, et al. Seventy-five genetic loci influencing the human red blood cell. Nature. 2012;492(7429):369-75. <a href="http://www.ncbi.nlm.nih.gov/pubmed/23222517">Pubmed</a></p>
+</blockquote>
 </div>
 </div>
 <div id="gene-matrices" class="section level3">
@@ -978,7 +984,7 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
 </div>
 <div id="go2013.gct.gz" class="section level4">
 <h4>GO2013.gct.gz</h4>
-<p>A GCT formatted gene matrix with 1s and 0s indicating presence or absence of genes in Gene Ontology annotations.</p>
+<p>A <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> formatted gene matrix with 1s and 0s indicating presence or absence of genes in Gene Ontology annotations.</p>
 <p>We downloaded the OBO file from <a href="http://www.geneontology.org">Gene Ontology</a> (data-version: 2013-06-29, CVS revision: 9700).</p>
 <p>For each gene, we climbed the hierarchy of ontology terms and applied parental terms. If a gene is annotated with some term <span class="math">\(T\)</span>, we also add all of the terms that are parents of <span class="math">\(T\)</span>. We copy terms between homologous genes using <a href="http://www.ncbi.nlm.nih.gov/homologene">Homologene</a> data. If a mouse gene is annotated with some term and the human homolog is not, then we copy the term to the human gene. We discard all GO terms assigned to fewer than 100 or to more than 1000 genes. This leaves us with a matrix of 19,111 genes and 1,751 terms.</p>
 </div>
@@ -1213,7 +1219,7 @@ Whole_Blood</code></pre>
 </div>
 <div id="gene-intervals-arg" class="section level3">
 <h3><code>--gene-intervals ARG</code></h3>
-<p>You must provide gene intervals in BED format with a fourth column that contains the same gene identifiers as those present in the Name column of the <strong><code>--gene-matrix</code></strong> GCT file. Only the first four columns are used.</p>
+<p>You must provide gene intervals in BED format with a fourth column that contains the same gene identifiers as those present in the Name column of the <strong><code>--gene-matrix</code></strong> <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> file. Only the first four columns are used.</p>
 <pre><code>zcat NCBIgenes2013.bed.gz | head
 
 chr1  10003485   10045555   64802      NMNAT1
@@ -1526,4 +1532,39 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
     </div>
 </div>
 </body>
+<script type="text/javascript">
+window.onload = function() {
+    var xpath = '//*[@id="TOC"]/ul[1]//a';
+    var rtype = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+    var titles = document.evaluate(xpath, document, null, rtype, null);
+    
+    for (var i = 0; i < titles.snapshotLength; i++) {
+        var title = titles.snapshotItem(i);
+        var titleName = title.hash.substr(1);
+        var section = document.getElementById(titleName);
+        section.style.display = "none";
+    }
+
+    // Is there a hashtag in the url?
+    var urlSection = window.location.hash.substr(1);
+    var visible = document.getElementById("visibleContent");
+    if (urlSection != "") {
+        var section = document.getElementById(urlSection);
+        visible.innerHTML = section.innerHTML;
+    } else {
+        visible.innerHTML = document.getElementById("introduction").innerHTML;
+    }
+
+    for (var i = 0; i < titles.snapshotLength; i++) {
+        var title = titles.snapshotItem(i);
+        title.addEventListener('click', function() {
+            window.scrollTo(null, 0);
+            var section = document.getElementById(this.hash.substr(1));
+            console.log(section);
+            var visible = document.getElementById("visibleContent");
+            visible.innerHTML = section.innerHTML;
+        }, false);
+    }
+}
+</script>
 </html>

@@ -163,15 +163,15 @@ SNPsea is an algorithm to identify cell types and pathways likely to be
 affected by risk loci. It requires a list of SNP identifiers and a matrix of
 genes and conditions.
 
-Genome-wide association studies (GWAS) discovered many genomic loci associated
-with risk for multiple diseases. SNPsea provides a simple way to determine the
-types of cells influenced by genes in those loci.
+Genome-wide association studies (GWAS) have discovered multiple genomic loci
+associated with risk for different types of disease. SNPsea provides a simple
+way to determine the types of cells influenced by genes in these risk loci.
 
-Suppose that disease-associated alleles influence a small number of pathogenic
-cell types. We hypothesize that the genes with critical functions in those
-cell types are likely to be within risk loci for that disease. We assume that
-a gene's specificity to a cell type is a reasonable indicator of its
-importance to the unique function of that cell type.
+Suppose disease-associated alleles influence a small number of pathogenic cell
+types. We hypothesize that genes with critical functions in those cell types
+are likely to be within risk loci for that disease. We assume that a gene's
+specificity to a cell type is a reasonable indicator of its importance to the
+unique function of that cell type.
 
 First, we identify the genes in linkage disequilibrium (LD) with the given
 trait-associated SNPs and score the gene set for specificity to each cell

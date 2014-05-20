@@ -10,15 +10,15 @@ SNPsea is an algorithm to identify cell types and pathways likely to be
 affected by risk loci. It requires a list of SNP identifiers and a matrix of
 genes and conditions.
 
-Genome-wide association studies (GWAS) discovered many genomic loci associated
-with risk for multiple diseases. SNPsea provides a simple way to determine the
-types of cells influenced by genes in those loci.
+Genome-wide association studies (GWAS) have discovered multiple genomic loci
+associated with risk for different types of disease. SNPsea provides a simple
+way to determine the types of cells influenced by genes in these risk loci.
 
-Suppose that disease-associated alleles influence a small number of pathogenic
-cell types. We hypothesize that the genes with critical functions in those
-cell types are likely to be within risk loci for that disease. We assume that
-a gene's specificity to a cell type is a reasonable indicator of its
-importance to the unique function of that cell type.
+Suppose disease-associated alleles influence a small number of pathogenic cell
+types. We hypothesize that genes with critical functions in those cell types
+are likely to be within risk loci for that disease. We assume that a gene's
+specificity to a cell type is a reasonable indicator of its importance to the
+unique function of that cell type.
 
 First, we identify the genes in linkage disequilibrium (LD) with the given
 trait-associated SNPs and score the gene set for specificity to each cell
@@ -65,17 +65,17 @@ See the first description of the algorithm and additional examples here:
 
 This cartoon illustrates the key ideas of the algorithm:
 
-A.  **Step 1**: Each SNP in a set of disease-associated SNPs is in linkage
-    disequilibrium (LD) with multiple genes. The genes are scored, in
-    aggregate, for specificity to each tissue.
+**A|**  Step 1. Each SNP in a set of disease-associated SNPs is in linkage
+        disequilibrium (LD) with multiple genes. The genes are scored, in
+        aggregate, for specificity to each tissue.
 
-B.  **Step 2**: The algorithm is repeated with random null SNP sets that are
-    not associated with any phenotype. These have been selected from an
-    LD-pruned list of SNPs, so the whole genome is covered.
+**B|**  Step 2: The algorithm is repeated with random null SNP sets that are
+        not associated with any phenotype. These have been selected from an
+        LD-pruned list of SNPs, so the whole genome is covered.
 
-C.  **Step 3**: The random SNP set scores form the null distributions which
-    allows us to determine statistical significance for enrichment of
-    specificity to a particular tissue/cell-type/condition.
+**C|**  Step 3: The random SNP set scores form the null distributions which
+        allows us to determine statistical significance for enrichment of
+        specificity to a particular tissue/cell-type/condition.
 
 
 ### Flow Chart
@@ -416,9 +416,9 @@ Red blood cell count  45    45    Table 1 ([Harst *et al.* 2012][Harst2012])
 35 SNPs associated with Celiac disease taken from Table 2.
 Positions are on hg19. All SNPs have $P \le 5e-8$.
 
-Trynka G, Hunt KA, Bockett NA, et al. Dense genotyping identifies and
-localizes multiple common and rare variant association signals in celiac
-disease. Nat Genet. 2011;43(12):1193-201. [Pubmed][Trynka2011]
+> Trynka G, Hunt KA, Bockett NA, et al. Dense genotyping identifies and
+> localizes multiple common and rare variant association signals in celiac
+> disease. Nat Genet. 2011;43(12):1193-201. [Pubmed][Trynka2011]
 
 
 #### HDL_cholesterol-Teslovich2010-46_SNPs.gwas
@@ -426,9 +426,9 @@ disease. Nat Genet. 2011;43(12):1193-201. [Pubmed][Trynka2011]
 46 SNPs associated with HDL taken from Supplementary Table 2.
 Positions are on hg19. All SNPs have $P \le 5e-8$.
 
-Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and
-population relevance of 95 loci for blood lipids. Nature.
-2010;466(7307):707-13. [Pubmed][Teslovich2010]
+> Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and
+> population relevance of 95 loci for blood lipids. Nature.
+> 2010;466(7307):707-13. [Pubmed][Teslovich2010]
 
 
 #### Multiple_sclerosis-IMSGC-51_SNPs.gwas
@@ -436,9 +436,9 @@ population relevance of 95 loci for blood lipids. Nature.
 51 SNPs associated with Multiple Sclerosis taken from Supplementary Table A.
 Positions are on hg19. All SNPs have $P \le 5e-8$.
 
-Sawcer S, Hellenthal G, Pirinen M, et al. Genetic risk and a primary role
-for cell-mediated immune mechanisms in multiple sclerosis. Nature.
-2011;476(7359):214-9. [Pubmed][IMSGC2011]
+> Sawcer S, Hellenthal G, Pirinen M, et al. Genetic risk and a primary role
+> for cell-mediated immune mechanisms in multiple sclerosis. Nature.
+> 2011;476(7359):214-9. [Pubmed][IMSGC2011]
 
 
 
@@ -447,9 +447,9 @@ for cell-mediated immune mechanisms in multiple sclerosis. Nature.
 45 SNPs associated with red blood cell count (RBC) taken from Table 1.
 Positions are on hg19. All SNPs have $P \le 5e-8$.
 
-Van der harst P, Zhang W, Mateo leach I, et al. Seventy-five genetic loci
-influencing the human red blood cell. Nature. 2012;492(7429):369-75.
-[Pubmed][Harst2012]
+> van der Harst P, Zhang W, Mateo leach I, et al. Seventy-five genetic loci
+> influencing the human red blood cell. Nature. 2012;492(7429):369-75.
+> [Pubmed][Harst2012]
 
 
 ### Gene matrices
@@ -476,7 +476,7 @@ format.
 
 #### GO2013.gct.gz
 
-A GCT formatted gene matrix with 1s and 0s indicating presence or absence of
+A [GCT] formatted gene matrix with 1s and 0s indicating presence or absence of
 genes in Gene Ontology annotations.
 
 We downloaded the OBO file from [Gene Ontology] (data-version: 2013-06-29,
@@ -823,10 +823,7 @@ to sample 20 random SNPs from the **`--snp-intervals`** file.
 
 ### `--gene-matrix ARG`
 
-You must provide a single gene matrix that must be in [GCT][gct] format.
-
-[gct]: http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct
-
+You must provide a single gene matrix that must be in [GCT] format.
 
 ```
 zcat GeneAtlas2004.gct.gz | cut -f1-4 | head
@@ -862,7 +859,7 @@ Whole_Blood
 
 You must provide gene intervals in BED format with a fourth column that
 contains the same gene identifiers as those present in the Name column of the
-**`--gene-matrix`** GCT file. Only the first four columns are used.
+**`--gene-matrix`** [GCT] file. Only the first four columns are used.
 
 ```
 zcat NCBIgenes2013.bed.gz | head
