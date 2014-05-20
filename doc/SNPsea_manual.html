@@ -847,8 +847,8 @@ P_{k,j} &amp; = &amp; \int_{x}^{\infty}\Gamma(m_{k},1)\ \ \text{for}\ \ x=\sum_{
 <div id="data" class="section level2">
 <h2>Data</h2>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> snpsea
-<span class="kw">curl</span> -LOk http://files.figshare.com/1382662/SNPsea_data_20140212.zip
-<span class="kw">unzip</span> SNPsea_data_20140212.zip</code></pre>
+<span class="kw">curl</span> -LOk http://files.figshare.com/1504037/SNPsea_data_20140520.zip
+<span class="kw">unzip</span> SNPsea_data_20140520.zip</code></pre>
 <p>Download the compressed archive with data required to perform this analysis (138M). The direct link to the zip shown above may be out of date and fail to load. If so, please visit the link below instead:</p>
 <p><a href="http://dx.doi.org/10.6084/m9.figshare.871430">http://dx.doi.org/10.6084/m9.figshare.871430</a></p>
 <p>Contents of the compressed archive with data:</p>
@@ -984,13 +984,17 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
 </div>
 <div id="go2013.gct.gz" class="section level4">
 <h4>GO2013.gct.gz</h4>
-<p>A <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> formatted gene matrix with 1s and 0s indicating presence or absence of genes in Gene Ontology annotations.</p>
+<p>A <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> formatted gene matrix with 1,751 annotation terms (1s and 0s indicating presence or absence of the gene in a Gene Ontology term).</p>
 <p>We downloaded the OBO file from <a href="http://www.geneontology.org">Gene Ontology</a> (data-version: 2013-06-29, CVS revision: 9700).</p>
 <p>For each gene, we climbed the hierarchy of ontology terms and applied parental terms. If a gene is annotated with some term <span class="math">\(T\)</span>, we also add all of the terms that are parents of <span class="math">\(T\)</span>. We copy terms between homologous genes using <a href="http://www.ncbi.nlm.nih.gov/homologene">Homologene</a> data. If a mouse gene is annotated with some term and the human homolog is not, then we copy the term to the human gene. We discard all GO terms assigned to fewer than 100 or to more than 1000 genes. This leaves us with a matrix of 19,111 genes and 1,751 terms.</p>
 </div>
 <div id="immgen2012.gct.gz" class="section level4">
 <h4>ImmGen2012.gct.gz</h4>
-<p>Gene expression data for 249 blood cell types from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">GSE15907</a>. Replicates for each cell type profile were averaged. For each gene, the single probe with the largest minimum was selected. <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">Immunological Genome Project</a></p>
+<p>Gene expression data for 249 blood cell types from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">GSE15907</a>. We averaged cell type replicates. For each gene, we selected the single probe with the largest minimum.</p>
+</div>
+<div id="fantom2014.gct.gz" class="section level4">
+<h4>FANTOM2014.gct.gz</h4>
+<p>CAGE data for 533 human cell types from <a href="http://fantom.gsc.riken.jp/5/data/">FANTOM5</a>. We averaged cell type replicates. We discarded CAGE entries with 0 or multiple corresponding NCBI Entrez IDs. Then, we summed the CAGE entries for each gene.</p>
 </div>
 </div>
 <div id="ld-pruned-snps-and-genomic-intervals" class="section level3">

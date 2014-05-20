@@ -6,12 +6,12 @@ SNPsea: an algorithm to identify cell types, tissues, and pathways affected by r
 | [Example](#example) | [Citation](#citation) |
 | [Quick Start](#quick-start) | [Description](#description) |
 | Executable | Data |
-| [snpsea-v1.0.3.tar.gz][exec] | [SNPsea_data_20140212.zip][data]  |
+| [snpsea-v1.0.3.tar.gz][exec] | [SNPsea_data_20140520.zip][data]  |
 
 [broad]: http://www.broadinstitute.org/mpg/snpsea
 [manual]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html
 [exec]: https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
-[data]: http://files.figshare.com/1382662/SNPsea_data_20140212.zip
+[data]: http://files.figshare.com/1382662/SNPsea_data_20140520.zip
 
 
 Cartoon
@@ -88,7 +88,7 @@ Quick Start
 
 | Executable | Data |
 |:---:|:---:|
-| [snpsea-v1.0.3.tar.gz][exec] | [SNPsea_data_20140212.zip][data]  |
+| [snpsea-v1.0.3.tar.gz][exec] | [SNPsea_data_20140520.zip][data]  |
 
 
 On Linux 64-bit, get started right away:
@@ -97,8 +97,8 @@ On Linux 64-bit, get started right away:
 mkdir snpsea; cd snpsea
 curl -LOk https://github.com/slowkow/snpsea/releases/download/v1.0.3/snpsea_v1.0.3.zip
 unzip snpsea_v1.0.3.zip
-curl -LOk http://files.figshare.com/1382662/SNPsea_data_20140212.zip
-unzip SNPsea_data_20140212.zip
+curl -LOk http://files.figshare.com/1382662/SNPsea_data_20140520.zip
+unzip SNPsea_data_20140520.zip
 bash example.sh
 ```
 

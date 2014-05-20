@@ -372,8 +372,8 @@ cp ../bin/snpsea* ~/bin/   #   Copy the executables wherever you like.
 
 ```bash
 cd snpsea
-curl -LOk http://files.figshare.com/1382662/SNPsea_data_20140212.zip
-unzip SNPsea_data_20140212.zip
+curl -LOk http://files.figshare.com/1504037/SNPsea_data_20140520.zip
+unzip SNPsea_data_20140520.zip
 ```
 
 Download the compressed archive with data required to perform this analysis
@@ -384,21 +384,19 @@ to load. If so, please visit the link below instead:
 
 Contents of the compressed archive with data:
 
-```
-Celiac_disease-Trynka2011-35_SNPs.gwas
-HDL_cholesterol-Teslovich2010-46_SNPs.gwas
-Multiple_sclerosis-IMSGC-51_SNPs.gwas
-Red_blood_cell_count-Harst2012-45_SNPs.gwas
+    Celiac_disease-Trynka2011-35_SNPs.gwas
+    HDL_cholesterol-Teslovich2010-46_SNPs.gwas
+    Multiple_sclerosis-IMSGC-51_SNPs.gwas
+    Red_blood_cell_count-Harst2012-45_SNPs.gwas
 
-GeneAtlas2004.gct.gz  # Gene Atlas 2004 Affymetrix expression matrix
-ImmGen2012.gct.gz     # ImmGen 2012 Affymetrix expression matrix
-FANTOM2014.gct.gz     # FANTOM5 2014 CAGE matrix
-GO2013.gct.gz         # Gene Ontology 2013 binary annotation matrix
+    GeneAtlas2004.gct.gz  # Gene Atlas 2004 Affymetrix expression matrix
+    ImmGen2012.gct.gz     # ImmGen 2012 Affymetrix expression matrix
+    FANTOM2014.gct.gz     # FANTOM5 2014 CAGE matrix
+    GO2013.gct.gz         # Gene Ontology 2013 binary annotation matrix
 
-NCBIgenes2013.bed.gz  # NCBI gene intervals
-Lango2010.txt.gz      # LD-pruned SNPs
-TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals
-```
+    NCBIgenes2013.bed.gz  # NCBI gene intervals
+    Lango2010.txt.gz      # LD-pruned SNPs
+    TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals
 
 
 ### SNP sets
@@ -441,7 +439,6 @@ Positions are on hg19. All SNPs have $P \le 5e-8$.
 > 2011;476(7359):214-9. [Pubmed][IMSGC2011]
 
 
-
 #### Red_blood_cell_count-Harst2012-45_SNPs.gwas
 
 45 SNPs associated with red blood cell count (RBC) taken from Table 1.
@@ -456,28 +453,28 @@ Positions are on hg19. All SNPs have $P \le 5e-8$.
 
 Type    Genes  Conditions  Species                     Reference
 ----    -----  ----------  -------                     ---------
-Affy    17581  79 tissues  homo sapiens                [GeneAtlas 2004][GSE1133]
-Affy    15139  249 cells   mus musculus                [ImmGen 2012][GSE15907]
+Affy    17581  79 tissues  homo sapiens                [GeneAtlas 2004][GeneAtlas]
+Affy    15139  249 cells   mus musculus                [ImmGen 2012][ImmGen]
 CAGE    18502  533 cells   homo sapiens                [FANTOM5 2014][FANTOM5]
 Binary  19111  1751 terms  homo sapiens, mus musculus  [Gene Ontology] 2013, [Homologene]
 
 
 #### GeneAtlas2004.gct.gz
 
-Gene expression data for 79 human tissues from [GSE1133]. We averaged the
-expression values for tissue replicates. For each gene, we selected the single
-probe with the largest minimum value. Finally, we converted the file to [GCT]
-format.
+Gene expression data for 79 human tissues from [GSE1133][GeneAtlas]. We
+averaged the expression values for tissue replicates. For each gene, we
+selected the single probe with the largest minimum value. Finally, we
+converted the file to [GCT] format.
 
 > Su AI et al. A gene atlas of the mouse and human protein-encoding
 > transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7.
-> [PubMed][GSE1133]
+> [PubMed][GeneAtlas]
 
 
 #### GO2013.gct.gz
 
-A [GCT] formatted gene matrix with 1s and 0s indicating presence or absence of
-genes in Gene Ontology annotations.
+A [GCT] formatted gene matrix with 1,751 annotation terms (1s and 0s
+indicating presence or absence of the gene in a Gene Ontology term).
 
 We downloaded the OBO file from [Gene Ontology] (data-version: 2013-06-29,
 CVS revision: 9700).
@@ -494,9 +491,16 @@ more than 1000 genes. This leaves us with a matrix of 19,111 genes and
 
 #### ImmGen2012.gct.gz
 
-Gene expression data for 249 blood cell types from [GSE15907]. Replicates for
-each cell type profile were averaged. For each gene, the single probe with
-the largest minimum was selected. [Immunological Genome Project][GSE15907]
+Gene expression data for 249 blood cell types from [GSE15907][ImmGen]. We
+averaged cell type replicates. For each gene, we selected the single probe
+with the largest minimum.
+
+
+#### FANTOM2014.gct.gz
+
+CAGE data for 533 human cell types from [FANTOM5]. We averaged cell type
+replicates. We discarded CAGE entries with 0 or multiple corresponding NCBI
+Entrez IDs. Then, we summed the CAGE entries for each gene.
 
 
 ### LD-pruned SNPs and Genomic Intervals
@@ -534,8 +538,8 @@ with >3 cM/Mb recombination rate.
 [Trynka2011]: http://www.ncbi.nlm.nih.gov/pubmed/22057235
 [Teslovich2010]: http://www.ncbi.nlm.nih.gov/pubmed/20686565
 
-[GSE1133]: http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133
-[GSE15907]: http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907
+[GeneAtlas]: http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133
+[ImmGen]: http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907
 [FANTOM5]: http://fantom.gsc.riken.jp/5/data/
 
 [Gene Ontology]: http://www.geneontology.org
