@@ -1,7 +1,7 @@
 SNPsea: an algorithm to identify cell types, tissues, and pathways affected by risk loci
 ========================================================================================
 
-| [broadinstitute.org/mpg/snpsea](broad) | [Reference Manual][manual] |
+| [broadinstitute.org/mpg/snpsea][broad] | [Reference Manual][manual] |
 |:---:|:---:|
 | [Example](#example) | [Citation](#citation) |
 | [Quick Start](#quick-start) | [Description](#description) |
@@ -23,16 +23,17 @@ Cartoon
 
 This cartoon illustrates the key ideas of the algorithm:
 
-A.  Step 1. Each SNP in a set of disease-associated SNPs is in linkage
-    disequilibrium (LD) with multiple genes. The genes are scored, in
-    aggregate, for specificity to each tissue.
+**A|**  Step 1. Each SNP in a set of disease-associated SNPs is in linkage
+        disequilibrium (LD) with multiple genes. The genes are scored, in
+        aggregate, for specificity to each tissue.
 
-B.  Step 2. The procedure is repeated with random null SNP sets that are not
-    associated with any phenotype.
+**B|**  Step 2: The algorithm is repeated with random null SNP sets that are
+        not associated with any phenotype. These have been selected from an
+        LD-pruned list of SNPs, so the whole genome is covered.
 
-C.  Step 3. The random SNP sets form the null distribution which allows us to
-    determine the statistical significance of enrichment for specificity to
-    a particular tissue.
+**C|**  Step 3: The random SNP set scores form the null distributions which
+        allows us to determine statistical significance for enrichment of
+        specificity to a particular tissue/cell-type/condition.
 
 
 Example
@@ -185,7 +186,9 @@ SNPsea is a general algorithm. You may provide your own:
 2. Binary gene annotation matrix with presence/absence 1/0 values.
 
 We provide you with three expression matrices and one annotation matrix. See
-[Data].
+the [Data][manualdata] section of the [Reference Manual][manual].
+
+[manualdata]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html#data
 
 The columns of the matrix may be tissues, cell types, GO annotation codes, or
 other *conditions*. Continuous matrices *must* be normalized before running

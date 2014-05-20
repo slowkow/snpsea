@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="pandoc">
         <meta name="author" content="Kamil Slowikowski">
-            <meta name="dcterms.date" content="2014-03-31">
+            <meta name="dcterms.date" content="2014-05-19">
         <title>SNPsea Reference Manual</title>
 
 	<!-- Google WebFonts
@@ -19,6 +19,7 @@
     <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <script src="sections.js"></script>
 
 <style type="text/css">
 /*
@@ -101,28 +102,33 @@
 
 /* #Typography
 ================================================== */
-	h1, h2, h3, h4, h5, h6 {
-		color: #333;
-		/*font-family: "Georgia", "Times New Roman", serif;*/
-		font-family: 'Droid Sans', sans-serif;
-		text-decoration: none;
-		/*font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
-		font-weight: bold; }
-	h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { font-weight: inherit;
+      h1, h2, h3, h4, h5, h6 {
+	    color: #333;
+	    /*font-family: "Georgia", "Times New Roman", serif;*/
+	    font-family: 'Droid Sans', sans-serif;
+	    text-decoration: none;
+	    /*font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+	    font-weight: bold; }
+      h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { font-weight: inherit;
 	    text-decoration: none; }
-    h1 { font-size: 36px; line-height: 52px; margin-bottom: 24px;
-        margin-left: -0.5em; display: block; border-bottom: 1px solid #bbb; }
-    h1:nth-child(n+3) { margin-top: 3em; }
-	h2 { font-size: 32px; line-height: 42px; margin-bottom: 20px;
-        margin-top: 3em; margin-left: -0.3em; }
-	h3 { font-size: 23px; line-height: 36px; margin-bottom: 18px;
-        margin-top: 3em; margin-left: -0.15em; }
-	h4 { font-size: 21px; line-height: 32px; margin-bottom: 16px;
-	     margin-top: 3em; }
-	h5 { font-size: 17px; line-height: 26px; margin-bottom: 12px;
-         margin-top: 2em; }
-	h6 { font-size: 14px; line-height: 23px; margin-bottom: 8px;
-         margin-top: 2em; }
+
+      h1 {  font-size: 36px; line-height: 52px;
+	    margin-bottom: 24px;
+	    margin-left: -0.5em; display: block;
+	    border-bottom: 1px solid #bbb; }
+
+      /*h1:nth-child(n+3) { margin-top: 1em; }*/
+
+      h2 {  font-size: 32px; line-height: 42px; margin-bottom: 20px; margin-left: -0.3em; }
+
+      h3 {  font-size: 23px; line-height: 36px; margin-bottom: 18px; margin-left: -0.15em; }
+
+      h4 {  font-size: 18px; line-height: 26px; margin-bottom: 13px; }
+
+      h5 {  font-size: 16px; line-height: 25px; margin-bottom: 11px; }
+
+      h6 {  font-size: 14px; line-height: 23px; margin-bottom: 8px;  }
+
     .author, .date, nav > h1, nav > h2, nav > h3, nav > h4, nav > h5, nav > h6 { margin-top: 0px; }
 	.subheader { color: #333; }
     .title { font-size: 46px; line-height: 52px; margin-bottom: 24px;
@@ -593,7 +599,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
-<div class="container">
+<div class="container" style="min-height:900px">
     <div class="sixteen columns">
         <header>
         <h1 class="title">SNPsea Reference Manual</h1>
@@ -607,7 +613,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
     // -->
     </script><noscript>&#x73;&#108;&#x6f;&#x77;&#x69;&#x6b;&#x6f;&#x77;&#32;&#x61;&#116;&#32;&#98;&#114;&#x6f;&#x61;&#100;&#x69;&#110;&#x73;&#116;&#x69;&#116;&#x75;&#116;&#x65;&#32;&#100;&#x6f;&#116;&#32;&#x6f;&#114;&#x67;</noscript></td>
 
-            <td><h3 class="date">March 31, 2014</h3></td>
+            <td><h3 class="date">May 19, 2014</h3></td>
         </tr>
         </table>
         </header>
@@ -618,7 +624,6 @@ code > span.er { color: #ff0000; font-weight: bold; }
     <h3>Contents</h3>
 <ul>
 <li><a href="#introduction">Introduction</a><ul>
-<li><a href="#contact">Contact</a></li>
 <li><a href="#visual-summary">Visual Summary</a></li>
 <li><a href="#algorithm-details">Algorithm Details</a></li>
 </ul></li>
@@ -628,8 +633,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <li><a href="#python-packages">Python Packages</a></li>
 <li><a href="#r-packages">R Packages</a></li>
 </ul></li>
-<li><a href="#usage">Usage</a><ul>
-<li><a href="#example">Example</a></li>
+<li><a href="#usage-example">Usage Example</a><ul>
 <li><a href="#options">Options</a></li>
 <li><a href="#input-file-formats">Input File Formats</a></li>
 <li><a href="#output-files">Output Files</a></li>
@@ -651,48 +655,53 @@ code > span.er { color: #ff0000; font-weight: bold; }
     &nbsp;
     </div>
     <div class="twelve columns offset-by-one content">
+<div id="visibleContent"></div>
 <p></p>
-<h1 id="introduction">Introduction</h1>
-<p>SNPsea is a general algorithm to identify cell types, tissues, and pathways likely to be affected by risk loci. The required input is a list of SNP identifiers and a matrix of genes and conditions.</p>
-<p>Suppose we have a gene expression matrix with expression profiles for multiple cell types. Our goal may be to determine if some alleles associated to a trait contain genes that are important for the function of a particular cell type.</p>
-<p>First, we identify the genes in linkage disequilibrium with the given trait-associated SNPs and score them for specificity to each cell type. To evaluate significance of the specificity, we calculate an exact permutation p-value as follows. We take the sum of the specificity scores and compare it to a null distribution that is defined by sampling random matched SNP sets. They are matched to the original trait-associated SNPs on the number of linked genes.</p>
-<p>This implementation is generalized, so you may provide (1) a continuous gene matrix with gene expression (or any other values) or (2) a binary gene matrix with presence/absence 1/0 values. We provide two continuous matrices and one binary matrix for you.</p>
-<p>The columns of the matrix could be tissues, cell types, GO annotation codes, or any other types of <em>conditions</em>. Continuous matrices <em>must</em> be normalized before running SNPsea so that columns are directly comparable to each other.</p>
-<p>This analysis is able to detect if there is an enrichment of condition-specificity of the genes linked with trait-associated SNPs.</p>
-<p>If trait-associated alleles influence a small number of pathogenic tissues or cell types, we hypothesize that the subset of genes with critical functions in those pathogenic cell types are likely to be within trait-associated loci.</p>
-<p>We assume that a gene's specificity to a given cell type or condition is a reasonable indicator of the gene's importance to its function.</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>SNPsea is an algorithm to identify cell types and pathways likely to be affected by risk loci. It requires a list of SNP identifiers and a matrix of genes and conditions.</p>
+<p>Genome-wide association studies (GWAS) discovered many genomic loci associated with risk for multiple diseases. SNPsea provides a simple way to determine the types of cells influenced by genes in those loci.</p>
+<p>Suppose that disease-associated alleles influence a small number of pathogenic cell types. We hypothesize that the genes with critical functions in those cell types are likely to be within risk loci for that disease. We assume that a gene's specificity to a cell type is a reasonable indicator of its importance to the unique function of that cell type.</p>
+<p>First, we identify the genes in linkage disequilibrium (LD) with the given trait-associated SNPs and score the gene set for specificity to each cell type. Next, we define a null distribution of scores for each cell type by sampling random SNP sets matched on the number of linked genes. Finally, we evaluate the significance of the original gene set's specificity by comparison to the null distributions: we calculate an exact permutation p-value.</p>
+<p>SNPsea is a general algorithm. You may provide your own:</p>
+<ol style="list-style-type: decimal">
+<li>Continuous gene matrix with gene expression profiles (or other values).</li>
+<li>Binary gene annotation matrix with presence/absence 1/0 values.</li>
+</ol>
+<p>We provide you with three expression matrices and one annotation matrix. See <a href="#data">Data</a>.</p>
+<p>The columns of the matrix may be tissues, cell types, GO annotation codes, or other <em>conditions</em>. Continuous matrices <em>must</em> be normalized before running SNPsea: columns must be directly comparable to each other.</p>
 <p>If you benefit from this method, please cite:</p>
 <blockquote>
 <p>Slowikowski, K. et al. <strong>SNPsea: an algorithm to identify cell types, tissues, and pathways affected by risk loci.</strong> Bioinformatics (2014). doi:<a href="http://bioinformatics.oxfordjournals.org/content/early/2014/05/10/bioinformatics.btu326">10.1093/bioinformatics/btu326</a></p>
 </blockquote>
-<p>See additional examples:</p>
+<p>See the first description of the algorithm and additional examples here:</p>
 <blockquote>
 <p>Hu, X. et al. <strong>Integrating autoimmune risk loci with gene-expression data identifies specific pathogenic immune cell subsets.</strong> The American Journal of Human Genetics 89, 496–506 (2011). <a href="http://www.ncbi.nlm.nih.gov/pubmed/21963258">PubMed</a></p>
 </blockquote>
-<h2 id="contact">Contact</h2>
-<p>Please contact me with questions and comments: <script type="text/javascript">
-<!--
-h='&#98;&#114;&#x6f;&#x61;&#100;&#x69;&#110;&#x73;&#116;&#x69;&#116;&#x75;&#116;&#x65;&#46;&#x6f;&#114;&#x67;';a='&#64;';n='&#x73;&#108;&#x6f;&#x77;&#x69;&#x6b;&#x6f;&#x77;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
-// -->
-</script><noscript>&#x73;&#108;&#x6f;&#x77;&#x69;&#x6b;&#x6f;&#x77;&#32;&#x61;&#116;&#32;&#98;&#114;&#x6f;&#x61;&#100;&#x69;&#110;&#x73;&#116;&#x69;&#116;&#x75;&#116;&#x65;&#32;&#100;&#x6f;&#116;&#32;&#x6f;&#114;&#x67;</noscript></p>
-<h2 id="visual-summary">Visual Summary</h2>
-<h3 id="cartoon">Cartoon</h3>
+<div id="visual-summary" class="section level2">
+<h2>Visual Summary</h2>
+<div id="cartoon" class="section level3">
+<h3>Cartoon</h3>
 <div class="figure">
 <img src="figures/cartoon.png" />
 </div>
 <p>This cartoon illustrates the key ideas of the algorithm:</p>
 <ol style="list-style-type: upper-alpha">
-<li><p>Each SNP in a set of disease-associated SNPs is in linkage disequilibrium (LD) with multiple genes. The genes are scored, in aggregate, for specificity to each tissue.</p></li>
-<li><p>The procedure is repeated with random null SNP sets that are not associated with any phenotype.</p></li>
-<li><p>The random SNP sets form the null distribution which allows us to determine the statistical significance of enrichment for specificity to a particular tissue.</p></li>
+<li><p><strong>Step 1</strong>: Each SNP in a set of disease-associated SNPs is in linkage disequilibrium (LD) with multiple genes. The genes are scored, in aggregate, for specificity to each tissue.</p></li>
+<li><p><strong>Step 2</strong>: The algorithm is repeated with random null SNP sets that are not associated with any phenotype. These have been selected from an LD-pruned list of SNPs, so the whole genome is covered.</p></li>
+<li><p><strong>Step 3</strong>: The random SNP set scores form the null distributions which allows us to determine statistical significance for enrichment of specificity to a particular tissue/cell-type/condition.</p></li>
 </ol>
-<h3 id="flow-chart">Flow Chart</h3>
+</div>
+<div id="flow-chart" class="section level3">
+<h3>Flow Chart</h3>
 <div class="figure">
 <img src="figures/flowchart.png" />
 </div>
 <p>This flow chart shows the input data required to perform the analysis, and a summary of the intermediate steps.</p>
-<h2 id="algorithm-details">Algorithm Details</h2>
+</div>
+</div>
+<div id="algorithm-details" class="section level2">
+<h2>Algorithm Details</h2>
 <p>SNPsea tests if genes implicated by risk loci (e.g., those discovered through genome-wide association (GWA) studies) are specifically expressed in some conditions over others, and if this specificity is statistically significant. The program requires two inputs:</p>
 <ol style="list-style-type: decimal">
 <li><p>A list of SNP identifiers: rs123, 12:456, ...</p></li>
@@ -718,36 +727,50 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <li>We compare the specificity scores to a null distribution of scores obtained with random sets of matched SNP sets and compute an empirical <span class="math">\(P\)</span>-value.</li>
 </ul></li>
 </ul>
-<h3 id="step-1-assigning-genes-to-each-snp">Step 1: Assigning genes to each SNP</h3>
+<div id="step-1-assigning-genes-to-each-snp" class="section level3">
+<h3>Step 1: Assigning genes to each SNP</h3>
 <p>Accurate analyses must address the critical issue that SNPs frequently implicate a region with multiple different genes (<strong>Supplementary Figure 2</strong>). The challenge is to find evidence to show which of those genes are associated with a given trait.</p>
 <p>We determine the genes plausibly implicated by each trait-associated SNP using a previously described strategy (<strong>Supplementary Figure 1</strong> and Rossin <em>et al.</em> 2011). First, we define the linkage interval for a given SNP as the span between the furthest correlated SNPs <span class="math">\(r^{2}&gt;0.5\)</span> (EUR) within a 1 Mb window (1000 Genomes Consortium 2012). Next, we extend the interval to the nearest recombination hotspots with recombination rate &gt;3 cM/Mb (Myers <em>et al.</em> 2005). To address the case when no genes overlap an interval, we provide an option for SNPsea to extend the interval up- and downstream (by default 10 Kb).</p>
 <p>Most frequently, we find multiple genes <span class="math">\((m_{k}&gt;1)\)</span> in a single SNP locus <span class="math">\(k\)</span>. We expect many loci with multiple genes because of regions with high LD across long stretches of a chromosome. Less frequently, a locus has a single gene <span class="math">\((m_{k}=1)\)</span>, and loci with no genes <span class="math">\((m_{k}=0)\)</span> are discarded.</p>
 <p>After each SNP has been assigned an interval and a set of genes overlapping the interval, we merge SNPs with shared genes into a single locus to avoid multiple-counting of genes.</p>
-<h4 id="two-score-options">Two score options</h4>
+<div id="two-score-options" class="section level4">
+<h4>Two score options</h4>
 <p>By default, SNPsea assumes one gene in each associated locus is associated with the given trait. We also include the option to assume all genes within a locus are associated. We compare results of the two options with four phenotypes (<strong>Supplementary Figure 4</strong>).</p>
 <ol style="list-style-type: decimal">
 <li><p>The <code>’--score single’</code> method (default option) assumes that a single gene in each locus is associated with the given phenotype. For each condition, we choose the gene in each locus with the greatest specificity to that condition.</p></li>
 <li><p>The <code>’--score total’</code> method assumes that all genes in a SNP’s linkage interval are associated. We account for all linked genes when calculating scores.</p></li>
 </ol>
-<h3 id="step-2-calculating-specificity-scores">Step 2: Calculating specificity scores</h3>
+</div>
+</div>
+<div id="step-2-calculating-specificity-scores" class="section level3">
+<h3>Step 2: Calculating specificity scores</h3>
 <p>SNPsea uses different algorithms for matrices with continuous or binary values. Before running SNPsea, a matrix with continuous values must be normalized so that columns are directly comparable. <em>It is not appropriate to use this method on a “raw” matrix of expression values</em>.</p>
-<h4 id="specificity-for-a-matrix-of-continuous-values">Specificity for a matrix of continuous values</h4>
+<div id="specificity-for-a-matrix-of-continuous-values" class="section level4">
+<h4>Specificity for a matrix of continuous values</h4>
 <p>We extend an approach we have previoulsy described in detail (Hu <em>et al.</em> 2011). Let <span class="math">\(A\)</span> denote a continuous gene expression matrix with <span class="math">\(m\)</span> genes and <span class="math">\(n\)</span> conditions. First, we normalize the expression of each gene by dividing each value by the L2 norm of the genes values in different conditions.</p>
 <p><span class="math">\[A&#39;_{i,j}=\dfrac{A_{i,j}}{\sqrt{A_{i,1}^{2}+A_{i,2}^{2}+\cdots+A_{i,n}^{2}}}\]</span></p>
 <p>The resulting matrix <span class="math">\(A&#39;\)</span> has values <span class="math">\(A&#39;_{i,j}\)</span> between 0 and 1 indicating specificity of gene <span class="math">\(i\)</span> to condition <span class="math">\(j\)</span>. A value <span class="math">\(A&#39;_{i,j}=1\)</span> indicates that gene <span class="math">\(i\)</span> is exclusively expressed in condition <span class="math">\(j\)</span>, and <span class="math">\(A&#39;_{i,j}=0\)</span> indicates that gene <span class="math">\(i\)</span> is not expressed in condition <span class="math">\(j\)</span>.</p>
 <p>Next, we transform <span class="math">\(A&#39;\)</span> to a matrix <span class="math">\(A&#39;&#39;\)</span> of non-parametric condition-specificity percentiles as follows. For each condition <span class="math">\(j\)</span>, we rank the values of <span class="math">\(A&#39;_{,j}\)</span> in ascending order and divide them by the number of genes <span class="math">\(m\)</span>, resulting in percentiles between 0 and 1 where a lower value indicates greater specificity to the given condition.</p>
 <p><span class="math">\[A&#39;&#39;_{i,j}=\dfrac{\text{Rank}_{j}(A&#39;_{i,j})}{m}\]</span></p>
-<h4 id="locus-scores-for-a-matrix-of-continuous-values">Locus scores for a matrix of continuous values</h4>
+</div>
+<div id="locus-scores-for-a-matrix-of-continuous-values" class="section level4">
+<h4>Locus scores for a matrix of continuous values</h4>
 <p>We create a new matrix <span class="math">\(P\)</span>, where each value <span class="math">\(P_{k,j}\)</span> is a score for a SNP locus <span class="math">\(k\)</span> and a condition <span class="math">\(j\)</span>. The locus scores <span class="math">\(P_{,j}\)</span> for a single condition <span class="math">\(j\)</span> are approximately uniformly distributed for a set of randomly selected loci under the following assumption: for the set of genes in a given SNP locus <span class="math">\(I_{k}\)</span>, the values <span class="math">\(A&#39;&#39;_{i\in I_{k},j}\)</span> are random, independent, and approximately uniformly distributed. We’ll come back to this assumption later when testing significance in Step 3 below.</p>
-<h4 id="score-single-default"><code>’--score single’ (default)</code></h4>
+</div>
+<div id="score-single-default" class="section level4">
+<h4><code>’--score single’ (default)</code></h4>
 <p>This approach assumes one gene in each SNP locus is associated with the trait.</p>
 <p>For each locus-condition pair <span class="math">\((k,j)\)</span>, we choose the single gene <span class="math">\(i\)</span> in locus <span class="math">\(k\)</span> with greatest specificity to condition <span class="math">\(j\)</span> among the <span class="math">\(m_{k}\)</span> genes in the locus, as previously described in Hu <em>et al.</em> (Hu <em>et al.</em> 2011). Let <span class="math">\(g_{k}\)</span> denote this most specific gene, so that <span class="math">\(A&#39;&#39;_{g_{k},j}=\text{Min}_{i\in I_{k}}(A&#39;&#39;_{i,j})\)</span> where <span class="math">\(I_{k}\)</span> denotes the set of genes in locus <span class="math">\(k\)</span>. If we assume values of <span class="math">\(A&#39;&#39;_{i\in I_{k},j}\)</span> are uniformly distributed for a given condition <span class="math">\(j\)</span> and genes <span class="math">\(i\in I_{k}\)</span>, then the probability of obtaining a value equal to or less than <span class="math">\(A&#39;&#39;_{g_{k},j}\)</span> is as follows:</p>
 <p><span class="math">\[P_{k,j}=1-(1-\text{Min}_{i\in I_{k}}(A&#39;&#39;_{i,j}))^{m_{k}}\]</span></p>
-<h4 id="score-total"><code>’--score total’</code></h4>
+</div>
+<div id="score-total" class="section level4">
+<h4><code>’--score total’</code></h4>
 <p>This assumes all genes in a given SNP locus are associated with a trait — in most circumstances, we consider this model to be unlikely in most situations. We compute the probability of observing values <span class="math">\(A&#39;&#39;_{i\in I_{k}}\)</span> for some locus <span class="math">\(k\)</span> as the product of percentiles. This assumes <span class="math">\(A&#39;&#39;_{i\in I_{k}}\)</span> values are uniformly distributed.</p>
 <p><span class="math">\[\begin{aligned}
 P_{k,j} &amp; = &amp; \int_{x}^{\infty}\Gamma(m_{k},1)\ \ \text{for}\ \ x=\sum_{i\in I_{k}}-\text{ln}A&#39;&#39;_{i,j}\end{aligned}\]</span></p>
-<h4 id="locus-scores-for-a-matrix-of-binary-values">Locus scores for a matrix of binary values</h4>
+</div>
+<div id="locus-scores-for-a-matrix-of-binary-values" class="section level4">
+<h4>Locus scores for a matrix of binary values</h4>
 <p>Let <span class="math">\(B\)</span> denote a binary matrix (1=present, 0=absent) with <span class="math">\(m\)</span> genes and <span class="math">\(n\)</span> conditions. Let <span class="math">\(m_{j}\)</span> denote the number of genes present in condition <span class="math">\(j\)</span>. Let <span class="math">\(m_{k}\)</span> denote the number of genes in locus <span class="math">\(k\)</span> and <span class="math">\(m_{k,j}\le m_{k}\)</span> denote the number of genes in locus <span class="math">\(k\)</span> that are present in condition <span class="math">\(j\)</span>.</p>
 <p>We provide two options to calculate locus scores. By default, we account for presence or absence of any of the <span class="math">\(m_{k}\)</span> genes in condition <span class="math">\(j\)</span>, as shown below (<code>’--score single’</code>). Alternatively, we account for the number of genes in a given locus (<code>’--score total’</code>).</p>
 <table>
@@ -766,13 +789,21 @@ P_{k,j} &amp; = &amp; \int_{x}^{\infty}\Gamma(m_{k},1)\ \ \text{for}\ \ x=\sum_{
 </table>
 <p>where</p>
 <p><span class="math">\[p(x)=\dfrac{{m_{j} \choose x}{m-m_{j} \choose m_{k}-x}}{{m \choose m_{k}}}\]</span></p>
-<h4 id="condition-specificity-scores">Condition specificity scores</h4>
+</div>
+<div id="condition-specificity-scores" class="section level4">
+<h4>Condition specificity scores</h4>
 <p>For both continuous and binary matrices, we define a specificity score <span class="math">\(S_{j}\)</span> for each condition <span class="math">\(j\)</span> as the aggregate of <span class="math">\(P_{k,j}\)</span> values across SNP loci:</p>
 <p><span class="math">\[S_{j}=\sum_{k}-\text{log}P_{k,j}\]</span></p>
-<h3 id="step-3-testing-significance">Step 3: Testing significance</h3>
-<h4 id="analytical-p-values">Analytical p-values</h4>
+</div>
+</div>
+<div id="step-3-testing-significance" class="section level3">
+<h3>Step 3: Testing significance</h3>
+<div id="analytical-p-values" class="section level4">
+<h4>Analytical p-values</h4>
 <p>We previously found that aggregating the <span class="math">\(P_{k,j}\)</span> scores and determining a <span class="math">\(P\)</span>-value analytically from a distribution results in inaccurate p-values (Hu <em>et al.</em> 2011). <span class="math">\(A&#39;&#39;_{i,j}\)</span> values may be relatively uniform genome-wide, but proximate genes often have shared functions. The genome has a complex correlation structure of linkage disequilibrium, gene density, gene size and function that is challenging to model analytically. We use the sampling strategy described below instead.</p>
-<h4 id="permutation-p-values">Permutation p-values</h4>
+</div>
+<div id="permutation-p-values" class="section level4">
+<h4>Permutation p-values</h4>
 <p>For each condition, we use a sampling approach to calculate an empirical p-value. This is the tail probability of observing a condition-specificity score greater or equal to <span class="math">\(S_{j}\)</span>. We obtain the distribution empirically with null SNP sets.</p>
 <p>We compute specificity scores <span class="math">\(S\)</span> for random SNP sets. Each SNP in a null set is matched to a SNP in the user’s set on the number of linked genes. To adequately sample genes from the entire genome, we sample SNP sets from a list of LD-pruned SNPs (subset of SNPs in 1000 Genomes Project) (Lango Allen <em>et al.</em> 2010).</p>
 <p>For each condition <span class="math">\(j\)</span>, we calculate an exact permutation p-value (Phipson <em>et al.</em> 2010). Let <span class="math">\(a_{j}\)</span> denote the number of sampled SNP sets (e.g. 10,000) and let <span class="math">\(b_{j}\)</span> denote how many null specificity scores are greater than or equal to the user’s score <span class="math">\(S_{j}\)</span>:</p>
@@ -782,7 +813,12 @@ P_{k,j} &amp; = &amp; \int_{x}^{\infty}\Gamma(m_{k},1)\ \ \text{for}\ \ x=\sum_{
 <li><p><code>’--max-iterations N’</code> The maximum number of iterations for each condition. We stop testing a condition after sampling <span class="math">\(N\)</span> SNP sets.</p></li>
 <li><p><code>’--min-observations N’</code> The minimum number of observed null specificity scores greater than or equal to <span class="math">\(S_{j}\)</span> required to stop sampling SNP sets for a condition <span class="math">\(j\)</span>.</p></li>
 </ol>
-<h1 id="installation">Installation</h1>
+</div>
+</div>
+</div>
+</div>
+<div id="installation" class="section level1">
+<h1>Installation</h1>
 <p><strong>On Linux 64-bit, you may use the provided executable</strong></p>
 <p>This runs on kernel 2.6.18 and newer: <a href="https://github.com/slowkow/snpsea/releases">https://github.com/slowkow/snpsea/releases</a></p>
 <p><strong>Otherwise, you must build the executable from source</strong></p>
@@ -795,29 +831,24 @@ P_{k,j} &amp; = &amp; \int_{x}^{\infty}\Gamma(m_{k},1)\ \ \text{for}\ \ x=\sum_{
 <span class="co"># Mac</span>
 <span class="co">#   First, install port (MacPorts): http://www.macports.org/</span>
 <span class="co">#   Next, use it to install the dependencies:</span>
-<span class="kw">sudo</span> port selfupdate
-<span class="kw">sudo</span> port install gcc48 openmpi gsl
+<span class="kw">sudo</span> port selfupdate <span class="kw">&amp;&amp;</span> <span class="kw">sudo</span> port install gcc48 openmpi gsl
 
 <span class="co"># Broad Institute</span>
 <span class="co">#   Add this line to ~/.my.bashrc or ~/.my.cshrc</span>
 <span class="kw">use</span> .gcc-4.8.1 .openmpi-1.4 .gsl-1.14</code></pre>
 <p>Download and compile the code:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#   Clone with git, so you can get updates with &#39;git pull&#39;</span>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#   Clone with git; easily get updates with &#39;git pull&#39;:</span>
 <span class="kw">git</span> clone https://github.com/slowkow/snpsea.git
 <span class="kw">cd</span> snpsea
 
-<span class="co">#   or if you don&#39;t have git</span>
+<span class="co">#   If you don&#39;t have git:</span>
 <span class="kw">curl</span> -LOk https://github.com/slowkow/snpsea/archive/master.zip
-<span class="kw">unzip</span> master.zip
-<span class="kw">cd</span> snpsea-master
+<span class="kw">unzip</span> master.zip<span class="kw">;</span> <span class="kw">cd</span> snpsea-master
 
-<span class="co">#   Compile.</span>
-<span class="kw">cd</span> src
-<span class="kw">make</span>
-
-<span class="co">#   Copy the executables wherever you like</span>
-<span class="kw">cp</span> ../bin/snpsea* ~/bin/</code></pre>
-<h2 id="data">Data</h2>
+<span class="kw">cd</span> src<span class="kw">;</span> <span class="kw">make</span>               <span class="co">#   Compile.</span>
+<span class="kw">cp</span> ../bin/snpsea* ~/bin/   <span class="co">#   Copy the executables wherever you like.</span></code></pre>
+<div id="data" class="section level2">
+<h2>Data</h2>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> snpsea
 <span class="kw">curl</span> -LOk http://files.figshare.com/1382662/SNPsea_data_20140212.zip
 <span class="kw">unzip</span> SNPsea_data_20140212.zip</code></pre>
@@ -829,56 +860,158 @@ HDL_cholesterol-Teslovich2010-46_SNPs.gwas
 Multiple_sclerosis-IMSGC-51_SNPs.gwas
 Red_blood_cell_count-Harst2012-45_SNPs.gwas
 
-
 GeneAtlas2004.gct.gz  # Gene Atlas 2004 gene expression matrix
 GO2013.gct.gz         # Gene Ontology 2013 gene annotation matrix
 ImmGen2012.gct.gz     # ImmGen 2012 gene expression matrix
 
-
 NCBIgenes2013.bed.gz  # NCBI gene intervals
 Lango2010.txt.gz      # LD-pruned SNPs
 TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
-<h3 id="celiac_disease-trynka2011-35_snps.gwas">Celiac_disease-Trynka2011-35_SNPs.gwas</h3>
+<div id="snp-sets" class="section level3">
+<h3>SNP sets</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Phenotype</th>
+<th align="left">SNPs</th>
+<th align="left">Loci</th>
+<th align="left">Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Celiac disease</td>
+<td align="left">35</td>
+<td align="left">34</td>
+<td align="left">Table 2 (<a href="http://www.ncbi.nlm.nih.gov/pubmed/22057235">Trynka, <em>et al.</em> 2011</a>)</td>
+</tr>
+<tr class="even">
+<td align="left">HDL cholesterol</td>
+<td align="left">46</td>
+<td align="left">46</td>
+<td align="left">Supp. Table 2 (<a href="http://www.ncbi.nlm.nih.gov/pubmed/20686565">Teslovich, <em>et al.</em> 2010</a>)</td>
+</tr>
+<tr class="odd">
+<td align="left">Multiple sclerosis</td>
+<td align="left">51</td>
+<td align="left">47</td>
+<td align="left">Supp. Table A (<a href="http://www.ncbi.nlm.nih.gov/pubmed/21833088">IMSGC WTCCC 2011</a>)</td>
+</tr>
+<tr class="even">
+<td align="left">Red blood cell count</td>
+<td align="left">45</td>
+<td align="left">45</td>
+<td align="left">Table 1 (<a href="http://www.ncbi.nlm.nih.gov/pubmed/23222517">Harst <em>et al.</em> 2012</a>)</td>
+</tr>
+</tbody>
+</table>
+<div id="celiac_disease-trynka2011-35_snps.gwas" class="section level4">
+<h4>Celiac_disease-Trynka2011-35_SNPs.gwas</h4>
 <p>35 SNPs associated with Celiac disease taken from Table 2. Positions are on hg19. All SNPs have <span class="math">\(P \le 5e-8\)</span>.</p>
-<p>Trynka G, Hunt KA, Bockett NA, et al. Dense genotyping identifies and localizes multiple common and rare variant association signals in celiac disease. Nat Genet. 2011;43(12):1193-201.</p>
-<p><a href="http://www.ncbi.nlm.nih.gov/pubmed/22057235">http://www.ncbi.nlm.nih.gov/pubmed/22057235</a></p>
-<h3 id="hdl_cholesterol-tesolvich2010-46_snps.gwas">HDL_cholesterol-Tesolvich2010-46_SNPs.gwas</h3>
+<p>Trynka G, Hunt KA, Bockett NA, et al. Dense genotyping identifies and localizes multiple common and rare variant association signals in celiac disease. Nat Genet. 2011;43(12):1193-201. <a href="http://www.ncbi.nlm.nih.gov/pubmed/22057235">Pubmed</a></p>
+</div>
+<div id="hdl_cholesterol-teslovich2010-46_snps.gwas" class="section level4">
+<h4>HDL_cholesterol-Teslovich2010-46_SNPs.gwas</h4>
 <p>46 SNPs associated with HDL taken from Supplementary Table 2. Positions are on hg19. All SNPs have <span class="math">\(P \le 5e-8\)</span>.</p>
-<p>Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and population relevance of 95 loci for blood lipids. Nature. 2010;466(7307):707-13.</p>
-<p><a href="http://www.ncbi.nlm.nih.gov/pubmed/20686565">http://www.ncbi.nlm.nih.gov/pubmed/20686565</a></p>
-<h3 id="multiple_sclerosis-imsgc-51_snps.gwas">Multiple_sclerosis-IMSGC-51_SNPs.gwas</h3>
+<p>Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and population relevance of 95 loci for blood lipids. Nature. 2010;466(7307):707-13. <a href="http://www.ncbi.nlm.nih.gov/pubmed/20686565">Pubmed</a></p>
+</div>
+<div id="multiple_sclerosis-imsgc-51_snps.gwas" class="section level4">
+<h4>Multiple_sclerosis-IMSGC-51_SNPs.gwas</h4>
 <p>51 SNPs associated with Multiple Sclerosis taken from Supplementary Table A. Positions are on hg19. All SNPs have <span class="math">\(P \le 5e-8\)</span>.</p>
-<p>Sawcer S, Hellenthal G, Pirinen M, et al. Genetic risk and a primary role for cell-mediated immune mechanisms in multiple sclerosis. Nature. 2011;476(7359):214-9.</p>
-<p><a href="http://www.ncbi.nlm.nih.gov/pubmed/21833088">http://www.ncbi.nlm.nih.gov/pubmed/21833088</a></p>
-<h3 id="red_blood_cell_count-harst2012-45_snps.gwas">Red_blood_cell_count-Harst2012-45_SNPs.gwas</h3>
+<p>Sawcer S, Hellenthal G, Pirinen M, et al. Genetic risk and a primary role for cell-mediated immune mechanisms in multiple sclerosis. Nature. 2011;476(7359):214-9. <a href="http://www.ncbi.nlm.nih.gov/pubmed/21833088">Pubmed</a></p>
+</div>
+<div id="red_blood_cell_count-harst2012-45_snps.gwas" class="section level4">
+<h4>Red_blood_cell_count-Harst2012-45_SNPs.gwas</h4>
 <p>45 SNPs associated with red blood cell count (RBC) taken from Table 1. Positions are on hg19. All SNPs have <span class="math">\(P \le 5e-8\)</span>.</p>
-<p>Van der harst P, Zhang W, Mateo leach I, et al. Seventy-five genetic loci influencing the human red blood cell. Nature. 2012;492(7429):369-75.</p>
-<p><a href="http://www.ncbi.nlm.nih.gov/pubmed/23222517">http://www.ncbi.nlm.nih.gov/pubmed/23222517</a></p>
-<h3 id="geneatlas2004.gct.gz">GeneAtlas2004.gct.gz</h3>
-<p>Gene expression data for 79 human tissues from GSE1133. We averaged the expression values for tissue replicates. For each gene, we selected the single probe with the largest minimum value. Finally, we converted the file to <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT format</a>.</p>
-<p>Su AI et al. A gene atlas of the mouse and human protein-encoding transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7</p>
-<p><a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133">http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133</a></p>
-<h3 id="go2013.gct.gz">GO2013.gct.gz</h3>
+<p>Van der harst P, Zhang W, Mateo leach I, et al. Seventy-five genetic loci influencing the human red blood cell. Nature. 2012;492(7429):369-75. <a href="http://www.ncbi.nlm.nih.gov/pubmed/23222517">Pubmed</a></p>
+</div>
+</div>
+<div id="gene-matrices" class="section level3">
+<h3>Gene matrices</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Type</th>
+<th align="left">Genes</th>
+<th align="left">Conditions</th>
+<th align="left">Species</th>
+<th align="left">Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Affy</td>
+<td align="left">17581</td>
+<td align="left">79 tissues</td>
+<td align="left">homo sapiens</td>
+<td align="left"><a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133">GeneAtlas 2004</a></td>
+</tr>
+<tr class="even">
+<td align="left">Affy</td>
+<td align="left">15139</td>
+<td align="left">249 cells</td>
+<td align="left">mus musculus</td>
+<td align="left"><a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">ImmGen 2012</a></td>
+</tr>
+<tr class="odd">
+<td align="left">CAGE</td>
+<td align="left">18502</td>
+<td align="left">533 cells</td>
+<td align="left">homo sapiens</td>
+<td align="left"><a href="http://fantom.gsc.riken.jp/5/data/">FANTOM5 2014</a></td>
+</tr>
+<tr class="even">
+<td align="left">Binary</td>
+<td align="left">19111</td>
+<td align="left">1751 terms</td>
+<td align="left">homo sapiens, mus musculus</td>
+<td align="left"><a href="http://www.geneontology.org">Gene Ontology</a> 2013, <a href="http://www.ncbi.nlm.nih.gov/homologene">Homologene</a></td>
+</tr>
+</tbody>
+</table>
+<div id="geneatlas2004.gct.gz" class="section level4">
+<h4>GeneAtlas2004.gct.gz</h4>
+<p>Gene expression data for 79 human tissues from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133">GSE1133</a>. We averaged the expression values for tissue replicates. For each gene, we selected the single probe with the largest minimum value. Finally, we converted the file to <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> format.</p>
+<blockquote>
+<p>Su AI et al. A gene atlas of the mouse and human protein-encoding transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7. <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133">PubMed</a></p>
+</blockquote>
+</div>
+<div id="go2013.gct.gz" class="section level4">
+<h4>GO2013.gct.gz</h4>
 <p>A GCT formatted gene matrix with 1s and 0s indicating presence or absence of genes in Gene Ontology annotations.</p>
-<p>We downloaded the OBO file from Gene Ontology (data-version: 2013-06-29, CVS revision: 9700):</p>
-<p><a href="http://www.geneontology.org">http://www.geneontology.org</a></p>
-<p>For each gene, we climbed the hierarchy of ontology terms and applied parental terms. If a gene is annotated with some term <span class="math">\(T\)</span>, we also add all of the terms that are parents of <span class="math">\(T\)</span>. We copy terms between homologous genes using Homologene data (<a href="http://www.ncbi.nlm.nih.gov/homologene">http://www.ncbi.nlm.nih.gov/homologene</a>). If a mouse gene is annotated with some term and the human homolog is not, then we copy the term to the human gene. We discard all GO terms assigned to fewer than 100 or to more than 1000 genes. This leaves us with a matrix of 19,111 genes and 1,751 terms.</p>
-<h3 id="immgen2012.gct.gz">ImmGen2012.gct.gz</h3>
-<p>Gene expression data for 249 blood cell types from GSE15907. Replicates for each cell type profile were averaged. For each gene, the single probe with the largest minimum was selected.</p>
-<p>Immunological Genome Project</p>
-<p><a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907</a></p>
-<h3 id="ncbigenes2013.bed.gz">NCBIgenes2013.bed.gz</h3>
-<p>All human start and stop positions taken from:</p>
-<p><a href="ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz">ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz</a></p>
-<h3 id="lango2010.txt.gz">Lango2010.txt.gz</h3>
+<p>We downloaded the OBO file from <a href="http://www.geneontology.org">Gene Ontology</a> (data-version: 2013-06-29, CVS revision: 9700).</p>
+<p>For each gene, we climbed the hierarchy of ontology terms and applied parental terms. If a gene is annotated with some term <span class="math">\(T\)</span>, we also add all of the terms that are parents of <span class="math">\(T\)</span>. We copy terms between homologous genes using <a href="http://www.ncbi.nlm.nih.gov/homologene">Homologene</a> data. If a mouse gene is annotated with some term and the human homolog is not, then we copy the term to the human gene. We discard all GO terms assigned to fewer than 100 or to more than 1000 genes. This leaves us with a matrix of 19,111 genes and 1,751 terms.</p>
+</div>
+<div id="immgen2012.gct.gz" class="section level4">
+<h4>ImmGen2012.gct.gz</h4>
+<p>Gene expression data for 249 blood cell types from <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">GSE15907</a>. Replicates for each cell type profile were averaged. For each gene, the single probe with the largest minimum was selected. <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE15907">Immunological Genome Project</a></p>
+</div>
+</div>
+<div id="ld-pruned-snps-and-genomic-intervals" class="section level3">
+<h3>LD-pruned SNPs and Genomic Intervals</h3>
+<div id="lango2010.txt.gz" class="section level4">
+<h4>Lango2010.txt.gz</h4>
 <p>A list of SNPs that span the whole genome, pruned by linkage disequilibrium (LD). SNPsea samples null SNP sets matched on the number of genes in the user's SNP set from this list. See this paper for more information:</p>
-<p>Lango allen H, Estrada K, Lettre G, et al. Hundreds of variants clustered in genomic loci and biological pathways affect human height. Nature. 2010;467(7317):832-8.</p>
-<p><a href="http://www.ncbi.nlm.nih.gov/pubmed/20881960">http://www.ncbi.nlm.nih.gov/pubmed/20881960</a></p>
-<h3 id="tgp2011.bed.gz">TGP2011.bed.gz</h3>
-<p>Linkage intervals for a filtered set of SNPs from the 1000 Genomes Project Phase 1 (May 21, 2011). We downloaded a filtered (diallelic and 5 or more copies of the minor allele) set of markers from the BEAGLE website and calculated pairwise LD (EUR) for all SNPs in a 1 Mb sliding window. The linkage intervals were extended to the nearest HapMap recombination hotspot with &gt;3 cM/Mb recombination rate.</p>
-<p><a href="http://www.1000genomes.org/">http://www.1000genomes.org/</a> <a href="http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3/">http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3/</a> <a href="http://hapmap.ncbi.nlm.nih.gov/downloads/">http://hapmap.ncbi.nlm.nih.gov/downloads/</a></p>
-<h2 id="c-libraries">C++ Libraries</h2>
-<p>To compile SNPsea, you will need a modern C++ compiler that supports <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> and the dependencies listed below.</p>
+<blockquote>
+<p>Lango allen H, Estrada K, Lettre G, et al. Hundreds of variants clustered in genomic loci and biological pathways affect human height. Nature. 2010;467(7317):832-8. <a href="http://www.ncbi.nlm.nih.gov/pubmed/20881960">Pubmed</a></p>
+</blockquote>
+</div>
+<div id="ncbigenes2013.bed.gz" class="section level4">
+<h4>NCBIgenes2013.bed.gz</h4>
+<p>All human start and stop positions taken from:</p>
+<blockquote>
+<p><a href="ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz">ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz</a></p>
+</blockquote>
+</div>
+<div id="tgp2011.bed.gz" class="section level4">
+<h4>TGP2011.bed.gz</h4>
+<p>Linkage intervals for a filtered set of SNPs from the <a href="http://www.1000genomes.org/">1000 Genomes Project</a> Phase 1 (May 21, 2011). We downloaded a filtered (diallelic and 5 or more copies of the minor allele) set of markers from the <a href="http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3">BEAGLE</a> website and calculated pairwise LD (EUR) for all SNPs in a 1 Mb sliding window. The linkage intervals were extended to the nearest <a href="http://hapmap.ncbi.nlm.nih.gov/downloads/">HapMap</a> recombination hotspot with &gt;3 cM/Mb recombination rate.</p>
+</div>
+</div>
+</div>
+<div id="c-libraries" class="section level2">
+<h2>C++ Libraries</h2>
+<p>To compile SNPsea, you will need a modern C++ compiler that supports [<code>c++0x</code>][cxx0x] and the dependencies listed below.</p>
 <p>See: <a href="#installation">Installation</a></p>
 <p><a href="https://github.com/slowkow/intervaltree">intervaltree</a></p>
 <blockquote>
@@ -900,8 +1033,10 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
 <blockquote>
 <p>The GNU Compiler Collection is a compiler system produced by the GNU Project supporting various programming languages.</p>
 </blockquote>
-<p>I use <a href="http://gcc.gnu.org/projects/cxx0x.html"><code>c++0x</code></a> features in my C++ code, so you must use a compiler that supports them. I compiled successfully with versions 4.6.3 (the default version for Ubuntu 12.04) and 4.8.1.</p>
-<h2 id="python-packages">Python Packages</h2>
+<p>I use [<code>c++11</code>] features in my code, so you must use a compiler that supports them. I compiled successfully with versions 4.6.3 (the default version for Ubuntu 12.04) and 4.8.1.</p>
+</div>
+<div id="python-packages" class="section level2">
+<h2>Python Packages</h2>
 <p>To plot visualizations of the results, you will need Python 2.7 and the packages listed below.</p>
 <p><strong>Instructions:</strong> Install with <a href="http://www.pip-installer.org">pip</a>:</p>
 <pre><code>pip install docopt numpy pandas matplotlib</code></pre>
@@ -926,7 +1061,9 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
 <pre><code>perl -i -pe &#39;s/^(\s*(backend).*)$/#$1\n$2:Agg/&#39; ~/.matplotlib/matplotlibrc</code></pre>
 <p>Otherwise, you may see an error message like this:</p>
 <pre><code>_tkinter.TclError: no display name and no $DISPLAY environment variable</code></pre>
-<h2 id="r-packages">R Packages</h2>
+</div>
+<div id="r-packages" class="section level2">
+<h2>R Packages</h2>
 <p>Some visualizations use R and ggplot2 instead of Python and matplotlib.</p>
 <p><strong>Instructions:</strong> Start a session in R and run:</p>
 <pre class="sourceCode R"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;data.table&quot;</span>, <span class="st">&quot;reshape2&quot;</span>, <span class="st">&quot;gap&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>))</code></pre>
@@ -946,8 +1083,10 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
 <blockquote>
 <p>An implementation of the Grammar of Graphics.</p>
 </blockquote>
-<h1 id="usage">Usage</h1>
-<h2 id="example">Example</h2>
+</div>
+</div>
+<div id="usage-example" class="section level1">
+<h1>Usage Example</h1>
 <p>Here is a <a href="http://www.gnu.org/software/bash/manual/bashref.html">Bash</a> script with a usage example:</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="ot">options=(</span>
     <span class="kw">--snps</span>              Red_blood_cell_count-Harst2012-45_SNPs.gwas
@@ -964,9 +1103,11 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
 )
 <span class="kw">snpsea</span> <span class="ot">${options[*]}</span></code></pre>
 <p>SNPsea will test SNPs associated with Red blood cell count for tissue-specific expression of linked genes across 79 human tissues in the Gene Atlas expression matrix. Each tissue will be tested up to 10 million times with matched random SNP sets, or testing will stop for a tissue if 100 matched SNP sets achieve a higher specificity score than the user's SNPs.</p>
-<h2 id="options">Options</h2>
+<div id="options" class="section level2">
+<h2>Options</h2>
 <p>All input files may optionally be compressed with <a href="http://www.gzip.org/"><code>gzip</code></a>.</p>
-<h3 id="required">Required</h3>
+<div id="required" class="section level3">
+<h3>Required</h3>
 <pre><code>
 --snps ARG               Text file with SNP identifiers in the first
                          column. Instead of a file name, you may use
@@ -991,7 +1132,9 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
 
 --out ARG                Create output files in this directory. It will be
                          created if it does not already exist.</code></pre>
-<h3 id="optional">Optional</h3>
+</div>
+<div id="optional" class="section level3">
+<h3>Optional</h3>
 <pre><code>--condition ARG          Text file with a list of columns in --gene-matrix
                          to condition on before calculating p-values. Each
                          column in --gene-matrix is projected onto each
@@ -1022,8 +1165,12 @@ TGP2011.bed.gz        # 1000 Genomes Project SNP linkage intervals</code></pre>
                          column in --gene-matrix. Increase this value to
                          resolve smaller p-values.
                          [default: 10000]</code></pre>
-<h2 id="input-file-formats">Input File Formats</h2>
-<h3 id="snps-arg"><code>--snps ARG</code></h3>
+</div>
+</div>
+<div id="input-file-formats" class="section level2">
+<h2>Input File Formats</h2>
+<div id="snps-arg" class="section level3">
+<h3><code>--snps ARG</code></h3>
 <p>You must provide one or more comma-separated text files. SNP identifiers must be listed one per line. Lines starting with <code>#</code> are skipped. If the file has no header, the first column is assumed to contain SNP identifiers. Otherwise, SNPsea looks for a column named (case-sensitive) <code>SNP</code> or <code>snp</code> or <code>name</code> or <code>marker</code>.</p>
 <pre><code>head Red_blood_cell_count-Harst2012-45_SNPs.gwas
 
@@ -1040,7 +1187,9 @@ chr1    248039451   rs3811444   5e-10</code></pre>
 <p>Instead of providing a file with SNPs, you may use &quot;randomN&quot; like this:</p>
 <pre><code>--snps random20</code></pre>
 <p>to sample 20 random SNPs from the <strong><code>--snp-intervals</code></strong> file.</p>
-<h3 id="gene-matrix-arg"><code>--gene-matrix ARG</code></h3>
+</div>
+<div id="gene-matrix-arg" class="section level3">
+<h3><code>--gene-matrix ARG</code></h3>
 <p>You must provide a single gene matrix that must be in <a href="http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct">GCT</a> format.</p>
 <pre><code>zcat GeneAtlas2004.gct.gz | cut -f1-4 | head
 
@@ -1054,12 +1203,16 @@ Name   Description  Colorectal_Adenocarcinoma  Whole_Blood
 12     SERPINA3     419.5                      387.5
 13     AADAC        125                        252.5
 14     AAMP         2023                       942.5</code></pre>
-<h3 id="condition-arg-optional"><code>--condition ARG</code> (Optional)</h3>
+</div>
+<div id="condition-arg-optional" class="section level3">
+<h3><code>--condition ARG</code> (Optional)</h3>
 <p>You may provide column names present in the <strong><code>--gene-matrix</code></strong> file, one per line. The matrix will be conditioned on these columns before the analysis is performed to help you identify secondary signals independent of these columns. Binary (0, 1) matrices will not be conditioned.</p>
 <pre><code>head conditions.txt
 
 Whole_Blood</code></pre>
-<h3 id="gene-intervals-arg"><code>--gene-intervals ARG</code></h3>
+</div>
+<div id="gene-intervals-arg" class="section level3">
+<h3><code>--gene-intervals ARG</code></h3>
 <p>You must provide gene intervals in BED format with a fourth column that contains the same gene identifiers as those present in the Name column of the <strong><code>--gene-matrix</code></strong> GCT file. Only the first four columns are used.</p>
 <pre><code>zcat NCBIgenes2013.bed.gz | head
 
@@ -1073,7 +1226,9 @@ chr1  100315632  100389578  178        AGL
 chr1  100433941  100435837  730081     LOC730081
 chr1  100435344  100492534  23443      SLC35A3
 chr1  100503669  100548932  64645      HIAT1</code></pre>
-<h3 id="snp-intervals-arg"><code>--snp-intervals ARG</code></h3>
+</div>
+<div id="snp-intervals-arg" class="section level3">
+<h3><code>--snp-intervals ARG</code></h3>
 <p>SNP linkage intervals must be specified in BED format and include a fourth column with the SNP identifiers. The linkage intervals assigned to the trait-associated SNPs you provide with <strong><code>--snps</code></strong> are taken from this file.</p>
 <pre><code>zcat TGP2011.bed.gz | head
 
@@ -1087,7 +1242,9 @@ chr1    0   254996  rs12184306
 chr1    0   254996  rs12184307
 chr1    0   254996  rs138808727
 chr1    0   254996  rs139113303</code></pre>
-<h3 id="null-snps-arg"><code>--null-snps ARG</code></h3>
+</div>
+<div id="null-snps-arg" class="section level3">
+<h3><code>--null-snps ARG</code></h3>
 <p>The null SNPs file must have one SNP identifier per line. Only the first column is used. The identifiers must be a subset of the identifiers in <strong><code>--snp-intervals</code></strong>.</p>
 <pre><code>zcat Lango2010.txt.gz | head
 
@@ -1101,7 +1258,10 @@ rs189727433 chr1    57952
 rs149755937 chr1    59040
 rs77573425  chr1    61989
 rs116440577 chr1    63671</code></pre>
-<h2 id="output-files">Output Files</h2>
+</div>
+</div>
+<div id="output-files" class="section level2">
+<h2>Output Files</h2>
 <p>The usage example shown above produces the following output files:</p>
 <pre><code>out/
     args.txt
@@ -1109,7 +1269,8 @@ rs116440577 chr1    63671</code></pre>
     null_pvalues.txt
     snp_condition_scores.txt
     snp_genes.txt</code></pre>
-<h3 id="args.txt"><code>args.txt</code></h3>
+<div id="args.txt" class="section level3">
+<h3><code>args.txt</code></h3>
 <p>The command line arguments needed to reproduce the analysis.</p>
 <pre><code>cat args.txt
 
@@ -1128,7 +1289,9 @@ rs116440577 chr1    63671</code></pre>
 --max-iterations   10000000</code></pre>
 <p>Repeat the analysis:</p>
 <pre><code>snpsea --args args.txt</code></pre>
-<h3 id="condition_pvalues.txt"><code>condition_pvalues.txt</code></h3>
+</div>
+<div id="condition_pvalues.txt" class="section level3">
+<h3><code>condition_pvalues.txt</code></h3>
 <p>The p-values representing enrichment of condition-specificity for the given SNPs.</p>
 <pre><code>head condition_pvalues.txt | column -t
 
@@ -1142,7 +1305,9 @@ PB-CD56+NK_cells           0.194009   135             700
 PB-CD4+T_cells             0.428571   128             300
 PB-CD8+T_cells             0.531561   159             300
 PB-CD19+B_cells            0.226819   158             700</code></pre>
-<h3 id="null_pvalues.txt"><code>null_pvalues.txt</code></h3>
+</div>
+<div id="null_pvalues.txt" class="section level3">
+<h3><code>null_pvalues.txt</code></h3>
 <p>If the argument for <strong><code>--snps</code></strong> is the name of a file, the p-values for null matched SNP sets. You can compare these null results to the results for your trait-associated SNPs.</p>
 <p>If the argument for <strong><code>--snps</code></strong> is &quot;randomN&quot; where N is some integer, like &quot;random20&quot; the p-values for random unmatched SNP sets, each with N SNPs.</p>
 <p>The fifth column is the replicate index. The number of replicates performed is specified with <strong><code>--null-snpsets INT</code></strong>.</p>
@@ -1158,7 +1323,9 @@ PB-CD4+Tcells             0.383333  115  300   0
 PB-CD8+Tcells             0.128571  90   700   0
 PB-CD19+Bcells            0.168571  118  700   0
 BM-CD105+Endothelial      0.386667  116  300   0</code></pre>
-<h3 id="snp_genes.txt"><code>snp_genes.txt</code></h3>
+</div>
+<div id="snp_genes.txt" class="section level3">
+<h3><code>snp_genes.txt</code></h3>
 <p>Each SNP's linkage interval and overlapping genes. If a SNP is not found in the reference file specified with <strong><code>--snp-intervals</code></strong>, then the name of the SNP will be listed and the other columns will contain <code>NA</code>.</p>
 <pre><code>head snp_genes.txt | column -t
 
@@ -1173,7 +1340,9 @@ chr16  88831494   88903796   rs10445033  4        353,2588,9780,81620
 chr7   151396253  151417368  rs10480300  1        51422
 chr12  4320955    4336783    rs10849023  2        894,57103
 chr15  76129642   76397903   rs11072566  4        26263,92912,123591,145957</code></pre>
-<h3 id="snp_condition_scores.txt"><code>snp_condition_scores.txt</code></h3>
+</div>
+<div id="snp_condition_scores.txt" class="section level3">
+<h3><code>snp_condition_scores.txt</code></h3>
 <p>Each SNP, condition, gene with greatest specificity to that condition, and score for the SNP-condition pair, adjusted for the number of genes overlapping the given SNP's linkage interval.</p>
 <pre><code>head snp_condition_scores.txt | column -t
 
@@ -1187,37 +1356,54 @@ rs9349204  PB-CD56+NK_cells           896    0.0356897
 rs9349204  PB-CD4+T_cells             896    0.38182
 rs9349204  PB-CD8+T_cells             896    0.332008
 rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
-<h2 id="output-visualizations">Output Visualizations</h2>
-<h3 id="view-enrichment-of-tissue-specific-gene-expression">View enrichment of tissue-specific gene expression</h3>
+</div>
+</div>
+<div id="output-visualizations" class="section level2">
+<h2>Output Visualizations</h2>
+<div id="view-enrichment-of-tissue-specific-gene-expression" class="section level3">
+<h3>View enrichment of tissue-specific gene expression</h3>
 <div class="figure">
 <img src="figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-pvalues_barplot.png" />
 </div>
 <p>A horizontal bar plot of negative log10 p-values for a test of 37 LDL-associated SNPs for enrichment of tissue-specific expression in profiles of 79 human tissues.</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/snpsea-barplot out</code></pre>
-<h3 id="view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair">View the most specifically expressed gene for each SNP-tissue pair</h3>
+</div>
+<div id="view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair" class="section level3">
+<h3>View the most specifically expressed gene for each SNP-tissue pair</h3>
 <div class="figure">
 <img src="figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-snp_condition_heatmap.png" />
 </div>
 <p>A heatmap exposing the contributions of specifically expressed genes within each SNP linkage interval to the specificity scores of each tissue.</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> bin/snpsea-heatmap out</code></pre>
-<h3 id="view-the-type-1-error-rate-estimates-for-each-tissue">View the type 1 error rate estimates for each tissue</h3>
+</div>
+<div id="view-the-type-1-error-rate-estimates-for-each-tissue" class="section level3">
+<h3>View the type 1 error rate estimates for each tissue</h3>
 <div class="figure">
 <img src="figures/type1error_GeneAtlas2004.png" />
 </div>
 <p>A scatter plot of the observed proportion of p-values under various thresholds after repeating the analysis with 10,000 random SNP sets.</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">Rscript</span> bin/snpsea-type1error out</code></pre>
-<h1 id="supplementary-figures">Supplementary Figures</h1>
-<h4 id="supplementary-figure-1-determining-snp-linkage-intervals">Supplementary Figure 1: Determining SNP linkage intervals</h4>
+</div>
+</div>
+</div>
+<div id="supplementary-figures" class="section level1">
+<h1>Supplementary Figures</h1>
+<div id="supplementary-figure-1-determining-snp-linkage-intervals" class="section level4">
+<h4>Supplementary Figure 1: Determining SNP linkage intervals</h4>
 <div class="figure">
 <img src="figures/snp_linkage_intervals.png" />
 </div>
 <p>We calculated <span class="math">\(r^{2}\)</span> values for all pairs of SNPs within a 1 Mb sliding window along each chromosome. Next, we assigned each of the SNPs from The 1000 Genomes Project Phase I (1000 Genomes Consortium 2012) to a linkage interval by identifying each SNP’s furthest upstream and downstream neighbors with <span class="math">\(r^{2}\ge0.5\)</span>. Finally, we extended each interval to recombination hotspots reported by HapMap (Myers <em>et al.</em> 2005) with recombination rate &gt;3 cM/Mb.</p>
-<h4 id="supplementary-figure-2-counting-genes-in-gwas-snp-linkage-intervals">Supplementary Figure 2: Counting genes in GWAS SNP linkage intervals</h4>
+</div>
+<div id="supplementary-figure-2-counting-genes-in-gwas-snp-linkage-intervals" class="section level4">
+<h4>Supplementary Figure 2: Counting genes in GWAS SNP linkage intervals</h4>
 <div class="figure">
 <img src="figures/gwas_ngenes.png" />
 </div>
 <p>A cumulative density plot of the number of genes overlapped by the linkage intervals of GWAS SNPs. We downloaded the GWAS Catalog SNPs on January 17, 2014 and selected the 11,561 SNPs present in the 1000 Genomes Project (1000 Genomes Consortium 2012). Of these SNPs, 2,119 (18%) of them have linkage disequilibrium (LD) intervals that overlap no genes, and 3,756 (32%) overlap a single gene. The remaining 50% of SNPs overlap 2 or more genes. This illustrates the critical issue that many SNPs implicate more than one gene.</p>
-<h4 id="supplementary-figure-3-choosing-the-r2-threshold-for-linkage-intervals">Supplementary Figure 3: Choosing the <span class="math">\(r^{2}\)</span> threshold for linkage intervals</h4>
+</div>
+<div id="supplementary-figure-3-choosing-the-r2-threshold-for-linkage-intervals" class="section level4">
+<h4>Supplementary Figure 3: Choosing the <span class="math">\(r^{2}\)</span> threshold for linkage intervals</h4>
 <p>We chose to use <span class="math">\(r^{2}\geq0.5\)</span> due to previous experience (Rossin <em>et al.</em> 2011). To investigate if this choice influences SNPsea results, we repeated the analysis of 45 red blood cell count-associated SNPs (Van der Harst <em>et al.</em> 2012) using 5 different thresholds (<span class="math">\(r^{2}\ge\)</span> 0.2, 0.4, 0.6, 0.8, 1.0). We also did this for SNPs associated with multiple sclerosis, celiac disease, and HDL cholesterol.</p>
 <table>
 <tbody>
@@ -1228,12 +1414,16 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
 </tbody>
 </table>
 <p>Gene Atlas and Gene Ontology (left and right). Each subplot has <span class="math">\(-\text{log}_{10}P\)</span> for <span class="math">\(r^{2}=1\)</span> on the x-axis and <span class="math">\(-\text{log}_{10}P\)</span> on the y-axis for the <span class="math">\(r^{2}\)</span> threshold marked above. Grey lines are significance thresholds after correction testing multiple conditions (cell types, GO annotations). Black points are significant and grey are not. We used the <code>’--score single’</code> option. Red blood cell count SNPs are enriched for <em>hemopoiesis</em> (GO:0030097) (<span class="math">\(P=2\times10^{-5}\)</span>) for linkage intervals with <span class="math">\(r^{2}=(0.6,0.8,1.0)\)</span>. This result falls below the multiple testing threshold at <span class="math">\(r^{2}\ge0.4\)</span>, but remains significant at <span class="math">\(r^{2}\ge0.5\)</span> (see main text).</p>
-<h4 id="supplementary-figure-4-each-trait-associated-locus-harbors-a-single-associated-gene">Supplementary Figure 4: Each trait-associated locus harbors a single associated gene</h4>
+</div>
+<div id="supplementary-figure-4-each-trait-associated-locus-harbors-a-single-associated-gene" class="section level4">
+<h4>Supplementary Figure 4: Each trait-associated locus harbors a single associated gene</h4>
 <div class="figure">
 <img src="figures/single_vs_total-RBC-MS-CD-HDL.png" />
 </div>
 <p>Quantile-quantile plots for Gene Atlas (Su <em>et al.</em> 2004) and Gene Ontology (top and bottom). The x and y axes are <span class="math">\(-\text{log}_{10}P\)</span> for <code>’--score single’ and ’--score total’</code> SNPsea options, respectively. The <code>’single’</code> and <code>’total’</code> methods are described . The <span class="math">\(P\)</span>-values appear similar between methods.</p>
-<h4 id="supplementary-figure-5-type-1-error-estimates">Supplementary Figure 5: Type 1 error estimates</h4>
+</div>
+<div id="supplementary-figure-5-type-1-error-estimates" class="section level4">
+<h4>Supplementary Figure 5: Type 1 error estimates</h4>
 <div class="figure">
 <img src="figures/type1error_GeneAtlas2004.png" />
 </div>
@@ -1241,7 +1431,10 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
 <img src="figures/type1error_GO2013.png" />
 </div>
 <p>We sampled 10,000 sets of 100 SNPs uniformly from a list of LD-pruned SNPs (Lango Allen <em>et al.</em> 2010). We tested each of the 10,000 sets for enrichment of tissue-specific expression in the Gene Atlas (Su <em>et al.</em> 2004) gene expression matrix (top) and for enrichment of annotation with Gene Ontology terms (bottom). For each condition, we show the proportion of the 10,000 enrichment p-values that are below the given thresholds. We observe that the p-values are near the expected values, so the type 1 (false positive) error rate is well-calibrated.</p>
-<h1 id="additional-examples">Additional Examples</h1>
+</div>
+</div>
+<div id="additional-examples" class="section level1">
+<h1>Additional Examples</h1>
 <p>We tested SNPsea with the three additional phenotypes listed below with genome-wide significant SNPs <span class="math">\((P\leq5\times10^{-8})\)</span>. When multiple SNPs implicated the same genes, we merged them into a single locus. We tested each phenotype with the Gene Atlas and GO matrices with the <code>’--score single’</code> option. The adjacent heatmaps show Pearson correlation coefficients for all pairs of conditions.</p>
 <table>
 <thead>
@@ -1273,12 +1466,15 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
 </tr>
 </tbody>
 </table>
-<h4 id="supplementary-figure-6-red-blood-cell-count-go-enrichment">Supplementary Figure 6: Red blood cell count GO enrichment</h4>
+<div id="supplementary-figure-6-red-blood-cell-count-go-enrichment" class="section level4">
+<h4>Supplementary Figure 6: Red blood cell count GO enrichment</h4>
 <div class="figure">
 <img src="figures/Red_blood_cell_count-Harst2012-45_SNPs-GO2013-single-pvalues_barplot.png" />
 </div>
 <p>We observed significant enrichment for <em>hemopoiesis</em> <span class="math">\((2\times10^{-5})\)</span>. The top 25 terms are shown.</p>
-<h4 id="supplementary-figure-7-multiple-sclerosis">Supplementary Figure 7: Multiple sclerosis</h4>
+</div>
+<div id="supplementary-figure-7-multiple-sclerosis" class="section level4">
+<h4>Supplementary Figure 7: Multiple sclerosis</h4>
 <div class="figure">
 <img src="figures/Multiple_sclerosis-IMSGC-51_SNPs-GeneAtlas2004-single-pvalues_barplot.png" />
 </div>
@@ -1287,7 +1483,9 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
 <img src="figures/Multiple_sclerosis-IMSGC-51_SNPs-GO2013-single-pvalues_barplot.png" />
 </div>
 <p>We observed significant enrichment for 52 Gene Ontology terms. The top 60 terms are shown.</p>
-<h4 id="supplementary-figure-8-celiac-disease">Supplementary Figure 8: Celiac disease</h4>
+</div>
+<div id="supplementary-figure-8-celiac-disease" class="section level4">
+<h4>Supplementary Figure 8: Celiac disease</h4>
 <div class="figure">
 <img src="figures/Celiac_disease-Trynka2011-35_SNPs-GeneAtlas2004-single-pvalues_barplot.png" />
 </div>
@@ -1296,7 +1494,9 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
 <img src="figures/Celiac_disease-Trynka2011-35_SNPs-GO2013-single-pvalues_barplot.png" />
 </div>
 <p>We observed significant enrichment for 28 Gene Ontology terms. The top 40 terms are shown.</p>
-<h4 id="supplementary-figure-9-hdl-cholesterol">Supplementary Figure 9: HDL cholesterol</h4>
+</div>
+<div id="supplementary-figure-9-hdl-cholesterol" class="section level4">
+<h4>Supplementary Figure 9: HDL cholesterol</h4>
 <div class="figure">
 <img src="figures/HDL_cholesterol-Teslovich2010-46_SNPs-GeneAtlas2004-single-pvalues_barplot.png" />
 </div>
@@ -1305,7 +1505,10 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
 <img src="figures/HDL_cholesterol-Teslovich2010-46_SNPs-GO2013-single-pvalues_barplot.png" />
 </div>
 <p>We observed significant enrichment for 13 Gene Ontology terms. The top 25 terms are shown.</p>
-<h1 id="references">References</h1>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
 <ol style="list-style-type: decimal">
 <li><p>Elizabeth J. Rossin, Kasper Lage, Soumya Raychaudhuri, Ramnik J. Xavier, Diana Tatar, Yair Benita, Chris Cotsapas, Mark J. Daly, and International Inflammatory Bowel Disease Genetics Constortium. Proteins encoded in genomic regions associated with immune-mediated disease physically interact and suggest underlying biology. PLoS Genet, 7(1):e1001273, January 2011.</p></li>
 <li><p>The 1000 Genomes Project Consortium. An integrated map of genetic variation from 1,092 human genomes. Nature, 491(7422):56–65, November 2012.</p></li>
@@ -1319,6 +1522,7 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
 <li><p>Gosia Trynka, Karen A. Hunt, Nicholas A. Bockett, Jihane Romanos, Vanisha Mistry, Agata Szperl, Sjoerd F. Bakker, Maria Teresa Bardella, Leena Bhaw-Rosun, Gemma Castillejo, et al. Dense genotyping identifies and localizes multiple common and rare variant association signals in celiac disease. Nature Genetics, 43(12):1193–1201, December 2011.</p></li>
 <li><p>Tanya M. Teslovich, Kiran Musunuru, Albert V. Smith, Andrew C. Edmondson, Ioannis M. Stylianou, Masahiro Koseki, James P. Pirruccello, Samuli Ripatti, Daniel I. Chasman, Cristen J. Willer, et al. Biological, clinical and population relevance of 95 loci for blood lipids. Nature, 466(7307):707–713, August 2010.</p></li>
 </ol>
+</div>
     </div>
 </div>
 </body>
