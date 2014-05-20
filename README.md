@@ -1,34 +1,36 @@
 SNPsea: an algorithm to identify cell types, tissues, and pathways affected by risk loci
 ========================================================================================
 
-| <http://www.broadinstitute.org/mpg/snpsea> | Reference Manual [HTML] |
+| [broadinstitute.org/mpg/snpsea](broad) | [Reference Manual][manual] |
 |:---:|:---:|
+| [Example](#example) | [Citation](#citation) |
+| [Quick Start](#quick-start) | [Description](#description) |
+| Executable | Data |
+| [snpsea-v1.0.3.tar.gz][exec] | [SNPsea_data_20140212.zip][data]  |
 
-[HTML]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html
-
-- <a href="#example">Example</a>
-- <a href="#quick-start">Quick Start</a>
-- <a href="#citation">Citation</a>
-- <a href="#description">Description</a>
+[broad]: http://www.broadinstitute.org/mpg/snpsea
+[manual]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html
+[exec]: https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
+[data]: http://files.figshare.com/1382662/SNPsea_data_20140212.zip
 
 
 Cartoon
 -------
 
-![Example of SNPsea results.][cartoon]
+![Cartoon of SNPsea algorithm.][fig1]
 
-[cartoon]: https://raw.github.com/slowkow/snpsea/master/doc/figures/cartoon.png
+[fig1]: https://raw.github.com/slowkow/snpsea/master/doc/figures/cartoon.png
 
 This cartoon illustrates the key ideas of the algorithm:
 
-A.  Each SNP in a set of disease-associated SNPs is in linkage disequilibrium
-    (LD) with multiple genes. The genes are scored, in aggregate, for
-    specificity to each tissue.
+A.  Step 1. Each SNP in a set of disease-associated SNPs is in linkage
+    disequilibrium (LD) with multiple genes. The genes are scored, in
+    aggregate, for specificity to each tissue.
 
-B.  The procedure is repeated with random null SNP sets that are not
+B.  Step 2. The procedure is repeated with random null SNP sets that are not
     associated with any phenotype.
 
-C.  The random SNP sets form the null distribution which allows us to
+C.  Step 3. The random SNP sets form the null distribution which allows us to
     determine the statistical significance of enrichment for specificity to
     a particular tissue.
 
@@ -36,9 +38,9 @@ C.  The random SNP sets form the null distribution which allows us to
 Example
 -------
 
-![Example of SNPsea results.][example]
+![Example of SNPsea results.][fig2]
 
-[example]: https://raw.github.com/slowkow/snpsea/master/doc/figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-pvalues_barplot.png
+[fig2]: https://raw.github.com/slowkow/snpsea/master/doc/figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-pvalues_barplot.png
 
 We identified *BM-CD71+Early Erythroid* as the cell type with most significant
 enrichment (P < 2e-7) for cell type-specific gene expression relative to 78
@@ -83,11 +85,12 @@ snpsea-barplot out
 Quick Start
 -----------
 
-**Linux 64 bit executable**: <https://github.com/slowkow/snpsea/releases>
+| Executable | Data |
+|:---:|:---:|
+| [snpsea-v1.0.3.tar.gz][exec] | [SNPsea_data_20140212.zip][data]  |
 
-**Data**: <http://dx.doi.org/10.6084/m9.figshare.871430>
 
-On Linux, you can get started right away:
+On Linux 64-bit, get started right away:
 
 ```bash
 mkdir snpsea; cd snpsea
@@ -100,35 +103,35 @@ bash example.sh
 
 - - -
 
-On other platforms, you have to build the source code.
+On other platforms, build the source code.
 
-First, install the [dependencies]:
+1. Install the [dependencies]:
 
-```bash
-#       Install Python libraries.
-pip install docopt numpy pandas matplotlib
-#       Change the graphical backend for matplotlib.
-perl -i -pe 's/^(\s*(backend).*)$/#$1\n$2:Agg/' ~/.matplotlib/matplotlibrc
+    ```bash
+    #       Install Python libraries.
+    pip install docopt numpy pandas matplotlib
+    #       Change the graphical backend for matplotlib.
+    perl -i -pe 's/^(\s*(backend).*)$/#$1\n$2:Agg/' ~/.matplotlib/matplotlibrc
+    
+    #       Install R libraries.
+    R -e 'install.packages(c("data.table", "reshape2", "gap", "ggplot2"))'
+    
+    #       Install C++ libraries.
+    #       Ubuntu
+    sudo apt-get update; sudo apt-get install build-essential libopenmpi-dev libgsl0-dev
+    #       Mac
+    sudo port selfupdate; sudo port install gcc48 openmpi gsl
+    #       Broad Institute
+    use .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
+    ```
 
-#       Install R libraries.
-R -e 'install.packages(c("data.table", "reshape2", "gap", "ggplot2"))'
+2. Download and compile SNPsea:
 
-#       Install C++ libraries.
-#       Ubuntu
-sudo apt-get update; sudo apt-get install build-essential libopenmpi-dev libgsl0-dev
-#       Mac
-sudo port selfupdate; sudo port install gcc48 openmpi gsl
-#       Broad Institute
-use .gcc-4.8.1 .openmpi-1.4 .gsl-1.14
-```
-
-Next, download and compile SNPsea:
-
-```bash
-git clone https://github.com/slowkow/snpsea.git
-cd snpsea/src
-make
-```
+    ```bash
+    git clone https://github.com/slowkow/snpsea.git
+    cd snpsea/src
+    make
+    ```
 
 [dependencies]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html#c-libraries
 
@@ -142,7 +145,7 @@ If you benefit from this method, please cite:
 > tissues, and pathways affected by risk loci.** Bioinformatics (2014).
 > doi:[10.1093/bioinformatics/btu326][Slowikowski2014]
 
-See additional information and examples here:
+See the first description of the algorithm and additional examples here:
 
 > Hu, X. et al. *Integrating autoimmune risk loci with gene-expression data
 > identifies specific pathogenic immune cell subsets.* The American Journal
@@ -155,38 +158,43 @@ See additional information and examples here:
 Description
 -----------
 
-SNPsea is a general algorithm to identify cell types, tissues, and pathways
-likely to be affected by risk loci. The required input is a list of SNP
-identifiers and a matrix of genes and conditions.
+SNPsea is an algorithm to identify cell types and pathways likely to be
+affected by risk loci. It requires a list of SNP identifiers and a matrix of
+genes and conditions.
 
-Suppose we have a gene expression matrix with expression profiles for multiple
-cell types. Our goal may be to determine if some alleles associated to a trait
-contain genes that are important for the function of a particular cell type.
+Genome-wide association studies (GWAS) discovered many genomic loci associated
+with risk for multiple diseases. SNPsea provides a simple way to determine the
+types of cells influenced by genes in those loci.
 
-First, we identify the genes in linkage disequilibrium with the given
-trait-associated SNPs and score them for specificity to each cell type. To
-evaluate significance of the specificity, we calculate an exact permutation
-p-value as follows. We take the sum of the specificity scores and compare it
-to a null distribution that is defined by sampling random matched SNP sets.
-They are matched to the original trait-associated SNPs on the number of linked
-genes.
+Suppose that disease-associated alleles influence a small number of pathogenic
+cell types. We hypothesize that the genes with critical functions in those
+cell types are likely to be within risk loci for that disease. We assume that
+a gene's specificity to a cell type is a reasonable indicator of its
+importance to the unique function of that cell type.
 
-This implementation is generalized, so you may provide (1) a continuous gene
-matrix with gene expression (or any other values) or (2) a binary gene matrix
-with presence/absence 1/0 values. We provide two continuous matrices and one
-binary matrix for you.
+First, we identify the genes in linkage disequilibrium (LD) with the given
+trait-associated SNPs and score the gene set for specificity to each cell
+type. Next, we define a null distribution of scores for each cell type by
+sampling random SNP sets matched on the number of linked genes. Finally, we
+evaluate the significance of the original gene set's specificity by comparison
+to the null distributions: we calculate an exact permutation p-value.
 
-The columns of the matrix could be tissues, cell types, GO annotation codes,
-or any other types of *conditions*. Continuous matrices *must* be normalized
-before running SNPsea so that columns are directly comparable to each other.
+SNPsea is a general algorithm. You may provide your own:
 
-This analysis is able to detect if there is an enrichment of
-condition-specificity of the genes linked with trait-associated SNPs.
+1. Continuous gene matrix with gene expression profiles (or other values).
+2. Binary gene annotation matrix with presence/absence 1/0 values.
 
-If trait-associated alleles influence a small number of pathogenic tissues or
-cell types, we hypothesize that the subset of genes with critical functions in
-those pathogenic cell types are likely to be within trait-associated loci.
+We provide you with three expression matrices and one annotation matrix. See
+[Data].
 
-We assume that a gene's specificity to a given cell type or condition is
-a reasonable indicator of the gene's importance to its function.
+The columns of the matrix may be tissues, cell types, GO annotation codes, or
+other *conditions*. Continuous matrices *must* be normalized before running
+SNPsea: columns must be directly comparable to each other.
 
+
+License
+-------
+
+[GNU GPLv3][license]
+
+[license]: https://github.com/slowkow/snpsea/blob/master/LICENSE
