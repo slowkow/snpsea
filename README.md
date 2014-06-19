@@ -94,9 +94,9 @@ Quick Start
 On Linux 64-bit, get started right away:
 
 ```bash
-mkdir snpsea; cd snpsea
-curl -LOk https://github.com/slowkow/snpsea/releases/download/v1.0.3/snpsea_v1.0.3.zip
-unzip snpsea_v1.0.3.zip
+curl -LOk https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
+tar xf v1.0.3.tar.gz
+cd snpsea-1.0.3
 curl -LOk http://files.figshare.com/1382662/SNPsea_data_20140520.zip
 unzip SNPsea_data_20140520.zip
 bash example.sh
