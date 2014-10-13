@@ -31,24 +31,28 @@ SNPsea is a general algorithm. You may provide your own:
 2. Binary gene annotation matrix with presence/absence 1/0 values.
 
 We provide you with three expression matrices and one annotation matrix.
-See `Data <#data>`__.
+See `Data <http://snpsea.readthedocs.org/en/latest/data.html>`__.
 
 The columns of the matrix may be tissues, cell types, GO annotation
-codes, or other *conditions*. Continuous matrices *must* be normalized
-before running SNPsea: columns must be directly comparable to each
-other.
+codes, or other *conditions*. 
+
+.. note::
+
+   Continuous matrices *must* be normalized before running SNPsea. That is,
+   columns must be directly comparable to each other. You might consider
+   `quantile normalization <http://www.ncbi.nlm.nih.gov/pubmed/12538238>`__
+   normalization, for example.
 
 If you benefit from this method, please cite:
 
-    Slowikowski, K. et al. **SNPsea: an algorithm to identify cell
-    types, tissues, and pathways affected by risk loci.** Bioinformatics
-    (2014).
-    doi:\ `10.1093/bioinformatics/btu326 <http://bioinformatics.oxfordjournals.org/content/early/2014/05/10/bioinformatics.btu326>`__
+    Slowikowski, K. et al. `SNPsea: an algorithm to identify cell types,
+    tissues, and pathways affected by risk loci.
+    <http://www.ncbi.nlm.nih.gov/pubmed/24813542>`__ Bioinformatics (2014).
 
 See the first description of the algorithm and additional examples here:
 
-    Hu, X. et al. **Integrating autoimmune risk loci with
-    gene-expression data identifies specific pathogenic immune cell
-    subsets.** The American Journal of Human Genetics 89, 496–506
-    (2011). `PubMed <http://www.ncbi.nlm.nih.gov/pubmed/21963258>`__
+    Hu, X. et al. `Integrating autoimmune risk loci with gene-expression
+    data identifies specific pathogenic immune cell subsets.
+    <http://www.ncbi.nlm.nih.gov/pubmed/21963258>`__ The American Journal of
+    Human Genetics 89, 496–506 (2011).
 
