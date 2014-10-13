@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Supplementary Figures &mdash; SNPsea 1.0.3 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="SNPsea 1.0.3 documentation" href="index.html"/>
+        <link rel="next" title="References" href="references.html"/>
+        <link rel="prev" title="Output Visualizations" href="output.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> SNPsea</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visual.html">Visual Summary</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visual.html#cartoon">Cartoon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visual.html#flow-chart">Flow Chart</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">Algorithm Details</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="algorithm.html#step-1-assigning-genes-to-each-snp">Step 1: Assigning genes to each SNP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm.html#step-2-calculating-specificity-scores">Step 2: Calculating specificity scores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm.html#step-3-testing-significance">Step 3: Testing significance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#c-libraries">C++ Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#python-packages">Python Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#r-packages">R Packages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data.html#snp-sets">SNP sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#gene-matrices">Gene matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#ld-pruned-snps-and-genomic-intervals">LD-pruned SNPs and Genomic Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#input-file-formats">Input File Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#output-files">Output Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Output Visualizations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="output.html#view-enrichment-of-tissue-specific-gene-expression">View enrichment of tissue-specific gene expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair">View the most specifically expressed gene for each SNP-tissue pair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#view-the-type-1-error-rate-estimates-for-each-tissue">View the type 1 error rate estimates for each tissue</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Supplementary Figures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-1-determining-snp-linkage-intervals">Supplementary Figure 1: Determining SNP linkage intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-2-counting-genes-in-gwas-snp-linkage-intervals">Supplementary Figure 2: Counting genes in GWAS SNP linkage intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-3-choosing-the-threshold-for-linkage-intervals">Supplementary Figure 3: Choosing the <span class="math">\(r^{2}\)</span> threshold for linkage intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-4-each-trait-associated-locus-harbors-a-single-associated-gene">Supplementary Figure 4: Each trait-associated locus harbors a single associated gene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-5-type-1-error-estimates">Supplementary Figure 5: Type 1 error estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-6-red-blood-cell-count-go-enrichment">Supplementary Figure 6: Red blood cell count GO enrichment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-7-multiple-sclerosis">Supplementary Figure 7: Multiple sclerosis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-8-celiac-disease">Supplementary Figure 8: Celiac disease</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supplementary-figure-9-hdl-cholesterol">Supplementary Figure 9: HDL cholesterol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">SNPsea</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Supplementary Figures</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/supplementary.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="supplementary-figures">
+<h1>Supplementary Figures<a class="headerlink" href="#supplementary-figures" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="supplementary-figure-1-determining-snp-linkage-intervals">
+<h2>Supplementary Figure 1: Determining SNP linkage intervals<a class="headerlink" href="#supplementary-figure-1-determining-snp-linkage-intervals" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/snp_linkage_intervals.png" />
+</div>
+<p>We calculated <span class="math">\(r^{2}\)</span> values for all pairs of SNPs within a 1 Mb
+sliding window along each chromosome. Next, we assigned each of the SNPs
+from The 1000 Genomes Project Phase I (1000 Genomes Consortium 2012) to
+a linkage interval by identifying each SNP’s furthest upstream and
+downstream neighbors with <span class="math">\(r^{2}\ge0.5\)</span>. Finally, we extended each
+interval to recombination hotspots reported by HapMap (Myers <em>et al.</em>
+2005) with recombination rate &gt;3 cM/Mb.</p>
+</div>
+<div class="section" id="supplementary-figure-2-counting-genes-in-gwas-snp-linkage-intervals">
+<h2>Supplementary Figure 2: Counting genes in GWAS SNP linkage intervals<a class="headerlink" href="#supplementary-figure-2-counting-genes-in-gwas-snp-linkage-intervals" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/gwas_ngenes.png" />
+</div>
+<p>A cumulative density plot of the number of genes overlapped by the
+linkage intervals of GWAS SNPs. We downloaded the GWAS Catalog SNPs on
+January 17, 2014 and selected the 11,561 SNPs present in the 1000
+Genomes Project (1000 Genomes Consortium 2012). Of these SNPs, 2,119
+(18%) of them have linkage disequilibrium (LD) intervals that overlap no
+genes, and 3,756 (32%) overlap a single gene. The remaining 50% of SNPs
+overlap 2 or more genes. This illustrates the critical issue that many
+SNPs implicate more than one gene.</p>
+</div>
+<div class="section" id="supplementary-figure-3-choosing-the-threshold-for-linkage-intervals">
+<h2>Supplementary Figure 3: Choosing the <span class="math">\(r^{2}\)</span> threshold for linkage intervals<a class="headerlink" href="#supplementary-figure-3-choosing-the-threshold-for-linkage-intervals" title="Permalink to this headline">¶</a></h2>
+<p>We chose to use <span class="math">\(r^{2}\geq0.5\)</span> due to previous experience (Rossin
+<em>et al.</em> 2011). To investigate if this choice influences SNPsea results,
+we repeated the analysis of 45 red blood cell count-associated SNPs (Van
+der Harst <em>et al.</em> 2012) using 5 different thresholds (<span class="math">\(r^{2}\ge\)</span>
+0.2, 0.4, 0.6, 0.8, 1.0). We also did this for SNPs associated with
+multiple sclerosis, celiac disease, and HDL cholesterol.</p>
+<p><img alt="image2" src="_images/r2_thresholds-GeneAtlas2004.png" /></p>
+<p><img alt="image3" src="_images/r2_thresholds-GO2013.png" /></p>
+<p>Gene Atlas and Gene Ontology (left and right). Each subplot has
+<span class="math">\(-\text{log}_{10}P\)</span> for <span class="math">\(r^{2}=1\)</span> on the x-axis and
+<span class="math">\(-\text{log}_{10}P\)</span> on the y-axis for the <span class="math">\(r^{2}\)</span> threshold
+marked above. Grey lines are significance thresholds after correction
+testing multiple conditions (cell types, GO annotations). Black points
+are significant and grey are not. We used the <tt class="docutils literal"><span class="pre">’--score</span> <span class="pre">single’</span></tt>
+option. Red blood cell count SNPs are enriched for <em>hemopoiesis</em>
+(<a class="reference external" href="GO:0030097">GO:0030097</a>) (<span class="math">\(P=2\times10^{-5}\)</span>) for linkage intervals with
+<span class="math">\(r^{2}=(0.6,0.8,1.0)\)</span>. This result falls below the multiple
+testing threshold at <span class="math">\(r^{2}\ge0.4\)</span>, but remains significant at
+<span class="math">\(r^{2}\ge0.5\)</span> (see main text).</p>
+</div>
+<div class="section" id="supplementary-figure-4-each-trait-associated-locus-harbors-a-single-associated-gene">
+<h2>Supplementary Figure 4: Each trait-associated locus harbors a single associated gene<a class="headerlink" href="#supplementary-figure-4-each-trait-associated-locus-harbors-a-single-associated-gene" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/single_vs_total-RBC-MS-CD-HDL.png" />
+</div>
+<p>Quantile-quantile plots for Gene Atlas (Su <em>et al.</em> 2004) and Gene
+Ontology (top and bottom). The x and y axes are
+<span class="math">\(-\text{log}_{10}P\)</span> for <tt class="docutils literal"><span class="pre">’--score</span> <span class="pre">single’</span> <span class="pre">and</span> <span class="pre">’--score</span> <span class="pre">total’</span></tt>
+SNPsea options, respectively. The <tt class="docutils literal"><span class="pre">’single’</span></tt> and <tt class="docutils literal"><span class="pre">’total’</span></tt> methods
+are described . The <span class="math">\(P\)</span>-values appear similar between methods.</p>
+</div>
+<div class="section" id="supplementary-figure-5-type-1-error-estimates">
+<h2>Supplementary Figure 5: Type 1 error estimates<a class="headerlink" href="#supplementary-figure-5-type-1-error-estimates" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/type1error_GeneAtlas2004.png" />
+</div>
+<div class="figure">
+<img alt="" src="_images/type1error_GO2013.png" />
+</div>
+<p>We sampled 10,000 sets of 100 SNPs uniformly from a list of LD-pruned
+SNPs (Lango Allen <em>et al.</em> 2010). We tested each of the 10,000 sets for
+enrichment of tissue-specific expression in the Gene Atlas (Su <em>et al.</em>
+2004) gene expression matrix (top) and for enrichment of annotation with
+Gene Ontology terms (bottom). For each condition, we show the proportion
+of the 10,000 enrichment p-values that are below the given thresholds.
+We observe that the p-values are near the expected values, so the type 1
+(false positive) error rate is well-calibrated.</p>
+<div class="section" id="additional-examples">
+<h3>Additional Examples<a class="headerlink" href="#additional-examples" title="Permalink to this headline">¶</a></h3>
+<p>We tested SNPsea with the three additional phenotypes listed below with
+genome-wide significant SNPs <span class="math">\((P\leq5\times10^{-8})\)</span>. When
+multiple SNPs implicated the same genes, we merged them into a single
+locus. We tested each phenotype with the Gene Atlas and GO matrices with
+the <tt class="docutils literal"><span class="pre">’--score</span> <span class="pre">single’</span></tt> option. The adjacent heatmaps show Pearson
+correlation coefficients for all pairs of conditions.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="10%" />
+<col width="10%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Phenotype</th>
+<th class="head">SNPs</th>
+<th class="head">Loci</th>
+<th class="head">Reference</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Multiple sclerosis</td>
+<td>51</td>
+<td>47</td>
+<td>Supp. Table A (IMSGC WTCCC 2011)</td>
+</tr>
+<tr class="row-odd"><td>Celiac disease</td>
+<td>35</td>
+<td>34</td>
+<td>Table 2 (Trynka, <em>et al.</em> 2011)</td>
+</tr>
+<tr class="row-even"><td>HDL cholesterol</td>
+<td>46</td>
+<td>46</td>
+<td>Supp. Table 2 (Teslovich, <em>et al.</em> 2010)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="supplementary-figure-6-red-blood-cell-count-go-enrichment">
+<h2>Supplementary Figure 6: Red blood cell count GO enrichment<a class="headerlink" href="#supplementary-figure-6-red-blood-cell-count-go-enrichment" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/Red_blood_cell_count-Harst2012-45_SNPs-GO2013-single-pvalues_barplot.png" />
+</div>
+<p>We observed significant enrichment for <em>hemopoiesis</em>
+<span class="math">\((2\times10^{-5})\)</span>. The top 25 terms are shown.</p>
+</div>
+<div class="section" id="supplementary-figure-7-multiple-sclerosis">
+<h2>Supplementary Figure 7: Multiple sclerosis<a class="headerlink" href="#supplementary-figure-7-multiple-sclerosis" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/Multiple_sclerosis-IMSGC-51_SNPs-GeneAtlas2004-single-pvalues_barplot.png" />
+</div>
+<p>We observed significant enrichment for 6 cell types. The top 25 of 79
+are shown.</p>
+<div class="figure">
+<img alt="" src="_images/Multiple_sclerosis-IMSGC-51_SNPs-GO2013-single-pvalues_barplot.png" />
+</div>
+<p>We observed significant enrichment for 52 Gene Ontology terms. The top
+60 terms are shown.</p>
+</div>
+<div class="section" id="supplementary-figure-8-celiac-disease">
+<h2>Supplementary Figure 8: Celiac disease<a class="headerlink" href="#supplementary-figure-8-celiac-disease" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/Celiac_disease-Trynka2011-35_SNPs-GeneAtlas2004-single-pvalues_barplot.png" />
+</div>
+<p>We observed significant enrichment for 3 cell types. The top 25 of 79
+are shown.</p>
+<div class="figure">
+<img alt="" src="_images/Celiac_disease-Trynka2011-35_SNPs-GO2013-single-pvalues_barplot.png" />
+</div>
+<p>We observed significant enrichment for 28 Gene Ontology terms. The top
+40 terms are shown.</p>
+</div>
+<div class="section" id="supplementary-figure-9-hdl-cholesterol">
+<h2>Supplementary Figure 9: HDL cholesterol<a class="headerlink" href="#supplementary-figure-9-hdl-cholesterol" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/HDL_cholesterol-Teslovich2010-46_SNPs-GeneAtlas2004-single-pvalues_barplot.png" />
+</div>
+<p>We observed significant enrichment for liver tissue-specific gene
+expression. The top 25 of 79 are shown.</p>
+<div class="figure">
+<img alt="" src="_images/HDL_cholesterol-Teslovich2010-46_SNPs-GO2013-single-pvalues_barplot.png" />
+</div>
+<p>We observed significant enrichment for 13 Gene Ontology terms. The top
+25 terms are shown.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="references.html" class="btn btn-neutral float-right" title="References"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="output.html" class="btn btn-neutral" title="Output Visualizations"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Kamil Slowikowski.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.3',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

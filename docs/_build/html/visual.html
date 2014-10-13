@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Visual Summary &mdash; SNPsea 1.0.3 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="SNPsea 1.0.3 documentation" href="index.html"/>
+        <link rel="next" title="Algorithm Details" href="algorithm.html"/>
+        <link rel="prev" title="Introduction" href="introduction.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> SNPsea</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Visual Summary</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cartoon">Cartoon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flow-chart">Flow Chart</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">Algorithm Details</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="algorithm.html#step-1-assigning-genes-to-each-snp">Step 1: Assigning genes to each SNP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm.html#step-2-calculating-specificity-scores">Step 2: Calculating specificity scores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm.html#step-3-testing-significance">Step 3: Testing significance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#c-libraries">C++ Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#python-packages">Python Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#r-packages">R Packages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data.html#snp-sets">SNP sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#gene-matrices">Gene matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#ld-pruned-snps-and-genomic-intervals">LD-pruned SNPs and Genomic Intervals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#input-file-formats">Input File Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#output-files">Output Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Output Visualizations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="output.html#view-enrichment-of-tissue-specific-gene-expression">View enrichment of tissue-specific gene expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#view-the-most-specifically-expressed-gene-for-each-snp-tissue-pair">View the most specifically expressed gene for each SNP-tissue pair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#view-the-type-1-error-rate-estimates-for-each-tissue">View the type 1 error rate estimates for each tissue</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="supplementary.html">Supplementary Figures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-1-determining-snp-linkage-intervals">Supplementary Figure 1: Determining SNP linkage intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-2-counting-genes-in-gwas-snp-linkage-intervals">Supplementary Figure 2: Counting genes in GWAS SNP linkage intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-3-choosing-the-threshold-for-linkage-intervals">Supplementary Figure 3: Choosing the <span class="math">\(r^{2}\)</span> threshold for linkage intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-4-each-trait-associated-locus-harbors-a-single-associated-gene">Supplementary Figure 4: Each trait-associated locus harbors a single associated gene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-5-type-1-error-estimates">Supplementary Figure 5: Type 1 error estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-6-red-blood-cell-count-go-enrichment">Supplementary Figure 6: Red blood cell count GO enrichment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-7-multiple-sclerosis">Supplementary Figure 7: Multiple sclerosis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-8-celiac-disease">Supplementary Figure 8: Celiac disease</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supplementary.html#supplementary-figure-9-hdl-cholesterol">Supplementary Figure 9: HDL cholesterol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">SNPsea</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Visual Summary</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/visual.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="visual-summary">
+<h1>Visual Summary<a class="headerlink" href="#visual-summary" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="cartoon">
+<h2>Cartoon<a class="headerlink" href="#cartoon" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/cartoon.png" />
+</div>
+<p>This cartoon illustrates the key ideas of the algorithm:</p>
+<p><strong>A|</strong> Step 1. Each SNP in a set of disease-associated SNPs is in
+linkage disequilibrium (LD) with multiple genes. The genes are scored,
+in aggregate, for specificity to each tissue.</p>
+<p><strong>B|</strong> Step 2: The algorithm is repeated with random null SNP sets that
+are not associated with any phenotype. These have been selected from an
+LD-pruned list of SNPs, so the whole genome is covered.</p>
+<p><strong>C|</strong> Step 3: The random SNP set scores form the null distributions
+which allows us to determine statistical significance for enrichment of
+specificity to a particular tissue/cell-type/condition.</p>
+</div>
+<div class="section" id="flow-chart">
+<h2>Flow Chart<a class="headerlink" href="#flow-chart" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="" src="_images/flowchart.png" />
+</div>
+<p>This flow chart shows the input data required to perform the analysis,
+and a summary of the intermediate steps.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="algorithm.html" class="btn btn-neutral float-right" title="Algorithm Details"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="introduction.html" class="btn btn-neutral" title="Introduction"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Kamil Slowikowski.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.3',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

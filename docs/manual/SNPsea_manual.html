@@ -135,6 +135,9 @@
 
     header table { width: 100%; margin-bottom: 0px; }
     header table td { text-align: center; }
+    table tr { border-style: solid;
+      border-color: rgba(0, 0, 0, 0.0);
+      border-bottom-width: 5px; }
 
 	p { margin: 0 0 1em 0; }
 	p img { margin: 0; }
@@ -1537,38 +1540,27 @@ rs9349204  PB-CD19+B_cells            29964  0.255196</code></pre>
 </div>
 </body>
 <script type="text/javascript">
+var el = document.getElementById.bind(document);
+// The url determines what section is visible. [default: introduction]
+function urlHash() {
+  var a = el("visibleContent");
+  var b = el(window.location.hash.substr(1) || "introduction");
+  a.innerHTML = b.innerHTML;
+  window.scrollTo(null, 0);
+}
+window.onhashchange = urlHash;
 window.onload = function() {
-    var xpath = '//*[@id="TOC"]/ul[1]//a';
-    var rtype = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
-    var titles = document.evaluate(xpath, document, null, rtype, null);
-    
-    for (var i = 0; i < titles.snapshotLength; i++) {
-        var title = titles.snapshotItem(i);
-        var titleName = title.hash.substr(1);
-        var section = document.getElementById(titleName);
-        section.style.display = "none";
-    }
+  var xpath = '//*[@id="TOC"]/ul[1]//a';
+  var rtype = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+  var titles = document.evaluate(xpath, document, null, rtype, null);
 
-    // Is there a hashtag in the url?
-    var urlSection = window.location.hash.substr(1);
-    var visible = document.getElementById("visibleContent");
-    if (urlSection != "") {
-        var section = document.getElementById(urlSection);
-        visible.innerHTML = section.innerHTML;
-    } else {
-        visible.innerHTML = document.getElementById("introduction").innerHTML;
-    }
-
-    for (var i = 0; i < titles.snapshotLength; i++) {
-        var title = titles.snapshotItem(i);
-        title.addEventListener('click', function() {
-            window.scrollTo(null, 0);
-            var section = document.getElementById(this.hash.substr(1));
-            console.log(section);
-            var visible = document.getElementById("visibleContent");
-            visible.innerHTML = section.innerHTML;
-        }, false);
-    }
+  // Loop through the TOC, get hashtag ids, hide elements with those ids.
+  for (var i = 0; i < titles.snapshotLength; i++) {
+    var title = titles.snapshotItem(i);
+    var section = el(title.hash.substr(1));
+    section.style.display = "none";
+  }
+  urlHash();
 }
 </script>
 </html>
