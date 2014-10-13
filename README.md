@@ -3,7 +3,7 @@ SNPsea: an algorithm to identify cell types, tissues, and pathways affected by r
 
 **Home Page:** <http://www.broadinstitute.org/mpg/snpsea>
 
-**Documentation:** [HTML] [PDF] [Epub]
+**Documentation:** [HTML]  [PDF]  [Epub]
 
 **Executable:** [snpsea-v1.0.3.tar.gz][exec]
 
