@@ -9,11 +9,6 @@ SNPsea: an algorithm to identify cell types, tissues, and pathways affected by r
 
 **Data: [SNPsea_data_20140520.zip][data]**
 
-[broad]: http://www.broadinstitute.org/mpg/snpsea
-[manual]: http://snpsea.readthedocs.org/en/latest/
-[exec]: https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
-[data]: http://files.figshare.com/1382662/SNPsea_data_20140520.zip
-
 
 Citation
 --------
@@ -79,3 +74,9 @@ License
 [GNU GPLv3][license]
 
 [license]: https://github.com/slowkow/snpsea/blob/master/LICENSE
+[broad]: http://www.broadinstitute.org/mpg/snpsea
+[manual]: http://snpsea.readthedocs.org/en/latest/
+[manualdata]: http://snpsea.readthedocs.org/en/latest/data.html
+[exec]: https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
+[data]: http://files.figshare.com/1382662/SNPsea_data_20140520.zip
+
