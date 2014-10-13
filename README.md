@@ -1,13 +1,13 @@
 SNPsea: an algorithm to identify cell types, tissues, and pathways affected by risk loci
 ========================================================================================
 
-**[Home Page][broad]**
+**Home Page:** <http://www.broadinstitute.org/mpg/snpsea>
 
-**[Documentation][manual]**
+**Documentation:** [HTML] [PDF] [Epub]
 
-**Executable: [snpsea-v1.0.3.tar.gz][exec]**
+**Executable:** [snpsea-v1.0.3.tar.gz][exec]
 
-**Data: [SNPsea_data_20140520.zip][data]**
+**Data:** [SNPsea_data_20140520.zip][data]
 
 
 Citation
@@ -59,9 +59,7 @@ SNPsea is a general algorithm. You may provide your own:
 2. Binary gene annotation matrix with presence/absence 1/0 values.
 
 We provide you with three expression matrices and one annotation matrix. See
-the [Data][manualdata] section of the [Reference Manual][manual].
-
-[manualdata]: http://www.broadinstitute.org/mpg/snpsea/SNPsea_manual.html#data
+the [Data][manualdata] section of the [Manual][HTML].
 
 The columns of the matrix may be tissues, cell types, GO annotation codes, or
 other *conditions*. Continuous matrices *must* be normalized before running
@@ -74,9 +72,12 @@ License
 [GNU GPLv3][license]
 
 [license]: https://github.com/slowkow/snpsea/blob/master/LICENSE
-[broad]: http://www.broadinstitute.org/mpg/snpsea
-[manual]: http://snpsea.readthedocs.org/en/latest/
-[manualdata]: http://snpsea.readthedocs.org/en/latest/data.html
+
 [exec]: https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
 [data]: http://files.figshare.com/1382662/SNPsea_data_20140520.zip
+
+[HTML]: http://snpsea.readthedocs.org/en/latest/
+[manualdata]: http://snpsea.readthedocs.org/en/latest/data.html
+[PDF]: https://readthedocs.org/projects/snpsea/downloads/pdf/latest/
+[Epub]: https://readthedocs.org/projects/snpsea/downloads/epub/latest/
 
