@@ -1,6 +1,8 @@
 SNPsea Manual
 *************
 
+Github project: https://github.com/slowkow/snpsea
+
 .. toctree::
    :maxdepth: 2
 
