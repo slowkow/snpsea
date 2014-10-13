@@ -9,6 +9,8 @@ SNPsea: an algorithm to identify cell types, tissues, and pathways affected by r
 
 **Data:** [SNPsea_data_20140520.zip][data]
 
+**License:** [GNU GPLv3][license]
+
 
 Citation
 --------
@@ -64,12 +66,6 @@ the [Data][manualdata] section of the [Manual][HTML].
 The columns of the matrix may be tissues, cell types, GO annotation codes, or
 other *conditions*. Continuous matrices *must* be normalized before running
 SNPsea: columns must be directly comparable to each other.
-
-
-License
--------
-
-[GNU GPLv3][license]
 
 [license]: https://github.com/slowkow/snpsea/blob/master/LICENSE
 
