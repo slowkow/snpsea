@@ -19,11 +19,11 @@ References
     across the human genome. <http://www.ncbi.nlm.nih.gov/pubmed/16224025>`__
     Science, 310(5746):321–324, October 2005.
 
-4.  X. Hu, H. Kim, E. Stahl, R. Plenge, M. Daly, and S. Raychaudhuri.
-    `Integrating autoimmune risk loci with gene-expression data
+4.  Xinli Hu, Hyun Kim, Eli Stahl, Robert Plenge, Mark Daly, and Soumya
+    Raychaudhuri. `Integrating autoimmune risk loci with gene-expression data
     identifies specific pathogenic immune cell subsets.
-    <http://www.ncbi.nlm.nih.gov/pubmed/21963258>`__ The American
-    Journal of Human Genetics, 89(4):496 506, 2011.
+    <http://www.ncbi.nlm.nih.gov/pubmed/21963258>`__ The American Journal of
+    Human Genetics, 89(4):496 506, 2011.
 
 5.  Hana Lango Allen, Karol Estrada, Guillaume Lettre, Sonja I. Berndt,
     Michael N. Weedon, Fernando Ri- vadeneira, Cristen J. Willer, Anne

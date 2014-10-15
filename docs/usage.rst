@@ -4,7 +4,7 @@ Usage
 Here is a `Bash <http://www.gnu.org/software/bash/manual/bashref.html>`__
 script with a usage example:
 
-.. code:: bash
+.. code-block:: bash
 
     options=(
         --snps              Red_blood_cell_count-Harst2012-45_SNPs.gwas
@@ -112,7 +112,7 @@ the file has no header, the first column is assumed to contain SNP
 identifiers. Otherwise, SNPsea looks for a column named (case-sensitive)
 ``SNP`` or ``snp`` or ``name`` or ``marker``.
 
-::
+.. code-block:: bash
 
     head Red_blood_cell_count-Harst2012-45_SNPs.gwas
 
@@ -142,7 +142,7 @@ You must provide a single gene matrix that must be in
 `GCT <http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct>`__
 format.
 
-::
+.. code-block:: bash
 
     zcat GeneAtlas2004.gct.gz | cut -f1-4 | head
 
@@ -165,7 +165,7 @@ one per line. The matrix will be conditioned on these columns before the
 analysis is performed to help you identify secondary signals independent
 of these columns. Binary (0, 1) matrices will not be conditioned.
 
-::
+.. code-block:: bash
 
     head conditions.txt
 
@@ -180,7 +180,7 @@ of the **``--gene-matrix``**
 `GCT <http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct>`__
 file. Only the first four columns are used.
 
-::
+.. code-block:: bash
 
     zcat NCBIgenes2013.bed.gz | head
 
@@ -203,7 +203,7 @@ fourth column with the SNP identifiers. The linkage intervals assigned
 to the trait-associated SNPs you provide with **``--snps``** are taken
 from this file.
 
-::
+.. code-block:: bash
 
     zcat TGP2011.bed.gz | head
 
@@ -225,7 +225,7 @@ The null SNPs file must have one SNP identifier per line. Only the first
 column is used. The identifiers must be a subset of the identifiers in
 **``--snp-intervals``**.
 
-::
+.. code-block:: bash
 
     zcat Lango2010.txt.gz | head
 
@@ -259,7 +259,7 @@ The usage example shown above produces the following output files:
 
 The command line arguments needed to reproduce the analysis.
 
-::
+.. code-block:: bash
 
     cat args.txt
 
@@ -279,7 +279,7 @@ The command line arguments needed to reproduce the analysis.
 
 Repeat the analysis:
 
-::
+.. code-block:: bash
 
     snpsea --args args.txt
 
@@ -289,7 +289,7 @@ Repeat the analysis:
 The p-values representing enrichment of condition-specificity for the
 given SNPs.
 
-::
+.. code-block:: bash
 
     head condition_pvalues.txt | column -t
 
@@ -318,7 +318,7 @@ SNPs.
 The fifth column is the replicate index. The number of replicates
 performed is specified with **``--null-snpsets INT``**.
 
-::
+.. code-block:: bash
 
     head null_pvalues.txt | column -t
 
@@ -341,7 +341,7 @@ in the reference file specified with **``--snp-intervals``**, then the
 name of the SNP will be listed and the other columns will contain
 ``NA``.
 
-::
+.. code-block:: bash
 
     head snp_genes.txt | column -t
 
@@ -364,7 +364,7 @@ Each SNP, condition, gene with greatest specificity to that condition,
 and score for the SNP-condition pair, adjusted for the number of genes
 overlapping the given SNP's linkage interval.
 
-::
+.. code-block:: bash
 
     head snp_condition_scores.txt | column -t
 

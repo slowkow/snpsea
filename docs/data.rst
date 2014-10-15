@@ -15,7 +15,7 @@ http://dx.doi.org/10.6084/m9.figshare.871430
 
 Contents of the compressed archive with data:
 
-::
+.. code:: bash
 
     Celiac_disease-Trynka2011-35_SNPs.gwas
     HDL_cholesterol-Teslovich2010-46_SNPs.gwas
@@ -52,10 +52,11 @@ Celiac\_disease-Trynka2011-35\_SNPs.gwas
 35 SNPs associated with Celiac disease taken from Table 2. Positions are
 on hg19. All SNPs have :math:`P \le 5e-8`.
 
-    Trynka G, Hunt KA, Bockett NA, et al. Dense genotyping identifies
-    and localizes multiple common and rare variant association signals
-    in celiac disease. Nat Genet. 2011;43(12):1193-201.
-    `Pubmed <http://www.ncbi.nlm.nih.gov/pubmed/22057235>`__
+    Trynka G, Hunt KA, Bockett NA, et al. `Dense genotyping identifies and
+    localizes multiple common and rare variant association signals in celiac
+    disease. <http://www.ncbi.nlm.nih.gov/pubmed/22057235>`__ Nat Genet.
+    2011;43(12):1193-201.
+    
 
 HDL\_cholesterol-Teslovich2010-46\_SNPs.gwas
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,10 +64,11 @@ HDL\_cholesterol-Teslovich2010-46\_SNPs.gwas
 46 SNPs associated with HDL taken from Supplementary Table 2. Positions
 are on hg19. All SNPs have :math:`P \le 5e-8`.
 
-    Teslovich TM, Musunuru K, Smith AV, et al. Biological, clinical and
-    population relevance of 95 loci for blood lipids. Nature.
+    Teslovich TM, Musunuru K, Smith AV, et al. `Biological, clinical and
+    population relevance of 95 loci for blood lipids.
+    <http://www.ncbi.nlm.nih.gov/pubmed/20686565>`__ Nature.
     2010;466(7307):707-13.
-    `Pubmed <http://www.ncbi.nlm.nih.gov/pubmed/20686565>`__
+    
 
 Multiple\_sclerosis-IMSGC-51\_SNPs.gwas
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -74,10 +76,11 @@ Multiple\_sclerosis-IMSGC-51\_SNPs.gwas
 51 SNPs associated with Multiple Sclerosis taken from Supplementary
 Table A. Positions are on hg19. All SNPs have :math:`P \le 5e-8`.
 
-    Sawcer S, Hellenthal G, Pirinen M, et al. Genetic risk and a primary
-    role for cell-mediated immune mechanisms in multiple sclerosis.
-    Nature. 2011;476(7359):214-9.
-    `Pubmed <http://www.ncbi.nlm.nih.gov/pubmed/21833088>`__
+    Sawcer S, Hellenthal G, Pirinen M, et al. `Genetic risk and a primary role
+    for cell-mediated immune mechanisms in multiple sclerosis.
+    <http://www.ncbi.nlm.nih.gov/pubmed/21833088>`__ Nature.
+    2011;476(7359):214-9.
+    
 
 Red\_blood\_cell\_count-Harst2012-45\_SNPs.gwas
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -85,10 +88,11 @@ Red\_blood\_cell\_count-Harst2012-45\_SNPs.gwas
 45 SNPs associated with red blood cell count (RBC) taken from Table 1.
 Positions are on hg19. All SNPs have :math:`P \le 5e-8`.
 
-    van der Harst P, Zhang W, Mateo leach I, et al. Seventy-five genetic
-    loci influencing the human red blood cell. Nature.
+    van der Harst P, Zhang W, Mateo leach I, et al. `Seventy-five genetic loci
+    influencing the human red blood cell.
+    <http://www.ncbi.nlm.nih.gov/pubmed/23222517>`__ Nature.
     2012;492(7429):369-75.
-    `Pubmed <http://www.ncbi.nlm.nih.gov/pubmed/23222517>`__
+    
 
 Gene matrices
 ~~~~~~~~~~~~~
@@ -116,15 +120,16 @@ converted the file to
 `GCT <http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct>`__
 format.
 
-    Su AI et al. A gene atlas of the mouse and human protein-encoding
-    transcriptomes. Proc Natl Acad Sci U S A, 2004 Apr 9;101(16):6062-7.
-    `PubMed <http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133>`__
+    Su AI et al. `A gene atlas of the mouse and human protein-encoding
+    transcriptomes.
+    <http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE1133>`__ Proc Natl
+    Acad Sci U S A, 2004 Apr 9;101(16):6062-7.
 
 GO2013.gct.gz
 ^^^^^^^^^^^^^
 
-A
-`GCT <http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct>`__
+A `GCT
+<http://www.broadinstitute.org/cancer/software/genepattern/gp_guides/file-formats/sections/gct>`__
 formatted gene matrix with 1,751 annotation terms (1s and 0s indicating
 presence or absence of the gene in a Gene Ontology term).
 
@@ -169,10 +174,10 @@ disequilibrium (LD). SNPsea samples null SNP sets matched on the number
 of genes in the user's SNP set from this list. See this paper for more
 information:
 
-    Lango allen H, Estrada K, Lettre G, et al. Hundreds of variants
-    clustered in genomic loci and biological pathways affect human
-    height. Nature. 2010;467(7317):832-8.
-    `Pubmed <http://www.ncbi.nlm.nih.gov/pubmed/20881960>`__
+    Lango allen H, Estrada K, Lettre G, et al. `Hundreds of variants clustered
+    in genomic loci and biological pathways affect human height.
+    <http://www.ncbi.nlm.nih.gov/pubmed/20881960>`__ Nature.
+    2010;467(7317):832-8.
 
 NCBIgenes2013.bed.gz
 ^^^^^^^^^^^^^^^^^^^^
@@ -184,13 +189,13 @@ All human start and stop positions taken from:
 TGP2011.bed.gz
 ^^^^^^^^^^^^^^
 
-Linkage intervals for a filtered set of SNPs from the `1000 Genomes
-Project <http://www.1000genomes.org/>`__ Phase 1 (May 21, 2011). We
-downloaded a filtered (diallelic and 5 or more copies of the minor
-allele) set of markers from the
-`BEAGLE <http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3>`__
+Linkage intervals for a filtered set of SNPs from the `1000 Genomes Project
+<http://www.1000genomes.org/>`__ Phase 1 (May 21, 2011). We downloaded
+a filtered (diallelic and 5 or more copies of the minor allele) set of markers
+from the `BEAGLE
+<http://bochet.gcc.biostat.washington.edu/beagle/1000_Genomes.phase1_release_v3>`__
 website and calculated pairwise LD (EUR) for all SNPs in a 1 Mb sliding
-window. The linkage intervals were extended to the nearest
-`HapMap <http://hapmap.ncbi.nlm.nih.gov/downloads/>`__ recombination
-hotspot with >3 cM/Mb recombination rate.
+window. The linkage intervals were extended to the nearest `HapMap
+<http://hapmap.ncbi.nlm.nih.gov/downloads/>`__ recombination hotspot with >3
+cM/Mb recombination rate ( :ref:`Supplementary Figure 1 <fig-s1>` ).
 

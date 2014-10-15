@@ -39,9 +39,9 @@ codes, or other *conditions*.
 .. note::
 
    Continuous matrices *must* be normalized before running SNPsea. That is,
-   columns must be directly comparable to each other. You might consider
-   `quantile normalization <http://www.ncbi.nlm.nih.gov/pubmed/12538238>`__
-   normalization, for example.
+   columns must be directly comparable to each other. For example, you might
+   consider `quantile normalization
+   <http://www.ncbi.nlm.nih.gov/pubmed/12538238>`__.
 
 If you benefit from this method, please cite:
 

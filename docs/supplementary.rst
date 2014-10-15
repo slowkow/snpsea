@@ -1,6 +1,8 @@
 Supplementary Figures
 ---------------------
 
+.. _fig-s1:
+
 Supplementary Figure 1: Determining SNP linkage intervals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -14,6 +16,8 @@ a linkage interval by identifying each SNP’s furthest upstream and
 downstream neighbors with :math:`r^{2}\ge0.5`. Finally, we extended each
 interval to recombination hotspots reported by HapMap (Myers *et al.*
 2005) with recombination rate >3 cM/Mb.
+
+.. _fig-s2:
 
 Supplementary Figure 2: Counting genes in GWAS SNP linkage intervals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -29,6 +33,8 @@ Genomes Project (1000 Genomes Consortium 2012). Of these SNPs, 2,119
 genes, and 3,756 (32%) overlap a single gene. The remaining 50% of SNPs
 overlap 2 or more genes. This illustrates the critical issue that many
 SNPs implicate more than one gene.
+
+.. _fig-s3:
 
 Supplementary Figure 3: Choosing the :math:`r^{2}` threshold for linkage intervals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -61,6 +67,8 @@ option. Red blood cell count SNPs are enriched for *hemopoiesis*
 testing threshold at :math:`r^{2}\ge0.4`, but remains significant at
 :math:`r^{2}\ge0.5` (see main text).
 
+.. _fig-s4:
+
 Supplementary Figure 4: Each trait-associated locus harbors a single associated gene
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -72,6 +80,8 @@ Ontology (top and bottom). The x and y axes are
 :math:`-\text{log}_{10}P` for ``’--score single’ and ’--score total’``
 SNPsea options, respectively. The ``’single’`` and ``’total’`` methods
 are described . The :math:`P`-values appear similar between methods.
+
+.. _fig-s5:
 
 Supplementary Figure 5: Type 1 error estimates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -111,6 +121,8 @@ correlation coefficients for all pairs of conditions.
 | HDL cholesterol      | 46     | 46     | Supp. Table 2 (Teslovich, *et al.* 2010)   |
 +----------------------+--------+--------+--------------------------------------------+
 
+.. _fig-s6:
+
 Supplementary Figure 6: Red blood cell count GO enrichment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -119,6 +131,8 @@ Supplementary Figure 6: Red blood cell count GO enrichment
 
 We observed significant enrichment for *hemopoiesis*
 :math:`(2\times10^{-5})`. The top 25 terms are shown.
+
+.. _fig-s7:
 
 Supplementary Figure 7: Multiple sclerosis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -135,6 +149,8 @@ are shown.
 We observed significant enrichment for 52 Gene Ontology terms. The top
 60 terms are shown.
 
+.. _fig-s8:
+
 Supplementary Figure 8: Celiac disease
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -149,6 +165,8 @@ are shown.
 
 We observed significant enrichment for 28 Gene Ontology terms. The top
 40 terms are shown.
+
+.. _fig-s9:
 
 Supplementary Figure 9: HDL cholesterol
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

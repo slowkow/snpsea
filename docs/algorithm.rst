@@ -48,19 +48,19 @@ Step 1: Assigning genes to each SNP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Accurate analyses must address the critical issue that SNPs frequently
-implicate a region with multiple different genes (**Supplementary Figure
-2**). The challenge is to find evidence to show which of those genes are
-associated with a given trait.
+implicate a region with multiple different genes ( :ref:`Supplementary Figure
+2 <fig-s2>` ). The challenge is to find evidence to show which of those genes
+are associated with a given trait.
 
-We determine the genes plausibly implicated by each trait-associated SNP
-using a previously described strategy (**Supplementary Figure 1** and
-Rossin *et al.* 2011). First, we define the linkage interval for a given
-SNP as the span between the furthest correlated SNPs :math:`r^{2}>0.5`
-(EUR) within a 1 Mb window (1000 Genomes Consortium 2012). Next, we
-extend the interval to the nearest recombination hotspots with
-recombination rate >3 cM/Mb (Myers *et al.* 2005). To address the case
-when no genes overlap an interval, we provide an option for SNPsea to
-extend the interval up- and downstream (by default 10 Kb).
+We determine the genes plausibly implicated by each trait-associated SNP using
+a previously described strategy ( :ref:`Supplementary Figure 1 <fig-s1>` and
+Rossin *et al.* 2011). First, we define the linkage interval for a given SNP
+as the span between the furthest correlated SNPs :math:`r^{2}>0.5` (EUR)
+within a 1 Mb window (1000 Genomes Consortium 2012). Next, we extend the
+interval to the nearest recombination hotspots with recombination rate >3
+cM/Mb (Myers *et al.* 2005). To address the case when no genes overlap an
+interval, we provide an option for SNPsea to extend the interval up- and
+downstream (by default 10 Kb).
 
 Most frequently, we find multiple genes :math:`(m_{k}>1)` in a single
 SNP locus :math:`k`. We expect many loci with multiple genes because of
@@ -78,7 +78,7 @@ Two score options
 By default, SNPsea assumes one gene in each associated locus is
 associated with the given trait. We also include the option to assume
 all genes within a locus are associated. We compare results of the two
-options with four phenotypes (**Supplementary Figure 4**).
+options with four phenotypes ( :ref:`Supplementary Figure 4 <fig-s4>` ).
 
 1. The ``’--score single’`` method (default option) assumes that a
    single gene in each locus is associated with the given phenotype. For
