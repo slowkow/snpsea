@@ -261,44 +261,48 @@ Suppose we have a gene expression matrix :math:`A`:
 
 .. code-block:: r
 
-   > A1 = round(matrix(runif(25) * 5, nrow = 5), 2)
+   > A1 = read.table(text = "
+   2.55 0.05 3.28 1.11
+   2.63 4.53 4.66 3.89
+   0.61 3.31 2.49 4.59
+   0.82 1.27 4.47 2.31
+   4.91 1.23 0.51 0.95")
    > A1
-        [,1] [,2] [,3] [,4] [,5]
-   [1,] 2.55 0.05 3.28 1.11 0.78
-   [2,] 2.63 4.53 4.66 3.89 3.94
-   [3,] 0.61 3.31 2.49 4.59 3.41
-   [4,] 0.82 1.27 4.47 2.31 3.31
-   [5,] 4.91 1.23 0.51 0.95 2.21
+       V1   V2   V3   V4
+   1 2.55 0.05 3.28 1.11
+   2 2.63 4.53 4.66 3.89
+   3 0.61 3.31 2.49 4.59
+   4 0.82 1.27 4.47 2.31
+   5 4.91 1.23 0.51 0.95
 
 Compute the specificity (L2 norm) of each gene (row) to each condition
 (column):
 
 .. code-block:: r
 
-   > A2 = apply(A1, 1, function(row) row / sum(row ^ 2))
+   > A2 = t(apply(A1, 1, function(row) row / sqrt( sum(row ^ 2) )))
    > A2
-               [,1]       [,2]       [,3]       [,4]       [,5]
-   [1,] 0.133480598 0.03295364 0.01214547 0.02126644 0.15504757
-   [2,] 0.002617267 0.05676044 0.06590409 0.03293705 0.03884084
-   [3,] 0.171692691 0.05838933 0.04957740 0.11592805 0.01610474
-   [4,] 0.058103319 0.04874131 0.09138966 0.05990912 0.02999902
-   [5,] 0.040829359 0.04936780 0.06789515 0.08584381 0.06978720
+                V1         V2         V3        V4
+   [1,] 0.59293508 0.01162618 0.76267727 0.2581012
+   [2,] 0.32801918 0.56499121 0.58120508 0.4851690
+   [3,] 0.09818755 0.53278820 0.40079837 0.7388211
+   [4,] 0.15607783 0.24173030 0.85081451 0.4396827
+   [5,] 0.94873958 0.23766796 0.09854525 0.1835647
 
 Rank the genes in each condition and convert to percentiles:
 
 .. code-block:: r
 
-   > A3 = apply(A2, 2, function(col) rank(-col) / length(col))
+   A3 = apply(A2, 2, function(col) rank(-col) / length(col))
    > A3
-        [,1] [,2] [,3] [,4] [,5]
-   [1,]  0.4  1.0  1.0  1.0  0.2
-   [2,]  1.0  0.4  0.6  0.8  0.6
-   [3,]  0.2  0.2  0.8  0.2  1.0
-   [4,]  0.6  0.8  0.2  0.6  0.8
-   [5,]  0.8  0.6  0.4  0.4  0.4
+         V1  V2  V3  V4
+   [1,] 0.4 1.0 0.4 0.8
+   [2,] 0.6 0.2 0.6 0.4
+   [3,] 1.0 0.4 0.8 0.2
+   [4,] 0.8 0.6 0.2 0.6
+   [5,] 0.2 0.8 1.0 1.0
 
-
-Notice that gene 3 has the greatest specificity (0.17) to condition 1, so it
+Notice that gene 3 has the greatest specificity (0.74) to condition V4, so it
 is assigned the lowest percentile rank (0.2).
 
 Compute the locus scores for a SNP locus :math:`k` that overlaps genes 2 and
@@ -310,8 +314,12 @@ the trait:
    > genes = c(2, 4)
    > P = apply(A3[genes, ], 2, function(col) 1 - (1 - min(col)) ^ length(col))
    > P
-   [1] 0.84 0.64 0.36 0.84 0.84
+     V1   V2   V3   V4 
+   0.84 0.36 0.36 0.64 
 
-Notice that the SNP locus :math:`k` is most specific to condition 3 (0.36),
-and this is because gene 4 has the lowest specificity percentile (0.2) in
-condition 3.
+Notice that the SNP locus :math:`k` is most specific to conditions V2 and V3
+(0.36), and this is because:
+
+- gene 2 has the lowest specificity percentile (0.2) in condition V2
+- gene 4 has the lowest specificity percentile (0.2) in condition V3
+
