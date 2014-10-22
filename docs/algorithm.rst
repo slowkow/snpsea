@@ -116,7 +116,7 @@ gene :math:`i` is not expressed in condition :math:`j`.
 
 Next, we transform :math:`A'` to a matrix :math:`A''` of non-parametric
 condition-specificity percentiles as follows. For each condition
-:math:`j`, we rank the values of :math:`A'_{,j}` in ascending order and
+:math:`j`, we rank the values of :math:`A'_{,j}` in descending order and
 divide them by the number of genes :math:`m`, resulting in percentiles
 between 0 and 1 where a lower value indicates greater specificity to the
 given condition.
