@@ -67,6 +67,54 @@ The columns of the matrix may be tissues, cell types, GO annotation codes, or
 other *conditions*. Continuous matrices *must* be normalized before running
 SNPsea: columns must be directly comparable to each other.
 
+Example
+-------
+
+![SNPsea results for RBC count-associated SNPs in the Gene Atlas.][example]
+
+[example]: https://github.com/slowkow/snpsea/blob/master/docs/figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-pvalues_barplot.png
+
+The heatmap shows Pearson correlation coefficients between pairs of tissue
+expression profiles. The blue bars show p-values. Statistically significant
+p-values cross the Bonferroni multiple testing threshold (black line).
+
+We identified *BM-CD71+Early Erythroid* as the cell type with most significant
+enrichment (P < 2e-7) for cell type-specific gene expression relative to 78
+other tissues in the Gene Atlas ([Su *et al.* 2004][Su2004]).
+
+SNPsea tested the genes in linkage disequilibrium (LD) with 45 input SNPs
+associated with count of red blood cells (P <= 5e-8 in Europeans) ([Harst
+*et al.* 2012][Harst2012]). For each of the 79 cell types in the Gene Atlas,
+we tested a maximum of 1e7 null SNP sets where each null SNP was matched to
+an input SNP on the number of genes in LD.
+
+[Harst2012]: http://www.ncbi.nlm.nih.gov/pubmed/23222517
+[Su2004]: http://www.ncbi.nlm.nih.gov/pubmed/15075390
+
+We ran SNPsea like this:
+
+```bash
+options=(
+    --snps              Red_blood_cell_count-Harst2012-45_SNPs.gwas
+    --gene-matrix       GeneAtlas2004.gct.gz
+    --gene-intervals    NCBIgenes2013.bed.gz
+    --snp-intervals     TGP2011.bed.gz
+    --null-snps         Lango2010.txt.gz
+    --out               out
+    --slop              10e3
+    --threads           8
+    --null-snpsets      0
+    --min-observations  100
+    --max-iterations    1e7
+)
+snpsea ${options[*]}
+
+# Time elapsed: 2 minutes 36 seconds
+
+# Create the figure shown above:
+snpsea-barplot out
+```
+
 [license]: https://github.com/slowkow/snpsea/blob/master/LICENSE
 
 [exec]: https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
