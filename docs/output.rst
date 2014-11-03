@@ -7,9 +7,9 @@ View enrichment of tissue-specific gene expression
 .. figure:: figures/Red_blood_cell_count-Harst2012-45_SNPs-GeneAtlas2004-single-pvalues_barplot.png
    :alt: 
 
-A horizontal bar plot of negative log10 p-values for a test of 37
-LDL-associated SNPs for enrichment of tissue-specific expression in
-profiles of 79 human tissues.
+A horizontal bar plot of negative log10 p-values for a test of 45
+red blood cell count-associated SNPs for enrichment of tissue-specific
+expression in profiles of 79 human tissues and cells.
 
 .. code:: bash
 
