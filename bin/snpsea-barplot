@@ -117,18 +117,26 @@ def barplot(f_pvalues, f_matrix, f_genes, f_plot, figsize=(5, 5), fontsize=10,
     # Shorten lengthy names.
     pvalues.index = [shorten(x, namelen) for x in pvalues.index]
 
-    # Plot the negative log10 transformed p-values.
+    # Negative log10 transform.
     pvalues['pvalue'] = -np.log10(pvalues['pvalue'])
+
+    # Significant p-values.
+    idx_signif = pvalues['pvalue'] >= bonferroni_threshold
+    signif = pvalues.index[idx_signif]
+
+    colors = pd.Series(['#aaaaaa'] * pvalues.shape[0])
+    colors.ix[idx_signif.tolist()] = '#5599ff'
+
+    # Plot the negative log10 transformed p-values.
     ax = pvalues['pvalue'].plot(ax=ax,
                                 kind='barh',
                                 title=title,
                                 linewidth=0,
                                 grid=False,
-                                color='#5599ff')
+                                color=colors.tolist())
 
     # Insignificant conditions are spaced away from the plot.
     labels = [item.get_text() for item in ax.get_yticklabels()]
-    signif = pvalues.index[pvalues['pvalue'] >= bonferroni_threshold]
     for i, item in enumerate(labels):
         if item in signif:
             labels[i] = '* {}'.format(item)
