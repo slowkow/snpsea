@@ -118,7 +118,7 @@ snpsea-barplot out
 [license]: https://github.com/slowkow/snpsea/blob/master/LICENSE
 
 [exec]: https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
-[data]: http://files.figshare.com/1382662/SNPsea_data_20140520.zip
+[data]: http://dx.doi.org/10.6084/m9.figshare.871430
 
 [HTML]: http://snpsea.readthedocs.org/en/latest/
 [manualdata]: http://snpsea.readthedocs.org/en/latest/data.html
