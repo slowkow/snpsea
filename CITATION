@@ -1,0 +1,45 @@
+Plain text
+----------
+
+Kamil Slowikowski, Xinli Hu, and Soumya Raychaudhuri. "SNPsea: an algorithm to
+identify cell types, tissues and pathways affected by risk loci."
+Bioinformatics (2014) 30 (17): 2496-2497.
+
+
+Web
+---
+
+http://bioinformatics.oxfordjournals.org/content/30/17/2496.full
+
+doi:10.1093/bioinformatics/btu326
+
+
+BibTeX
+------
+
+@article{Slowikowski2014,
+    author = {Slowikowski, Kamil and Hu, Xinli and Raychaudhuri, Soumya}, 
+    title = {SNPsea: an algorithm to identify cell types, tissues and pathways
+    affected by risk loci},
+    volume = {30}, 
+    number = {17}, 
+    pages = {2496-2497}, 
+    year = {2014}, 
+    doi = {10.1093/bioinformatics/btu326}, 
+    abstract = {Summary: We created a fast, robust and general C++
+        implementation of a single-nucleotide polymorphism (SNP) set
+        enrichment algorithm to identify cell types, tissues and pathways
+        affected by risk loci. It tests trait-associated genomic loci for
+        enrichment of specificity to conditions (cell types, tissues and
+        pathways). We use a non-parametric statistical approach to compute
+        empirical P-values by comparison with null SNP sets. As a proof of
+        concept, we present novel applications of our method to four sets of
+        genome-wide significant SNPs associated with red blood cell count,
+        multiple sclerosis, celiac disease and HDL cholesterol.Availability
+        and implementation: http://broadinstitute.org/mpg/snpseaContact:
+        soumya@broadinstitute.orgSupplementary information: Supplementary data
+        are available at Bioinformatics online.}, 
+    URL = {http://bioinformatics.oxfordjournals.org/content/30/17/2496.abstract}, 
+    eprint = {http://bioinformatics.oxfordjournals.org/content/30/17/2496.full.pdf+html}, 
+    journal = {Bioinformatics} 
+}
