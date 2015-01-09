@@ -40,6 +40,14 @@ def main():
 
     mp.rc('font', family='serif', size=float(args['--fontsize']))
 
+    """On a headless server, Agg seems to be the right backend
+    to avoid this error:
+    
+        _tkinter.TclError: no display name and no $DISPLAY environment variable
+    
+    """
+    mp.rcParams['backend'] = 'Agg'
+
     out = lambda x: os.path.join(args['<out>'], x)
     
     matrix = args['--gene-matrix'] or find_gene_matrix(out('args.txt'))
