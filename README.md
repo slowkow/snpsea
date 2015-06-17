@@ -28,7 +28,7 @@ See the first description of the algorithm and additional examples here:
 > of Human Genetics 89, 496–506 (2011). [PubMed][Hu2011]
 
 [Hu2011]: http://www.ncbi.nlm.nih.gov/pubmed/21963258
-[Slowikowski2014]: http://bioinformatics.oxfordjournals.org/content/early/2014/05/10/bioinformatics.btu326
+[Slowikowski2014]: http://bioinformatics.oxfordjournals.org/content/30/17/2496.full
 
 
 Description
