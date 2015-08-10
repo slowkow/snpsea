@@ -115,6 +115,16 @@ snpsea ${options[*]}
 snpsea-barplot out
 ```
 
+Contributing
+------------
+
+Please [submit an issue][issues] to report bugs or ask questions.
+
+Please contribute bug fixes or new features with a [pull request][pull] to this repository.
+
+[issues]: https://github.com/slowkow/snpsea/issues
+[pull]: https://help.github.com/articles/using-pull-requests/
+
 [license]: https://github.com/slowkow/snpsea/blob/master/LICENSE
 
 [exec]: https://github.com/slowkow/snpsea/archive/v1.0.3.tar.gz
