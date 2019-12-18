@@ -1,0 +1,60 @@
+#!/bin/bash
+# Run SNPSEA on the Sun Grid Engine (SGE) cluster at Broad Institute.
+#
+# Launch the job:
+#     qsub run_snpsea.job
+#
+# Monitor the progress:
+#     qstat
+
+# Name the job
+#$ -N snpsea
+
+# Combine stdout and stderr
+#$ -j y
+#$ -o gridengine_output.out
+
+# Use some memory
+#$ -l h_vmem=8G
+
+# Parallel with 6 cores
+#$ -pe smp 6
+
+# Run in current working directory
+#$ -cwd
+
+# Run time in hours minutes seconds
+#$-l h_rt=00:30:00
+#$-l s_rt=00:30:00
+
+source /broad/software/scripts/useuse
+reuse GSL
+reuse GCC-5.2
+
+# snpsea directory
+dir=/home/unix/slowikow/work/snpsea
+
+# Some expression files
+FANTOM5=${dir}/data/FANTOM2014/FANTOM5.gct.gz
+GeneAtlas=${dir}/data/GeneAtlas2004/GeneAtlas2004.gct.gz
+
+snplist=${dir}/data/manuscript/Celiac_disease-Trynka2011-35_SNPs.gwas
+
+expression=${GeneAtlas}
+
+out=$(pwd)/output/$(basename ${expression})_$(basename ${snplist})
+mkdir -p ${out}
+
+${dir}/bin/snpsea \
+  --snps ${snplist} \
+  --gene-matrix ${expression} \
+  --gene-intervals ${dir}/data/NCBI/NCBIgenes2013.bed.gz \
+  --out ${out} \
+  --score total \
+  --snp-intervals ${dir}/data/TGP/TGP2011-r2_0.5-hapmap_3-EUR.bed.gz \
+  --null-snps ${dir}/data/Lango2010/Lango2010.txt.gz \
+  --slop 1e5 \
+  --threads 6 \
+  --null-snpsets 0 \
+  --min-observations 100 \
+  --max-iterations 1e7
